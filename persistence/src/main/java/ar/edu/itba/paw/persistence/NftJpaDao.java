@@ -166,16 +166,16 @@ public class NftJpaDao implements NftDao {
     }
 
     private Pair<String, String> applySort(String sort) {
-        if (sort != null) {
+        if(sort != null) {
             switch (sort) {
                 case "priceAsc":
                     return new Pair<>(" ORDER BY sellorders.price ", " ORDER BY nft.sellorder.price ");
                 case "priceDsc":
                     return new Pair<>(" ORDER BY sellorders.price DESC ", " ORDER BY nft.sellorder.price DESC ");
                 case "noSort":
-                    return new Pair<>(" "," ");
+                    return new Pair<>(" ", " ");
                 case "collection":
-                    return new Pair<>(" ORDER BY nfts.collection "," ORDER BY nft.collection ");
+                    return new Pair<>(" ORDER BY nfts.collection ", " ORDER BY nft.collection ");
             }
         }
         return new Pair<>(" ORDER BY nfts.nft_name ", " ORDER BY nft.nftName ");

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+// TODO: Refactor methods used
 @Component
 public class SkyplaceUserDetailsService implements UserDetailsService {
 
@@ -36,25 +37,49 @@ public class SkyplaceUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         final User user = us.getUserByEmail(email).
                 orElseThrow(()->new UsernameNotFoundException("No such user with email: " + email));
-
-        final Collection<GrantedAuthority> roles = new ArrayList<>();
-        for(String rol:Role.getRoles())
-            if(user.getRole().name().equals(rol))
-                roles.add(new SimpleGrantedAuthority(String.format("ROLE_%s",rol.toUpperCase())));
-
-
+        final List<GrantedAuthority> roles = new ArrayList<>();
+        for(String rol:Role.getRoles()) {
+            if (user.getRole().name().equals(rol)) {
+                roles.add(new SimpleGrantedAuthority(String.format("ROLE_%s", rol.toUpperCase())));
+            }
+        }
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), roles);
+    }
+
+    public UsernamePasswordAuthenticationToken restLogin(String email, String password) throws UsernameNotFoundException {
+        final User user = us.getUserByEmail(email).
+                orElseThrow(()->new UsernameNotFoundException("No such user with email: " + email));
+        final List<GrantedAuthority> roles = new ArrayList<>();
+        for(String rol:Role.getRoles()) {
+            if (user.getRole().name().equals(rol)) {
+                roles.add(new SimpleGrantedAuthority(String.format("ROLE_%s", rol.toUpperCase())));
+            }
+        }
+        return new UsernamePasswordAuthenticationToken(email, password, roles);
+    }
+
+    public UsernamePasswordAuthenticationToken jwtLogin(String email) throws UsernameNotFoundException {
+        final User user = us.getUserByEmail(email).
+                orElseThrow(()->new UsernameNotFoundException("No such user with email: " + email));
+        final List<GrantedAuthority> roles = new ArrayList<>();
+        for(String rol:Role.getRoles()) {
+            if (user.getRole().name().equals(rol)) {
+                roles.add(new SimpleGrantedAuthority(String.format("ROLE_%s", rol.toUpperCase())));
+            }
+        }
+        return new UsernamePasswordAuthenticationToken(email, user.getPassword(), roles);
     }
 
     public void autologin(String username, String password) {
         UserDetails userDetails = loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
 
         Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
         if (auth.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
+
     }
 
 }
