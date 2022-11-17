@@ -193,22 +193,41 @@ public class SellOrderController {
     }
 
     @PUT
-    @Path("/{id}/buyorders/{userId}")
-    public Response acceptBuyOrderFromUserId(@PathParam("id") int id, @PathParam("userId") int userId) {
+    @Path("/{id}/buyorders/{userId}/accept")
+    public Response acceptBuyOrderFromOwnerId(@PathParam("id") int id, @PathParam("userId") int OwnerId) {
 
-        //TODO VALIDATE USER PERMISSIONS TO DO THIS
-
-        Optional<User> maybeUser = this.userService.getUserById(userId);
+        Optional<User> maybeUser = this.userService.getUserById(OwnerId);
         Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
-        if (maybeSellOrder.isPresent() && maybeUser.isPresent()) {
-            buyOrderService.acceptBuyOrder(id, userId);
-            return Response.noContent().build();  //TODO: SHOULD RETURN SOMETHING ELSE ?
+
+        if (!maybeSellOrder.isPresent() || !maybeUser.isPresent()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        if (!sellOrderService.userOwnsSellOrder(id, maybeUser.get())) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        buyOrderService.acceptBuyOrder(id, OwnerId);
+        return Response.ok().build();
+
     }
 
+    @PUT
+    @Path("/{id}/buyorders/{userId}/reject")
+    public Response rejectBuyOrderFromOwnerId(@PathParam("id") int id, @PathParam("userId") int ownerId) {
 
+        Optional<User> maybeUser = this.userService.getUserById(ownerId);
+        Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
 
+        if (!maybeSellOrder.isPresent() || !maybeUser.isPresent()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        if (!sellOrderService.userOwnsSellOrder(id, maybeUser.get())) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
 
+        buyOrderService.rejectBuyOrder(id, ownerId);
+        return Response.ok().build();
+
+    }
 
 }
