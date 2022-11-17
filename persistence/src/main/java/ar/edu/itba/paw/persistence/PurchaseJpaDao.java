@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PurchaseJpaDao implements PurchaseDao {
@@ -79,4 +80,13 @@ public class PurchaseJpaDao implements PurchaseDao {
         query.setParameter("userId",userId);
         return ((BigInteger)query.getSingleResult()).intValue();
     }
+
+    @Override
+    public Optional<Purchase> getPurchaseById(int userId, int purchaseId) {
+        final TypedQuery<Purchase> query = em.createQuery("FROM Purchase AS p WHERE p.id = :purchaseId AND (p.buyer.id = :userId OR p.seller.id = :userId)",Purchase.class);
+        query.setParameter("userId", userId);
+        query.setParameter("purchaseId", purchaseId);
+        return query.getResultList().stream().findFirst();
+    }
+
 }

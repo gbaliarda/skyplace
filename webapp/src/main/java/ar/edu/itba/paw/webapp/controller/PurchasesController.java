@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
+import ar.edu.itba.paw.model.Purchase;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.PurchaseService;
 import ar.edu.itba.paw.service.UserService;
@@ -36,7 +37,7 @@ public class PurchasesController {
     @Produces({ MediaType.APPLICATION_JSON})
     public Response getHistoryTransactions( @QueryParam("page") @DefaultValue("1") int page){
 
-        //TODO VALIDATE WITH JWT
+
         Optional<User> currentUser = userService.getCurrentUser();
 
         long amountPurchasesPages;
@@ -67,5 +68,18 @@ public class PurchasesController {
 
     }
 
+    @GET
+    @Path("/{id}")
+    @Produces({ MediaType.APPLICATION_JSON})
+    public Response getHistoryTransactionById(@PathParam("id") int purchaseId){
+
+        Optional<User> currentUser = userService.getCurrentUser();
+
+        Optional<PurchaseDto> maybePurchase = purchaseService.getPurchaseById(currentUser.get().getId(), purchaseId).map(n -> PurchaseDto.fromPurchase(uriInfo, n));
+        if (maybePurchase.isPresent()) {
+            return Response.ok(maybePurchase.get()).build();
+        }
+        return Response.status(Response.Status.FORBIDDEN).build();
+    }
 
 }

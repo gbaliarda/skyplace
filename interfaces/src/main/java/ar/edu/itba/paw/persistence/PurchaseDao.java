@@ -7,6 +7,7 @@ import ar.edu.itba.paw.model.User;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface PurchaseDao {
 
@@ -21,4 +22,5 @@ public interface PurchaseDao {
     boolean isTxHashAlreadyInUse(String txHash);
 
     int getTransactionAmount(int userId);
+    Optional<Purchase> getPurchaseById(int userId, int purchaseId);
 }

@@ -70,4 +70,9 @@ public class PurchaseServiceImpl implements PurchaseService {
     public boolean isTxHashAlreadyInUse(String txHash) {
         return purchaseDao.isTxHashAlreadyInUse(txHash);
     }
+
+    @Override
+    public Optional<Purchase> getPurchaseById(int userId, int purchaseId) {
+        return purchaseDao.getPurchaseById(userId, purchaseId);
+    }
 }

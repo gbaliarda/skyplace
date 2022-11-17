@@ -5,6 +5,7 @@ import ar.edu.itba.paw.model.StatusPurchase;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface PurchaseService {
 
@@ -21,4 +22,6 @@ public interface PurchaseService {
     int createPurchase(int idBuyer, int idSeller, int idNft, BigDecimal price, String txHash, StatusPurchase statusPurchase);
 
     boolean isTxHashAlreadyInUse(String txHash);
+
+    Optional<Purchase> getPurchaseById(int userId, int purchaseId);
 }
