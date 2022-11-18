@@ -14,7 +14,6 @@ public class NftDto {
     private int idImage;
     private String collection;
     private String description;
-    private boolean isDeleted;
     private String chain;
 
     // hyperlinks to itself and to other entities
@@ -51,7 +50,6 @@ public class NftDto {
         dto.contractAddr = nft.getContractAddr();
         dto.description = nft.getDescription();
         dto.idImage = nft.getIdImage();
-        dto.isDeleted = nft.isDeleted();
         dto.chain = nft.getChain().name();
         dto.nftId = nft.getNftId();
         dto.nftName = nft.getNftName();
@@ -104,14 +102,6 @@ public class NftDto {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
     }
 
     public String getChain() {

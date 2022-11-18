@@ -27,8 +27,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final static Dotenv env = Dotenv.load();
 
     // TODO: Move this to JwtConfig POJO Object and secret to somewhere else
-    private final static String USERAUTH_PREFIX = "Basic";
-    private final static String JWTAUTH_PREFIX = "Bearer";
+    private final static String USERAUTH_PREFIX = "basic";
+    private final static String JWTAUTH_PREFIX = "bearer";
     private final static String JWT_KEY_PARAMETER = "JWT_KEY";
 
     private final static int accessTokenValidMinutes = 10;
@@ -57,7 +57,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if(headerContent != null){
             String[] contentInfo = headerContent.split(" ", 2);
             if(contentInfo.length == 2){
-                prefix = contentInfo[0];
+                prefix = contentInfo[0].toLowerCase(Locale.ROOT);
                 credentials = contentInfo[1];
             }
         }

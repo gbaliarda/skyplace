@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import javax.validation.ConstraintViolation;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +19,7 @@ public class ResponseErrorDto {
         final ResponseErrorDto dto = new ResponseErrorDto();
 
         dto.status = statusCode;
-        dto.title = e.getLocalizedMessage();
+        dto.title = e.getMessage();
 
         return dto;
     }

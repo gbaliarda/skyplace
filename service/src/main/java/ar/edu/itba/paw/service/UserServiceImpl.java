@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService{
         this.passwordEncoder = passwordEncoder;
         this.mailingService = mailingService;
     }
+
     @Transactional
     @Override
     public User create(String email, String username, String wallet, String walletChain, String password) {

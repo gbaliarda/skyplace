@@ -74,8 +74,10 @@ public class NftController {
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, })
     @POST
     public Response createNft(@Valid final CreateNftForm nftForm) {
-        // TODO: DTO ValidationError - ver desde 01:05:00 de la clase del 23/5?
-        final Nft newNft = nftService.create(nftForm.getNftId(), nftForm.getContractAddr(), nftForm.getName(), nftForm.getChain(), nftForm.getImage(), nftForm.getOwnerId(), nftForm.getCollection(), nftForm.getDescription());
+        if(nftForm == null)
+            throw new BadRequestException("Request must contain a body");
+        int ownerId = userService.getCurrentUser().get().getId();
+        final Nft newNft = nftService.create(nftForm.getNftId(), nftForm.getContractAddr(), nftForm.getName(), nftForm.getChain(), nftForm.getImage(), ownerId, nftForm.getCollection(), nftForm.getDescription());
         // appends the new ID to the path of this route (/nfts)
         final URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(newNft.getId())).build();
@@ -90,7 +92,7 @@ public class NftController {
         if (maybeNft.isPresent()) {
             return Response.ok(maybeNft.get()).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        throw new NotFoundException("Nft not found");
     }
 
     @DELETE
@@ -107,12 +109,9 @@ public class NftController {
             @QueryParam("page") @DefaultValue("1") int page,
             @QueryParam("sort") final String sort
     ){
-        // TODO: Get current user when jwt works
-        Optional<User> maybeUser = userService.getUserById(1);
-        if(!maybeUser.isPresent())
-            return Response.status(Response.Status.NOT_FOUND).build();
+        User user = userService.getCurrentUser().get();
 
-        List<NftDto> userFavorites = nftService.getAllPublicationsByUser(page, maybeUser.get(), "favorited", sort)
+        List<NftDto> userFavorites = nftService.getAllPublicationsByUser(page, user, "favorited", sort)
                 .stream().map(Publication::getNft).map(n -> NftDto.fromNft(uriInfo, n)).collect(Collectors.toList());
         if (userFavorites.isEmpty())
             return Response.noContent().build();
@@ -120,7 +119,7 @@ public class NftController {
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(userFavorites) {});
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
-        int lastPage = nftService.getAmountPublicationPagesByUser(maybeUser.get(), maybeUser.get(), "favorited");
+        int lastPage = nftService.getAmountPublicationPagesByUser(user, user, "favorited");
         if (page < lastPage)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
 
@@ -138,14 +137,11 @@ public class NftController {
     ) {
         Optional<NftDto> maybeNft = nftService.getNFTById(nftId).map(n -> NftDto.fromNft(uriInfo, n));
         if (!maybeNft.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new NotFoundException("Nft not found");
         }
-        // TODO: Get current user when jwt works
-        Optional<User> maybeCurrentUser = userService.getUserById(1);
-        if(!maybeCurrentUser.isPresent())
-            return Response.noContent().build();
+        User currentUser = userService.getCurrentUser().get();
 
-        favoriteService.addNftFavorite(nftId, maybeCurrentUser.get());
+        favoriteService.addNftFavorite(nftId, currentUser);
         return Response.noContent().build();
     }
 
@@ -157,14 +153,11 @@ public class NftController {
     ) {
         Optional<NftDto> maybeNft = nftService.getNFTById(nftId).map(n -> NftDto.fromNft(uriInfo, n));
         if (!maybeNft.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new NotFoundException("Nft not found");
         }
-        // TODO: Get current user when jwt works
-        Optional<User> maybeCurrentUser = userService.getUserById(1);
-        if(!maybeCurrentUser.isPresent())
-            return Response.status(Response.Status.NOT_FOUND).build();
+        User user = userService.getCurrentUser().get();
 
-        favoriteService.removeNftFavorite(nftId, maybeCurrentUser.get());
+        favoriteService.removeNftFavorite(nftId, user);
         return Response.noContent().build();
     }
 

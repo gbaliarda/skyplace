@@ -35,8 +35,10 @@ public class FavoriteServiceImpl implements FavoriteService{
     @Transactional
     @Override
     public void removeNftFavorite(int productId, User user) {
-        Nft nft = nftService.getNFTById(productId).orElseThrow(NftNotFoundException::new);
-        favoriteDao.removeNftFavorite(nft, user);
+        if(isNftFavedByUser(user.getId(), productId)) {
+            Nft nft = nftService.getNFTById(productId).orElseThrow(NftNotFoundException::new);
+            favoriteDao.removeNftFavorite(nft, user);
+        }
     }
 
     @Override

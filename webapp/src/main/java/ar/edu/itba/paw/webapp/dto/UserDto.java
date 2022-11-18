@@ -12,8 +12,6 @@ public class UserDto {
     private String wallet;
     private String email;
 
-
-
     private URI self;
 
 
