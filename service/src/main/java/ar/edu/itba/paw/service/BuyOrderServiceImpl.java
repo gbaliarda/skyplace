@@ -3,6 +3,7 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.exceptions.*;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.persistence.*;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,10 +92,10 @@ public class BuyOrderServiceImpl implements BuyOrderService {
         return (size - 1) / getPageSize() + 1;
     }
 
-    protected boolean confirmBuyOrder(int sellOrderId, int buyerId, String txHash) {
+    protected Pair<Boolean, Optional<Integer>> confirmBuyOrder(int sellOrderId, int buyerId, String txHash) {
         Optional<BuyOrder> buyOrder = buyOrderDao.getBuyOrder(sellOrderId, buyerId);
         if(!buyOrder.isPresent())
-            return false;
+            return new Pair<>(false, Optional.empty());
         SellOrder sellOrder = buyOrder.get().getOfferedFor();
         User buyer = buyOrder.get().getOfferedBy();
         Nft nft = sellOrder.getNft();
@@ -103,8 +104,8 @@ public class BuyOrderServiceImpl implements BuyOrderService {
         sellOrder.getNft().setOwner(buyer);
 
         sellOrderService.delete(sellOrder.getId(), buyOrder.get());
-        purchaseService.createPurchase(buyerId, seller.getId(), nft.getId(), buyOrder.get().getAmount(), txHash, StatusPurchase.SUCCESS);
-        return true;
+        Integer purchaseId = purchaseService.createPurchase(buyerId, seller.getId(), nft.getId(), buyOrder.get().getAmount(), txHash, StatusPurchase.SUCCESS);
+        return new Pair<>(true, Optional.of(purchaseId));
     }
 
     @Transactional
@@ -187,20 +188,20 @@ public class BuyOrderServiceImpl implements BuyOrderService {
 
     @Transactional
     @Override
-    public boolean validateTransaction(String txHash, int sellOrderId, int buyerId) {
+    public Pair<Boolean, Optional<Integer>> validateTransaction(String txHash, int sellOrderId, int buyerId) {
         if(!sellOrderService.getOrderById(sellOrderId).isPresent())
             throw new SellOrderNotFoundException();
         if(purchaseService.isTxHashAlreadyInUse(txHash))
-            return false;
+            return new Pair<>(false, Optional.empty());
 
         Optional<BuyOrder> buyOrder = getPendingBuyOrder(sellOrderId);
         if(!buyOrder.isPresent() || !buyOrder.get().getStatus().equals(StatusBuyOrder.PENDING))
-            return false;
+            return new Pair<>(false, Optional.empty());
         User seller = buyOrder.get().getOfferedFor().getNft().getOwner();
         User buyer = userService.getUserById(buyerId).orElseThrow(UserNotFoundException::new);
         boolean isValid = etherscanService.isTransactionValid(txHash, buyer.getWallet(), seller.getWallet(), buyOrder.get().getAmount());
         if(!isValid)
-            return false;
+            return new Pair<>(false, Optional.empty());
 
         return confirmBuyOrder(sellOrderId, buyerId, txHash);
     }
@@ -229,5 +230,10 @@ public class BuyOrderServiceImpl implements BuyOrderService {
     @Override
     public boolean hasValidFilterName(String status) {
         return StatusBuyOrder.hasStatus(status) || status.equals("MYSALES");
+    }
+
+    @Override
+    public Optional<BuyOrder> getBuyOrder(int sellOrderId, int buyerId) {
+        return buyOrderDao.getBuyOrder(sellOrderId, buyerId);
     }
 }

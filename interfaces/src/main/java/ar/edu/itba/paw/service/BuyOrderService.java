@@ -3,6 +3,7 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.model.BuyOrder;
 import ar.edu.itba.paw.model.SellOrder;
 import ar.edu.itba.paw.model.User;
+import javafx.util.Pair;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -32,9 +33,11 @@ public interface BuyOrderService {
 
     Optional<BuyOrder> getPendingBuyOrder(int sellOrderId);
 
-    boolean validateTransaction(String txHash, int sellOrderId, int buyerId);
+    Pair<Boolean, Optional<Integer>> validateTransaction(String txHash, int sellOrderId, int buyerId);
 
     List<String> getBuyOrderStatusNames();
 
     boolean hasValidFilterName(String status);
+
+    Optional<BuyOrder> getBuyOrder(int sellOrderId, int buyerId);
 }

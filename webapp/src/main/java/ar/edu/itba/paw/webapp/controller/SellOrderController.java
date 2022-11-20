@@ -1,17 +1,16 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.model.*;
-import ar.edu.itba.paw.service.BuyOrderService;
-import ar.edu.itba.paw.service.NftService;
-import ar.edu.itba.paw.service.SellOrderService;
-import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.BuyOrderDto;
 import ar.edu.itba.paw.webapp.dto.SellOrderDto;
 import ar.edu.itba.paw.webapp.form.CreateSellOrderForm;
 import ar.edu.itba.paw.webapp.form.PriceForm;
 import ar.edu.itba.paw.webapp.form.SellNftForm;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -29,17 +28,14 @@ public class SellOrderController {
 
     private final SellOrderService sellOrderService;
     private final NftService nftService;
-    private final UserService userService;
-
     private final BuyOrderService buyOrderService;
 
     @Context
     private UriInfo uriInfo;
 
     @Autowired
-    public SellOrderController(SellOrderService sellOrderService, UserService userService, NftService nftService, BuyOrderService buyOrderService) {
+    public SellOrderController(SellOrderService sellOrderService, NftService nftService, BuyOrderService buyOrderService) {
         this.sellOrderService = sellOrderService;
-        this.userService = userService;
         this.nftService = nftService;
         this.buyOrderService = buyOrderService;
     }
@@ -147,7 +143,6 @@ public class SellOrderController {
     @Path("/{id}/buyorders")
     @Produces({ MediaType.APPLICATION_JSON})
     public Response getBuyOrdersBySellOrder(@PathParam("id") int id, @QueryParam("page") @DefaultValue("1") int offerPage){
-
         Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
         if (!maybeSellOrder.isPresent()) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -181,52 +176,40 @@ public class SellOrderController {
     @DELETE
     @Path("/{id}/buyorders/{userId}")
     public Response deleteBuyOrderFromUserId(@PathParam("id") int id, @PathParam("userId") int userId) {
-
-        //TODO VALIDATE USER PERMISSIONS
-        Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
-        if (!maybeSellOrder.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
         buyOrderService.deleteBuyOrder(id, userId);
-        return Response.noContent().build();
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @PUT
-    @Path("/{id}/buyorders/{userId}/accept")
+    @Path("/{id}/buyorders/{userId}/")
     public Response acceptBuyOrderFromOwnerId(@PathParam("id") int id, @PathParam("userId") int OwnerId) {
-
-        Optional<User> maybeUser = this.userService.getUserById(OwnerId);
-        Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
-
-        if (!maybeSellOrder.isPresent() || !maybeUser.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        if (!sellOrderService.userOwnsSellOrder(id, maybeUser.get())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
         buyOrderService.acceptBuyOrder(id, OwnerId);
         return Response.ok().build();
-
     }
 
-    @PUT
-    @Path("/{id}/buyorders/{userId}/reject")
-    public Response rejectBuyOrderFromOwnerId(@PathParam("id") int id, @PathParam("userId") int ownerId) {
-
-        Optional<User> maybeUser = this.userService.getUserById(ownerId);
-        Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
-
-        if (!maybeSellOrder.isPresent() || !maybeUser.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+    @GET
+    @Path("/{id}/buyorders/{userId}/")
+    @Produces({ MediaType.APPLICATION_JSON, })
+    public Response getBuyOrderFromUserId(@PathParam("id") int id, @PathParam("userId") int userId) {
+        Optional<BuyOrder> buyorder = buyOrderService.getBuyOrder(id, userId);
+        if(buyorder.isPresent()) {
+            BuyOrderDto dto = BuyOrderDto.fromBuyOrder(buyorder.get(), uriInfo);
+            return Response.ok(dto).build();
         }
-        if (!sellOrderService.userOwnsSellOrder(id, maybeUser.get())) {
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @POST
+    @Path("/{id}/buyorders/{userId}")
+    public Response confirmBuyOrderFromBuyerId(@PathParam("id") int sellOrderId, @PathParam("userId") int buyerId, @RequestParam String txHash) {
+        Pair<Boolean, Optional<Integer>> response = buyOrderService.validateTransaction(txHash, sellOrderId, buyerId);
+        if (!response.getKey()) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
-
-        buyOrderService.rejectBuyOrder(id, ownerId);
-        return Response.ok().build();
+        // Add URI to response
+        final URI purchaseUri = uriInfo.getAbsolutePathBuilder()
+                .replacePath("/purchases/").path(response.getValue().get().toString()).build();
+        return Response.created(purchaseUri).build();
 
     }
 
