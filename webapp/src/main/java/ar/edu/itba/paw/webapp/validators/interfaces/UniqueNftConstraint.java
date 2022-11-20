@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueNftConstraint {
-    String message() default "";
+    String message() default "Nft already exists";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 

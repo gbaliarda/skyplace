@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.webapp.helpers.Pair;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,11 +35,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final static int accessTokenValidMinutes = 10;
     private final static int refreshTokenValidMinutes = 15;
 
-    private final Key jwtKey; // = new SecretKeySpec("mySuperSecretKeymySuperSecretKey".getBytes(), SignatureAlgorithm.HS256.getJcaName());
+    private final Key jwtKey;
 
     public JwtAuthorizationFilter(SkyplaceUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
-        this.jwtKey = new SecretKeySpec(Objects.requireNonNull(env.get("JWT_KEY")).getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
+        this.jwtKey = new SecretKeySpec(Objects.requireNonNull(env.get(JWT_KEY_PARAMETER)).getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
     }
 
     @Override
@@ -51,6 +52,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String refreshToken;
         String prefix = "";
         String credentials = "";
+
+        Map<String, Object> claimsMap;
 
         String headerContent = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -73,75 +76,36 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 if(token.isAuthenticated())
                     SecurityContextHolder.getContext().setAuthentication(token);
 
-                accessToken = Jwts.builder()
-                        .claim("user", userPass[0])
-                        .claim("token", "access")
-                        .setIssuer("skyplace")
-                        .setSubject(userPass[0])
-                        .setExpiration(Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)))
-                        .setNotBefore(Date.from(now))
-                        .setIssuedAt(Date.from(now))
-                        .setId(UUID.randomUUID().toString())
-                        .signWith(jwtKey)
-                        .setHeaderParam("typ", Header.JWT_TYPE)
-                        .compact();
-                refreshToken = Jwts.builder()
-                        .claim("user", userPass[0])
-                        .claim("token", "refresh")
-                        .setIssuer("skyplace")
-                        .setSubject(userPass[0])
-                        .setExpiration(Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)))
-                        .setIssuedAt(Date.from(now))
-                        .setId(UUID.randomUUID().toString())
-                        .signWith(jwtKey)
-                        .setHeaderParam("typ", Header.JWT_TYPE)
-                        .compact();
+                claimsMap = new HashMap<>();
+                claimsMap.put("user", userPass[0]);
+
+                accessToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", userPass[0],
+                        Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
+                refreshToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", userPass[0],
+                        Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
 
                 response.addHeader("Access Token", accessToken);
                 response.addHeader("Renewal Token", refreshToken);
                 break;
             case JWTAUTH_PREFIX:
-                Claims claims = Jwts.parserBuilder()
-                        .setSigningKey(jwtKey)
-                        .build()
-                        .parseClaimsJws(credentials)
-                        .getBody();
-                if(claims.getExpiration().before(Date.from(now))) {
-                    // reject token
-                    break;
-                }
-                switch((String)claims.get("token")) {
+                String email;
+                Pair<String, String> tokenSubjectPair = JwtUtils.validateAccessToken(credentials, jwtKey, Date.from(now));
+                switch(tokenSubjectPair.getLeftValue()) {
                     case "access":
-                        String email = claims.getSubject();
-                        System.out.println(email);
+                        email = tokenSubjectPair.getRightValue();
                         token = userDetailsService.jwtLogin(email);
                         if(token.isAuthenticated())
                             SecurityContextHolder.getContext().setAuthentication(token);
                         break;
                     case "refresh":
-                        accessToken = Jwts.builder()
-                                .claim("user", claims.getSubject())
-                                .claim("token", "access")
-                                .setIssuer("skyplace")
-                                .setSubject(claims.getSubject())
-                                .setExpiration(Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)))
-                                .setNotBefore(Date.from(now))
-                                .setIssuedAt(Date.from(now))
-                                .setId(UUID.randomUUID().toString())
-                                .signWith(jwtKey)
-                                .setHeaderParam("typ", Header.JWT_TYPE)
-                                .compact();
-                        refreshToken = Jwts.builder()
-                                .claim("user", claims.getSubject())
-                                .claim("token", "refresh")
-                                .setIssuer("skyplace")
-                                .setSubject(claims.getSubject())
-                                .setExpiration(Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)))
-                                .setIssuedAt(Date.from(now))
-                                .setId(UUID.randomUUID().toString())
-                                .signWith(jwtKey)
-                                .setHeaderParam("typ", Header.JWT_TYPE)
-                                .compact();
+                        email = tokenSubjectPair.getRightValue();
+                        claimsMap = new HashMap<>();
+                        claimsMap.put("user", email);
+
+                        accessToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", email,
+                                Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
+                        refreshToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", email,
+                                Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
 
                         response.addHeader("Access Token", accessToken);
                         response.addHeader("Renewal Token", refreshToken);

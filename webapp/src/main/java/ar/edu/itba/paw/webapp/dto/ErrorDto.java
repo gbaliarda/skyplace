@@ -1,22 +1,21 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import javax.validation.ConstraintViolation;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ClientErrorException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResponseErrorDto {
+public class ErrorDto {
 
     private Integer id;
     private Integer status;
-    private Integer code;
+    private String code;
     private String title;
     private String detail;
     private SourceDto source;
 
-    public static ResponseErrorDto fromGenericException(final RuntimeException e, final int statusCode){
-        final ResponseErrorDto dto = new ResponseErrorDto();
+    public static ErrorDto fromGenericException(final RuntimeException e, final int statusCode){
+        final ErrorDto dto = new ErrorDto();
 
         dto.status = statusCode;
         dto.title = e.getMessage();
@@ -24,11 +23,33 @@ public class ResponseErrorDto {
         return dto;
     }
 
-    public static ResponseErrorDto fromValidationException(final ConstraintViolation<?> vex) {
-        final ResponseErrorDto dto = new ResponseErrorDto();
+    public static ErrorDto fromGenericException(final RuntimeException e, final int statusCode, final String internalCode){
+        final ErrorDto dto = new ErrorDto();
+
+        dto.status = statusCode;
+        dto.title = e.getMessage();
+        dto.code = internalCode;
+
+        return dto;
+    }
+
+    public static ErrorDto fromClientErrorException(final ClientErrorException e){
+        final ErrorDto dto = new ErrorDto();
+
+        dto.status = e.getResponse().getStatus();
+        dto.title = e.getResponse().getStatusInfo().getReasonPhrase();
+
+        return dto;
+    }
+
+    public static ErrorDto fromValidationException(final ConstraintViolation<?> vex) {
+        final ErrorDto dto = new ErrorDto();
         Map<String, String> sourceMap = new HashMap<>();
 
         dto.status = 400;
+        dto.code = "11";                        // TODO: Check if this is not needed
+        if(vex.getInvalidValue() == null)
+            dto.code = "10";
         sourceMap.put("pointer", getPointerString(vex.getPropertyPath().toString()));
         dto.source = SourceDto.toSourceList(sourceMap);
         dto.title = vex.getMessage();
@@ -58,11 +79,11 @@ public class ResponseErrorDto {
         this.status = status;
     }
 
-    public Integer getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -89,4 +110,5 @@ public class ResponseErrorDto {
     public void setSource(SourceDto source) {
         this.source = source;
     }
+
 }

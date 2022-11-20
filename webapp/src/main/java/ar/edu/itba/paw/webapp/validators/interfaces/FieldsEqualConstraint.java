@@ -16,7 +16,7 @@ import javax.validation.Payload;
 @Documented
 @Constraint(validatedBy = FieldsEqualConstraintValidator.class)
 public @interface FieldsEqualConstraint {
-    String message() default "";
+    String message() default "{first} and {second} must be equal";
 
     Class<?>[] groups() default {};
 

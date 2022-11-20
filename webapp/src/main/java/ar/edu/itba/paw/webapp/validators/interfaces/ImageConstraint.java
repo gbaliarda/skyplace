@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ImageConstraint {
-    String message() default "";
+    String message() default "File sent must be an image of less than {maxSizeMB} MB";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 

@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.mappers;
 
-import ar.edu.itba.paw.webapp.dto.ResponseErrorDto;
+import ar.edu.itba.paw.webapp.dto.wrappers.ResponseErrorsDto;
+import ar.edu.itba.paw.webapp.dto.ErrorDto;
 
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.core.GenericEntity;
@@ -16,11 +17,12 @@ public class ValidationExceptionMapper implements ExceptionMapper<ConstraintViol
 
     @Override
     public Response toResponse(final ConstraintViolationException e) {
-        final List<ResponseErrorDto> errors = e.getConstraintViolations().stream()
-                .map(ResponseErrorDto::fromValidationException).collect(Collectors.toList());
+        final List<ErrorDto> errors = e.getConstraintViolations().stream()
+                .map(ErrorDto::fromValidationException).collect(Collectors.toList());
+        final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(errors);
 
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new GenericEntity<List<ResponseErrorDto>>(errors){})
+                .entity(new GenericEntity<ResponseErrorsDto>(errorList){})
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }

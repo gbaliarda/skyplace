@@ -23,6 +23,6 @@ public class FieldsEqualConstraintValidator implements
         BeanWrapperImpl wrapper = new BeanWrapperImpl(obj);
         Object f = wrapper.getPropertyValue(first);
         Object s = wrapper.getPropertyValue(second);
-        return f.equals(s);
+        return f != null && f.equals(s);
     }
 }

@@ -44,15 +44,15 @@ public class NftController {
     public Response listNfts(
             @QueryParam("page") @DefaultValue("1") final int page,
             @QueryParam("status") final String status,
-            @QueryParam("category") final String category,
+            //@QueryParam("category") final String category,
             @QueryParam("chain") final String chain,
-            @QueryParam("minPrice") final BigDecimal minPrice,
-            @QueryParam("maxPrice") final BigDecimal maxPrice,
+            //@QueryParam("minPrice") final BigDecimal minPrice,
+            //@QueryParam("maxPrice") final BigDecimal maxPrice,
             @QueryParam("sort") final String sort,
             @QueryParam("search") final String search,
             @QueryParam("searchFor") final String searchFor
     ) {
-        List<NftDto> nftList = nftService.getAll(page, status, category, chain, minPrice, maxPrice, sort, search, searchFor)
+        List<NftDto> nftList = nftService.getAll(page, status, null, chain, null, null, sort, search, searchFor)
                 .stream().map(n -> NftDto.fromNft(uriInfo, n)).collect(Collectors.toList());
 
         if (nftList.isEmpty())
@@ -61,7 +61,7 @@ public class NftController {
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(nftList) {});
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
-        int lastPage = (int) Math.ceil(nftService.getAmountPublications(status, category, chain, minPrice, maxPrice, sort, search, searchFor) / (double) nftService.getPageSize());
+        int lastPage = (int) Math.ceil(nftService.getAmountPublications(status, null, chain, null, null, sort, search, searchFor) / (double) nftService.getPageSize());
         if (page < lastPage)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
 

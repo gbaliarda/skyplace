@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidCategoryConstraint {
-    String message() default "";
+    String message() default "Invalid category";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
