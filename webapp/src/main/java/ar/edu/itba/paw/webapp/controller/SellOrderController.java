@@ -1,10 +1,12 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.SellOrderNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNoPermissionException;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.BuyOrderDto;
 import ar.edu.itba.paw.webapp.dto.SellOrderDto;
+import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateSellOrderForm;
 import ar.edu.itba.paw.webapp.form.PriceForm;
 import ar.edu.itba.paw.webapp.form.SellNftForm;
@@ -86,6 +88,8 @@ public class SellOrderController {
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, })
     public Response createSellOrder(@Valid CreateSellOrderForm form) {
         // TODO: Return other response in case of exception thrown
+        if(form == null)
+            throw new NoBodyException();
         final SellOrder newSellOrder = sellOrderService.create(form.getPrice(), form.getNftId(), form.getCategory());
         final URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(newSellOrder.getId())).build();
@@ -101,17 +105,19 @@ public class SellOrderController {
             SellOrderDto dto = SellOrderDto.fromSellOrder(uriInfo, maybeSellOrder.get());
             return Response.ok(dto).build();
         }
-        throw new NotFoundException();
+        throw new SellOrderNotFoundException();
     }
 
     @PUT
     @Path("/{id}")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, })
     public Response updateSellOrder(@PathParam("id") int id, @Valid SellNftForm form){
+        if(form == null)
+            throw new NoBodyException();
         boolean result = sellOrderService.update(id, form.getCategory(), form.getPrice());
         if(result)
             return Response.noContent().build();
-        throw new NotFoundException();
+        throw new SellOrderNotFoundException();
     }
 
     @DELETE
@@ -125,16 +131,17 @@ public class SellOrderController {
     @POST
     @Path("/{id}/buyorders")
     public Response createBuyOrder(@PathParam("id") int id, @Valid final PriceForm priceForm) {
+        if(priceForm == null)
+            throw new NoBodyException();
         int currentUserId = userService.getCurrentUser().get().getId();
         Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
         if (!maybeSellOrder.isPresent()) {
-            throw new NotFoundException();
+            throw new SellOrderNotFoundException();
         }
 
         buyOrderService.create(id, priceForm.getPrice(), currentUserId);
-        // WHAT URI TO RETURN ??
         final URI location = uriInfo.getAbsolutePathBuilder()
-                .path(id + "/buyorders").build();
+                .path(String.valueOf(currentUserId)).build();
         return Response.created(location).build();
     }
 
@@ -149,10 +156,6 @@ public class SellOrderController {
 
         long amountOfferPages;
         amountOfferPages = buyOrderService.getAmountPagesBySellOrderId(maybeSellOrder.get());
-
-        if(offerPage > amountOfferPages || offerPage < 0 ) {
-            throw new NotFoundException();
-        }
 
         List<BuyOrderDto> buyOffers;
         buyOffers = buyOrderService.getOrdersBySellOrderId(offerPage, maybeSellOrder.get().getId()).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
@@ -169,7 +172,6 @@ public class SellOrderController {
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", amountOfferPages).build(), "last")
                 .build();
-
     }
 
     @DELETE

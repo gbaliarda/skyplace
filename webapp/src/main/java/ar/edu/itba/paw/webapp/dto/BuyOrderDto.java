@@ -16,10 +16,11 @@ public class BuyOrderDto {
     public static BuyOrderDto fromBuyOrder(BuyOrder buyOrder, UriInfo uriInfo) {
         final BuyOrderDto buyOrderDto = new BuyOrderDto();
 
-
         buyOrderDto.offeredBy = UserDto.fromUser(uriInfo, buyOrder.getOfferedBy());
         buyOrderDto.amount = buyOrder.getAmount();
-        buyOrderDto.self = uriInfo.getAbsolutePathBuilder().replacePath("sellorders").path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId())).path("buyorders").build();
+        buyOrderDto.self = uriInfo.getAbsolutePathBuilder().replacePath("sellorders")
+                .path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId()))
+                .path("buyorders").path(String.valueOf(buyOrder.getOfferedBy().getId())).build();
         buyOrderDto.sellorder = uriInfo.getAbsolutePathBuilder().replacePath("sellorders").path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId())).build();
 
         return buyOrderDto;
