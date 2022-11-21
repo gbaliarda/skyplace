@@ -196,9 +196,9 @@ public class BuyOrderServiceImplTest {
     public void testConfirmBuyOrderOnUnexistentBuyOrder(){
         Mockito.when(buyOrderDao.getBuyOrder(ID_SELLORDER, ID_BUYER)).thenReturn(Optional.empty());
 
-        boolean result = buyOrderService.confirmBuyOrder(ID_SELLORDER, ID_BUYER, TX_HASH);
+        Optional<Integer> result = buyOrderService.confirmBuyOrder(ID_SELLORDER, ID_BUYER, TX_HASH);
 
-        assertFalse(result);
+        assertFalse(result.isPresent());
     }
 
     @Test
@@ -285,9 +285,9 @@ public class BuyOrderServiceImplTest {
     public void testValidateTransactionOnTxAlreadyInUse(){
         Mockito.when(purchaseService.isTxHashAlreadyInUse(TX_HASH)).thenReturn(true);
         Mockito.doReturn(Optional.of(new SellOrder(null, null, null))).when(sellOrderService).getOrderById(ID_SELLORDER);
-        boolean result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
+        Optional<Integer> result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
 
-        assertFalse(result);
+        assertFalse(result.isPresent());
     }
 
     @Test
@@ -296,9 +296,9 @@ public class BuyOrderServiceImplTest {
         Mockito.when(buyOrderService.getPendingBuyOrder(ID_SELLORDER)).thenReturn(Optional.empty());
         Mockito.doReturn(Optional.of(new SellOrder(null, null, null))).when(sellOrderService).getOrderById(ID_SELLORDER);
 
-        boolean result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
+        Optional<Integer> result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
 
-        assertFalse(result);
+        assertFalse(result.isPresent());
     }
 
     @Test
@@ -313,9 +313,9 @@ public class BuyOrderServiceImplTest {
         Mockito.when(buyOrderService.getPendingBuyOrder(ID_SELLORDER)).thenReturn(Optional.of(buyOrder));
         Mockito.doReturn(Optional.of(new SellOrder(null, null, null))).when(sellOrderService).getOrderById(ID_SELLORDER);
 
-        boolean result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
+        Optional<Integer> result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
 
-        assertFalse(result);
+        assertFalse(result.isPresent());
     }
 
     @Test(expected = UserNotFoundException.class)
@@ -348,9 +348,9 @@ public class BuyOrderServiceImplTest {
         Mockito.when(etherscanService.isTransactionValid(TX_HASH, WALLET_USER1, WALLET_USER2, testPrice)).thenReturn(false);
         Mockito.doReturn(Optional.of(new SellOrder(null, null, null))).when(sellOrderService).getOrderById(ID_SELLORDER);
 
-        boolean result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
+        Optional<Integer> result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
 
-        assertFalse(result);
+        assertFalse(result.isPresent());
     }
 
     @Test

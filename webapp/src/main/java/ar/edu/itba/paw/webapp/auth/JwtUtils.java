@@ -1,11 +1,9 @@
 package ar.edu.itba.paw.webapp.auth;
 
-import ar.edu.itba.paw.webapp.helpers.Pair;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import javafx.util.Pair;
 
 import java.security.Key;
 import java.util.Date;

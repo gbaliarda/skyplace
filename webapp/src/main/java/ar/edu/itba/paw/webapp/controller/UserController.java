@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
+import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.model.Publication;
 import ar.edu.itba.paw.model.Review;
 import ar.edu.itba.paw.model.User;
@@ -12,6 +13,7 @@ import ar.edu.itba.paw.webapp.dto.BuyOrderDto;
 import ar.edu.itba.paw.webapp.dto.NftDto;
 import ar.edu.itba.paw.webapp.dto.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.UserDto;
+import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,6 +51,8 @@ public class UserController {
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, })
     @POST
     public Response createUser(@Valid final UserForm userForm) {
+        if(userForm == null)
+            throw new NoBodyException();
         final User newUser = userService.create(userForm.getEmail(), userForm.getUsername(), userForm.getWalletAddress(), userForm.getWalletChain(), userForm.getPassword());
         // appends the new ID to the path of this route (/users)
         final URI location = uriInfo.getAbsolutePathBuilder()
@@ -71,10 +75,10 @@ public class UserController {
     @Path("/{id}")
     public Response getUser(@PathParam("id") int id) {
         Optional<User> maybeUser = userService.getUserById(id);
-        if (maybeUser.isPresent()) {
-            return Response.ok(UserDto.fromUser(this.uriInfo, maybeUser.get())).build();
+        if (!maybeUser.isPresent()) {
+            throw new UserNotFoundException();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.ok(UserDto.fromUser(this.uriInfo, maybeUser.get())).build();
     }
 
     // TODO: Move method to reviews controller (if possible)
@@ -112,10 +116,14 @@ public class UserController {
     @GET
     @Path("/{id}/buyorders")
     @Produces({ MediaType.APPLICATION_JSON, })
-    public Response getBuyOrdersByUserId(@PathParam("id") final int userId, @QueryParam("page") @DefaultValue("1") final int page, @QueryParam("status") @DefaultValue("ALL") final String status) {
+    public Response getBuyOrdersByUserId(
+            @PathParam("id") final int userId,
+            @QueryParam("page") @DefaultValue("1") final int page,
+            @QueryParam("status") @DefaultValue("ALL") final String status
+    ) {
         Optional<User> maybeUser = userService.getUserById(userId);
         if (!maybeUser.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new UserNotFoundException();
         }
 
         long amountOfferPages;
@@ -146,11 +154,15 @@ public class UserController {
     @GET
     @Path("/{id}/inventory")
     @Produces({ MediaType.APPLICATION_JSON, })
-    public Response getUserInventoryByUserId(@PathParam("id") final int userId, @QueryParam("page") @DefaultValue("1") final int page, @QueryParam("sort") final String sort) {
+    public Response getUserInventoryByUserId(
+            @PathParam("id") final int userId,
+            @QueryParam("page") @DefaultValue("1") final int page,
+            @QueryParam("sort") final String sort
+    ) {
         Optional<User> maybeUser = userService.getUserById(userId);
 
         if(!maybeUser.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new UserNotFoundException();
         }
 
         List<NftDto> userInventory = nftService.getAllPublicationsByUser(page, maybeUser.get(), "inventory", sort)

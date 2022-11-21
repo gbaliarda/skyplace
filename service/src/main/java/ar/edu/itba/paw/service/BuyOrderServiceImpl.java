@@ -92,10 +92,10 @@ public class BuyOrderServiceImpl implements BuyOrderService {
         return (size - 1) / getPageSize() + 1;
     }
 
-    protected Pair<Boolean, Optional<Integer>> confirmBuyOrder(int sellOrderId, int buyerId, String txHash) {
+    protected Optional<Integer> confirmBuyOrder(int sellOrderId, int buyerId, String txHash) {
         Optional<BuyOrder> buyOrder = buyOrderDao.getBuyOrder(sellOrderId, buyerId);
         if(!buyOrder.isPresent())
-            return new Pair<>(false, Optional.empty());
+            return Optional.empty();
         SellOrder sellOrder = buyOrder.get().getOfferedFor();
         User buyer = buyOrder.get().getOfferedBy();
         Nft nft = sellOrder.getNft();
@@ -105,7 +105,7 @@ public class BuyOrderServiceImpl implements BuyOrderService {
 
         sellOrderService.delete(sellOrder.getId(), buyOrder.get());
         Integer purchaseId = purchaseService.createPurchase(buyerId, seller.getId(), nft.getId(), buyOrder.get().getAmount(), txHash, StatusPurchase.SUCCESS);
-        return new Pair<>(true, Optional.of(purchaseId));
+        return Optional.of(purchaseId);
     }
 
     @Transactional
@@ -188,20 +188,20 @@ public class BuyOrderServiceImpl implements BuyOrderService {
 
     @Transactional
     @Override
-    public Pair<Boolean, Optional<Integer>> validateTransaction(String txHash, int sellOrderId, int buyerId) {
+    public Optional<Integer> validateTransaction(String txHash, int sellOrderId, int buyerId) {
         if(!sellOrderService.getOrderById(sellOrderId).isPresent())
             throw new SellOrderNotFoundException();
         if(purchaseService.isTxHashAlreadyInUse(txHash))
-            return new Pair<>(false, Optional.empty());
+            return Optional.empty();
 
         Optional<BuyOrder> buyOrder = getPendingBuyOrder(sellOrderId);
         if(!buyOrder.isPresent() || !buyOrder.get().getStatus().equals(StatusBuyOrder.PENDING))
-            return new Pair<>(false, Optional.empty());
+            return Optional.empty();
         User seller = buyOrder.get().getOfferedFor().getNft().getOwner();
         User buyer = userService.getUserById(buyerId).orElseThrow(UserNotFoundException::new);
         boolean isValid = etherscanService.isTransactionValid(txHash, buyer.getWallet(), seller.getWallet(), buyOrder.get().getAmount());
         if(!isValid)
-            return new Pair<>(false, Optional.empty());
+            return Optional.empty();
 
         return confirmBuyOrder(sellOrderId, buyerId, txHash);
     }

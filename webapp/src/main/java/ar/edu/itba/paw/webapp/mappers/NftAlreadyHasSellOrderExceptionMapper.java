@@ -4,12 +4,15 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+
 import ar.edu.itba.paw.exceptions.NftAlreadyHasSellOrderException;
 import ar.edu.itba.paw.webapp.dto.ErrorDto;
 import ar.edu.itba.paw.webapp.dto.wrappers.ResponseErrorsDto;
 
 import java.util.Collections;
 
+@Provider
 public class NftAlreadyHasSellOrderExceptionMapper implements ExceptionMapper<NftAlreadyHasSellOrderException> {
 
     @Override

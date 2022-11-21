@@ -8,7 +8,7 @@ import java.net.URI;
 
 public class BuyOrderDto {
 
-    private int sellOrderId;
+    private URI sellorder;
     private UserDto offeredBy;
     private BigDecimal amount;
     private URI self;
@@ -16,22 +16,22 @@ public class BuyOrderDto {
     public static BuyOrderDto fromBuyOrder(BuyOrder buyOrder, UriInfo uriInfo) {
         final BuyOrderDto buyOrderDto = new BuyOrderDto();
 
-        buyOrderDto.sellOrderId = buyOrder.getBuyOrderId().getSellOrderId();
+
         buyOrderDto.offeredBy = UserDto.fromUser(uriInfo, buyOrder.getOfferedBy());
         buyOrderDto.amount = buyOrder.getAmount();
         buyOrderDto.self = uriInfo.getAbsolutePathBuilder().replacePath("sellorders").path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId())).path("buyorders").build();
+        buyOrderDto.sellorder = uriInfo.getAbsolutePathBuilder().replacePath("sellorders").path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId())).build();
 
         return buyOrderDto;
     }
 
-    public int getSellOrderId() {
-        return sellOrderId;
+    public URI getSellorder() {
+        return sellorder;
     }
 
-    public void setSellOrderId(int sellOrderId) {
-        this.sellOrderId = sellOrderId;
+    public void setSellorder(URI sellorder) {
+        this.sellorder = sellorder;
     }
-
 
     public UserDto getOfferedBy() {
         return offeredBy;

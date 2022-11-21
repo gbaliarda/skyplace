@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import ar.edu.itba.paw.webapp.exceptions.InvalidParameterException;
+
 import javax.validation.ConstraintViolation;
 import javax.ws.rs.ClientErrorException;
 import java.util.HashMap;
@@ -42,16 +44,27 @@ public class ErrorDto {
         return dto;
     }
 
+    public static ErrorDto fromInvalidParameterException(final InvalidParameterException e) {
+        final ErrorDto dto = new ErrorDto();
+
+        dto.status = 400;
+        dto.code = "10";
+        dto.title = e.getMessage();
+        dto.source = new SourceDto();
+        dto.source.setParameter(e.getParameter());
+
+        return dto;
+    }
+
     public static ErrorDto fromValidationException(final ConstraintViolation<?> vex) {
         final ErrorDto dto = new ErrorDto();
-        Map<String, String> sourceMap = new HashMap<>();
 
         dto.status = 400;
         dto.code = "11";                        // TODO: Check if this is not needed
         if(vex.getInvalidValue() == null)
             dto.code = "10";
-        sourceMap.put("pointer", getPointerString(vex.getPropertyPath().toString()));
-        dto.source = SourceDto.toSourceList(sourceMap);
+        dto.source = new SourceDto();
+        dto.source.setPointer(getPointerString(vex.getPropertyPath().toString()));
         dto.title = vex.getMessage();
         return dto;
     }

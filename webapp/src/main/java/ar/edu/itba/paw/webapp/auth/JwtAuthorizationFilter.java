@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.webapp.auth;
 
-import ar.edu.itba.paw.webapp.helpers.Pair;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
+import javafx.util.Pair;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -81,7 +81,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                 accessToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", userPass[0],
                         Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
-                refreshToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", userPass[0],
+                refreshToken = JwtUtils.generateRefreshToken(claimsMap, "skyplace", userPass[0],
                         Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
 
                 response.addHeader("Access Token", accessToken);
@@ -90,21 +90,21 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             case JWTAUTH_PREFIX:
                 String email;
                 Pair<String, String> tokenSubjectPair = JwtUtils.validateAccessToken(credentials, jwtKey, Date.from(now));
-                switch(tokenSubjectPair.getLeftValue()) {
+                switch(tokenSubjectPair.getKey()) {
                     case "access":
-                        email = tokenSubjectPair.getRightValue();
+                        email = tokenSubjectPair.getValue();
                         token = userDetailsService.jwtLogin(email);
                         if(token.isAuthenticated())
                             SecurityContextHolder.getContext().setAuthentication(token);
                         break;
                     case "refresh":
-                        email = tokenSubjectPair.getRightValue();
+                        email = tokenSubjectPair.getValue();
                         claimsMap = new HashMap<>();
                         claimsMap.put("user", email);
 
                         accessToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", email,
                                 Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
-                        refreshToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", email,
+                        refreshToken = JwtUtils.generateRefreshToken(claimsMap, "skyplace", email,
                                 Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
 
                         response.addHeader("Access Token", accessToken);

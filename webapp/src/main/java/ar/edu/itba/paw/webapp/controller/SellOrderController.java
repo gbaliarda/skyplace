@@ -202,13 +202,13 @@ public class SellOrderController {
     @POST
     @Path("/{id}/buyorders/{userId}")
     public Response confirmBuyOrderFromBuyerId(@PathParam("id") int sellOrderId, @PathParam("userId") int buyerId, @RequestParam String txHash) {
-        Pair<Boolean, Optional<Integer>> response = buyOrderService.validateTransaction(txHash, sellOrderId, buyerId);
-        if (!response.getKey()) {
+        Optional<Integer> response = buyOrderService.validateTransaction(txHash, sellOrderId, buyerId);
+        if (!response.isPresent()) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         // Add URI to response
         final URI purchaseUri = uriInfo.getAbsolutePathBuilder()
-                .replacePath("/purchases/").path(response.getValue().get().toString()).build();
+                .replacePath("/purchases/").path(response.get().toString()).build();
         return Response.created(purchaseUri).build();
 
     }

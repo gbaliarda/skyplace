@@ -7,6 +7,8 @@ import ar.edu.itba.paw.service.FavoriteService;
 import ar.edu.itba.paw.service.NftService;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.dto.NftDto;
+import ar.edu.itba.paw.webapp.exceptions.InvalidParameterException;
+import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateNftForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,7 +44,7 @@ public class NftController {
     @GET
     @Produces({ MediaType.APPLICATION_JSON, })
     public Response listNfts(
-            @QueryParam("page") @DefaultValue("1") final int page,
+            @QueryParam("page") @DefaultValue("1") final String pageParam,
             @QueryParam("status") final String status,
             //@QueryParam("category") final String category,
             @QueryParam("chain") final String chain,
@@ -52,6 +54,12 @@ public class NftController {
             @QueryParam("search") final String search,
             @QueryParam("searchFor") final String searchFor
     ) {
+        int page;
+        try {
+            page = Integer.parseInt(pageParam);
+        } catch (NumberFormatException e) {
+            throw new InvalidParameterException("page");
+        }
         List<NftDto> nftList = nftService.getAll(page, status, null, chain, null, null, sort, search, searchFor)
                 .stream().map(n -> NftDto.fromNft(uriInfo, n)).collect(Collectors.toList());
 
@@ -75,7 +83,7 @@ public class NftController {
     @POST
     public Response createNft(@Valid final CreateNftForm nftForm) {
         if(nftForm == null)
-            throw new BadRequestException("Request must contain a body");
+            throw new NoBodyException();
         int ownerId = userService.getCurrentUser().get().getId();
         final Nft newNft = nftService.create(nftForm.getNftId(), nftForm.getContractAddr(), nftForm.getName(), nftForm.getChain(), nftForm.getImage(), ownerId, nftForm.getCollection(), nftForm.getDescription());
         // appends the new ID to the path of this route (/nfts)

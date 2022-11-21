@@ -33,7 +33,7 @@ public interface BuyOrderService {
 
     Optional<BuyOrder> getPendingBuyOrder(int sellOrderId);
 
-    Pair<Boolean, Optional<Integer>> validateTransaction(String txHash, int sellOrderId, int buyerId);
+    Optional<Integer> validateTransaction(String txHash, int sellOrderId, int buyerId);
 
     List<String> getBuyOrderStatusNames();
 
