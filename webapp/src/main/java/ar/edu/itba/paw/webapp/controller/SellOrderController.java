@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.UserNoPermissionException;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.BuyOrderDto;
@@ -29,15 +30,17 @@ public class SellOrderController {
     private final SellOrderService sellOrderService;
     private final NftService nftService;
     private final BuyOrderService buyOrderService;
+    private final UserService userService;
 
     @Context
     private UriInfo uriInfo;
 
     @Autowired
-    public SellOrderController(SellOrderService sellOrderService, NftService nftService, BuyOrderService buyOrderService) {
+    public SellOrderController(SellOrderService sellOrderService, NftService nftService, BuyOrderService buyOrderService, UserService userService) {
         this.sellOrderService = sellOrderService;
         this.nftService = nftService;
         this.buyOrderService = buyOrderService;
+        this.userService = userService;
     }
 
     @GET
@@ -98,7 +101,7 @@ public class SellOrderController {
             SellOrderDto dto = SellOrderDto.fromSellOrder(uriInfo, maybeSellOrder.get());
             return Response.ok(dto).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        throw new NotFoundException();
     }
 
     @PUT
@@ -108,7 +111,7 @@ public class SellOrderController {
         boolean result = sellOrderService.update(id, form.getCategory(), form.getPrice());
         if(result)
             return Response.noContent().build();
-        return Response.status(Response.Status.NOT_FOUND).build();
+        throw new NotFoundException();
     }
 
     @DELETE
@@ -122,20 +125,16 @@ public class SellOrderController {
     @POST
     @Path("/{id}/buyorders")
     public Response createBuyOrder(@PathParam("id") int id, @Valid final PriceForm priceForm) {
-        //TODO GET CURRENT USER ID TO REGISTER THIS BUYORDER
-        //TODO FORM VALIDATION ERROR MESSAGES
-
+        int currentUserId = userService.getCurrentUser().get().getId();
         Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
         if (!maybeSellOrder.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new NotFoundException();
         }
 
-        int userId = 69; //NEED TO CORRECT THIS
-
-        buyOrderService.create(id, priceForm.getPrice(), userId);
+        buyOrderService.create(id, priceForm.getPrice(), currentUserId);
         // WHAT URI TO RETURN ??
         final URI location = uriInfo.getAbsolutePathBuilder()
-                .path(id + "buyorders").build();
+                .path(id + "/buyorders").build();
         return Response.created(location).build();
     }
 
@@ -145,14 +144,14 @@ public class SellOrderController {
     public Response getBuyOrdersBySellOrder(@PathParam("id") int id, @QueryParam("page") @DefaultValue("1") int offerPage){
         Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
         if (!maybeSellOrder.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new NotFoundException();
         }
 
         long amountOfferPages;
         amountOfferPages = buyOrderService.getAmountPagesBySellOrderId(maybeSellOrder.get());
 
         if(offerPage > amountOfferPages || offerPage < 0 ) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new NotFoundException();
         }
 
         List<BuyOrderDto> buyOffers;
@@ -196,7 +195,7 @@ public class SellOrderController {
             BuyOrderDto dto = BuyOrderDto.fromBuyOrder(buyorder.get(), uriInfo);
             return Response.ok(dto).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        throw new NotFoundException();
     }
 
     @POST
@@ -204,7 +203,7 @@ public class SellOrderController {
     public Response confirmBuyOrderFromBuyerId(@PathParam("id") int sellOrderId, @PathParam("userId") int buyerId, @RequestParam String txHash) {
         Optional<Integer> response = buyOrderService.validateTransaction(txHash, sellOrderId, buyerId);
         if (!response.isPresent()) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            throw new UserNoPermissionException();
         }
         // Add URI to response
         final URI purchaseUri = uriInfo.getAbsolutePathBuilder()

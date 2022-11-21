@@ -8,14 +8,13 @@ import java.net.URI;
 
 public class ReviewDto {
 
-    private int id;
     private int score;
     private String title;
     private String comments;
+    private UserDto reviewer;
+    private UserDto reviewee;
 
     private URI self;
-    private URI reviewer;
-    private URI reviewee;
 
     private final static String USERS_URI_PREFIX = "users";
     private final static String REVIEWS_URI_PREFIX = "reviews";
@@ -26,30 +25,15 @@ public class ReviewDto {
         final UriBuilder reviewUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(REVIEWS_URI_PREFIX)
                 .path(String.valueOf(review.getId()));
 
-        final UriBuilder reviewerUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(USERS_URI_PREFIX)
-                .path(String.valueOf(review.getUsersByIdReviewer().getId()));
-
-        final UriBuilder revieweeUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(USERS_URI_PREFIX)
-                .path(String.valueOf(review.getUsersByIdReviewee().getId()));
-
         dto.self = reviewUriBuilder.build();
-        dto.reviewer = reviewerUriBuilder.build();
-        dto.reviewee = revieweeUriBuilder.build();
+        dto.reviewer = UserDto.fromUser(uriInfo, review.getUsersByIdReviewer());
+        dto.reviewee = UserDto.fromUser(uriInfo, review.getUsersByIdReviewee());
 
-        dto.id = review.getId();
         dto.score = review.getScore();
         dto.title = review.getTitle();
         dto.comments = review.getComments();
 
         return dto;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getScore() {
@@ -84,19 +68,19 @@ public class ReviewDto {
         this.self = self;
     }
 
-    public URI getReviewer() {
+    public UserDto getReviewer() {
         return reviewer;
     }
 
-    public void setReviewer(URI reviewer) {
+    public void setReviewer(UserDto reviewer) {
         this.reviewer = reviewer;
     }
 
-    public URI getReviewee() {
+    public UserDto getReviewee() {
         return reviewee;
     }
 
-    public void setReviewee(URI reviewee) {
+    public void setReviewee(UserDto reviewee) {
         this.reviewee = reviewee;
     }
 }

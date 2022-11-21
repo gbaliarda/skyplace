@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 
+import ar.edu.itba.paw.exceptions.UserNoPermissionException;
 import ar.edu.itba.paw.model.Purchase;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.PurchaseService;
@@ -31,20 +32,16 @@ public class PurchasesController {
         this.purchaseService = purchaseService;
     }
 
-
-
     @GET
     @Produces({ MediaType.APPLICATION_JSON})
     public Response getHistoryTransactions( @QueryParam("page") @DefaultValue("1") int page){
-
-
         Optional<User> currentUser = userService.getCurrentUser();
 
         long amountPurchasesPages;
         amountPurchasesPages = purchaseService.getAmountPagesByUserId(currentUser.get().getId());
 
         if(page > amountPurchasesPages || page < 0 ) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new NotFoundException();
         }
 
         List<PurchaseDto> historyPurchases;
@@ -64,22 +61,19 @@ public class PurchasesController {
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", amountPurchasesPages).build(), "last")
                 .build();
-
-
     }
 
     @GET
     @Path("/{id}")
     @Produces({ MediaType.APPLICATION_JSON})
     public Response getHistoryTransactionById(@PathParam("id") int purchaseId){
-
         Optional<User> currentUser = userService.getCurrentUser();
 
         Optional<PurchaseDto> maybePurchase = purchaseService.getPurchaseById(currentUser.get().getId(), purchaseId).map(n -> PurchaseDto.fromPurchase(uriInfo, n));
-        if (maybePurchase.isPresent()) {
-            return Response.ok(maybePurchase.get()).build();
+        if (!maybePurchase.isPresent()) {
+            throw new UserNoPermissionException();
         }
-        return Response.status(Response.Status.FORBIDDEN).build();
+        return Response.ok(maybePurchase.get()).build();
     }
 
 }

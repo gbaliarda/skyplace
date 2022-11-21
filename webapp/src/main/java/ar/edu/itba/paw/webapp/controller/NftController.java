@@ -44,7 +44,7 @@ public class NftController {
     @GET
     @Produces({ MediaType.APPLICATION_JSON, })
     public Response listNfts(
-            @QueryParam("page") @DefaultValue("1") final String pageParam,
+            @QueryParam("page") @DefaultValue("1") final int page,
             @QueryParam("status") final String status,
             //@QueryParam("category") final String category,
             @QueryParam("chain") final String chain,
@@ -54,12 +54,6 @@ public class NftController {
             @QueryParam("search") final String search,
             @QueryParam("searchFor") final String searchFor
     ) {
-        int page;
-        try {
-            page = Integer.parseInt(pageParam);
-        } catch (NumberFormatException e) {
-            throw new InvalidParameterException("page");
-        }
         List<NftDto> nftList = nftService.getAll(page, status, null, chain, null, null, sort, search, searchFor)
                 .stream().map(n -> NftDto.fromNft(uriInfo, n)).collect(Collectors.toList());
 

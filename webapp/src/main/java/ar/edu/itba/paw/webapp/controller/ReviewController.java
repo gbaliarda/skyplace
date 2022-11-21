@@ -107,7 +107,7 @@ public class ReviewController {
             ReviewDto dto = ReviewDto.fromReview(uriInfo, maybeReview.get());
             return Response.ok(dto).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        throw new NotFoundException();
     }
 
 

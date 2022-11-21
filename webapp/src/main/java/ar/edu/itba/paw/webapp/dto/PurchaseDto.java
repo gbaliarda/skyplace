@@ -10,7 +10,6 @@ import java.net.URI;
 import java.util.Date;
 
 public class PurchaseDto {
-    private Long id;
     private BigDecimal price;
     private Date buyDate;
     private NftDto nft;
@@ -19,9 +18,7 @@ public class PurchaseDto {
     private StatusPurchase status;
     private String txHash;
 
-
     private URI self;
-
 
     public static PurchaseDto fromPurchase(UriInfo uriInfo, Purchase purchase) {
         final PurchaseDto purchaseDto = new PurchaseDto();
@@ -29,7 +26,6 @@ public class PurchaseDto {
         final UriBuilder purchasesUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("purchases")
                 .path(String.valueOf(purchase.getId()));
 
-        purchaseDto.id = (long) purchase.getId();
         purchaseDto.price = purchase.getPrice();
         purchaseDto.buyDate = purchase.getBuyDate();
         purchaseDto.nft = NftDto.fromNft(uriInfo, purchase.getNftsByIdNft());
@@ -41,15 +37,6 @@ public class PurchaseDto {
         purchaseDto.self = purchasesUriBuilder.build();
 
         return purchaseDto;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public BigDecimal getPrice() {
