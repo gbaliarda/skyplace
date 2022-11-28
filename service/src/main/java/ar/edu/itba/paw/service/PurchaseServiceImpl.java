@@ -57,6 +57,11 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
+    public List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id) {
+        return purchaseDao.getTransactionsBetweenUsers(user1Id, user2Id);
+    }
+
+    @Override
     public int createPurchase(int idBuyer, int idSeller, int idNft, BigDecimal price, String txHash, StatusPurchase status) {
         Optional<User> maybeBuyer = userService.getUserById(idBuyer);
         Optional<User> maybeSeller = userService.getUserById(idSeller);

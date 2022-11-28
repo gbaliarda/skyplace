@@ -95,7 +95,7 @@ public class NftJpaDaoTest {
             em.persist(nft);
         }
 
-        List<Nft> publications = nftJpaDao.getAllPublications(1, PAGE_SIZE, null, null, null, null, null, "noSort", null, null);
+        List<Nft> publications = nftJpaDao.getAllPublications(1, PAGE_SIZE, null, null, null, null, null, "noSort", null, null, null);
 
         assertEquals(5, publications.size());
     }
@@ -107,7 +107,7 @@ public class NftJpaDaoTest {
             em.persist(nft);
         }
 
-        List<Nft> publications = nftJpaDao.getAllPublications(1, PAGE_SIZE, null, null, CHAIN.name(), null, null, "noSort", null, null);
+        List<Nft> publications = nftJpaDao.getAllPublications(1, PAGE_SIZE, null, null, CHAIN.name(), null, null, "noSort", null, null, null);
 
         assertEquals(PAGE_SIZE, publications.size());
     }
@@ -119,7 +119,7 @@ public class NftJpaDaoTest {
             em.persist(nft);
         }
 
-        List<Nft> publications = nftJpaDao.getAllPublications(1, PAGE_SIZE, "onSale", "Other,Art", CHAIN.name(), new BigDecimal(1), new BigDecimal(2), "name", "abc", null);
+        List<Nft> publications = nftJpaDao.getAllPublications(1, PAGE_SIZE, "onSale", "Other,Art", CHAIN.name(), new BigDecimal(1), new BigDecimal(2), "name", "abc", null, null);
 
         assertEquals(0, publications.size());
     }

@@ -22,7 +22,10 @@ public class ReviewDto {
     public static ReviewDto fromReview(final UriInfo uriInfo, final Review review) {
         final ReviewDto dto = new ReviewDto();
 
-        final UriBuilder reviewUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(REVIEWS_URI_PREFIX)
+        final UriBuilder reviewUriBuilder = uriInfo.getAbsolutePathBuilder()
+                .replacePath(USERS_URI_PREFIX)
+                .path(String.valueOf(review.getUsersByIdReviewee().getId()))
+                .path(REVIEWS_URI_PREFIX)
                 .path(String.valueOf(review.getId()));
 
         dto.self = reviewUriBuilder.build();

@@ -65,14 +65,14 @@ public class NftServiceImpl implements NftService {
 
     @Override
     public List<Publication> getAllPublications(int page, String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor) {
-        List<Nft> nfts = nftDao.getAllPublications(page, pageSize, status, category, chain, minPrice, maxPrice, sort, search, searchFor);
+        List<Nft> nfts = nftDao.getAllPublications(page, pageSize, status, category, chain, minPrice, maxPrice, sort, search, searchFor, null);
         User currentUser = userService.getCurrentUser().orElse(null);
         return createPublicationsWithNfts(nfts, currentUser);
     }
 
     @Override
-    public List<Nft> getAll(int page, String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor) {
-        return nftDao.getAllPublications(page, pageSize, status, category, chain, minPrice, maxPrice, sort, search, searchFor);
+    public List<Nft> getAll(int page, String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId) {
+        return nftDao.getAllPublications(page, pageSize, status, category, chain, minPrice, maxPrice, sort, search, searchFor, ownerId);
     }
 
     protected Optional<Favorited> isNftFavedByUser(int userId, int productId) {

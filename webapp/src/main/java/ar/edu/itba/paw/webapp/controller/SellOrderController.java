@@ -58,7 +58,7 @@ public class SellOrderController {
             @QueryParam("searchFor") final String searchFor,
             @QueryParam("seller") final Integer sellerId
     ) {
-        Stream<Nft> stream = nftService.getAll(page, "onSale", category, chain, minPrice, maxPrice, sort, search, searchFor)
+        Stream<Nft> stream = nftService.getAll(page, "onSale", category, chain, minPrice, maxPrice, sort, search, searchFor, null)
                 .stream();
 
         // TODO: Get only user nfts instead of all and then filter

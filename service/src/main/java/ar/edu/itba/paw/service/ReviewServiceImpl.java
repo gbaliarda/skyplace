@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.exceptions.InvalidReviewException;
+import ar.edu.itba.paw.exceptions.NoTransactionBetweenUsersException;
 import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.model.Review;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.persistence.PurchaseDao;
 import ar.edu.itba.paw.persistence.ReviewDao;
 import ar.edu.itba.paw.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     private final ReviewDao reviewDao;
     private final UserDao userDao;
+    private final PurchaseService purchaseService;
 
     private final MailingService mailingService;
     private final static int pageSize = 5;
@@ -26,10 +29,11 @@ public class ReviewServiceImpl implements ReviewService{
     private final static int maxScore = 5;
 
     @Autowired
-    public ReviewServiceImpl(ReviewDao reviewDao, UserDao userDao, MailingService mailingService) {
+    public ReviewServiceImpl(ReviewDao reviewDao, UserDao userDao, MailingService mailingService, PurchaseService purchaseService) {
         this.reviewDao = reviewDao;
         this.userDao = userDao;
         this.mailingService = mailingService;
+        this.purchaseService = purchaseService;
     }
 
     @Transactional
@@ -37,6 +41,8 @@ public class ReviewServiceImpl implements ReviewService{
     public Review addReview(int reviewerId, int revieweeId, int score, String title, String comments) {
         if(reviewerId == revieweeId || hasReviewByUser(reviewerId, revieweeId))
             throw new InvalidReviewException();
+        if(purchaseService.getTransactionsBetweenUsers(reviewerId, revieweeId).isEmpty())
+            throw new NoTransactionBetweenUsersException();
         User reviewer = userDao.getUserById(reviewerId).orElseThrow(UserNotFoundException::new);
         User reviewee = userDao.getUserById(revieweeId).orElseThrow(UserNotFoundException::new);
         Review newReview = reviewDao.addReview(reviewer, reviewee, score, title, comments);

@@ -24,4 +24,7 @@ public interface PurchaseService {
     boolean isTxHashAlreadyInUse(String txHash);
 
     Optional<Purchase> getPurchaseById(int userId, int purchaseId);
+
+    List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id);
+
 }

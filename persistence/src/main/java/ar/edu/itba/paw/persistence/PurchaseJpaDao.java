@@ -40,6 +40,15 @@ public class PurchaseJpaDao implements PurchaseDao {
         return query.getResultList();
     }
 
+    // FIXME: Falta paginacion
+    @Override
+    public List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id) {
+        final TypedQuery<Purchase> query = em.createQuery("FROM Purchase p WHERE p.seller.id = :user1Id AND p.buyer.id = :user2Id OR p.seller.id = :user2Id AND p.buyer.id = :user1Id", Purchase.class);
+        query.setParameter("user1Id", user1Id);
+        query.setParameter("user2Id", user2Id);
+        return query.getResultList();
+    }
+
     @Override
     public List<Purchase> getAllTransactions(int userId, int page, int pageSize) {
         final Query idQuery = em.createNativeQuery("SELECT id FROM purchases WHERE id_buyer = :userId OR id_seller = :userId ORDER BY buy_date DESC LIMIT :pageSize OFFSET :offset");

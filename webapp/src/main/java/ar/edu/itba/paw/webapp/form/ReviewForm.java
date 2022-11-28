@@ -7,12 +7,6 @@ import javax.validation.constraints.Min;
 
 public class ReviewForm {
     @NotBlank
-    private String reviewerId;
-
-    @NotBlank
-    private String revieweeId;
-
-    @NotBlank
     @Min(value = 1)
     @Max(value = 5)
     private String score;
@@ -20,22 +14,6 @@ public class ReviewForm {
     private String title;
 
     private String comments;
-
-    public String getReviewerId() {
-        return reviewerId;
-    }
-
-    public void setReviewerId(String reviewerId) {
-        this.reviewerId = reviewerId;
-    }
-
-    public String getRevieweeId() {
-        return revieweeId;
-    }
-
-    public void setRevieweeId(String revieweeId) {
-        this.revieweeId = revieweeId;
-    }
 
     public String getScore() {
         return score;

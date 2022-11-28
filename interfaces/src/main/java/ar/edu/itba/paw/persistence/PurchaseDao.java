@@ -22,5 +22,9 @@ public interface PurchaseDao {
     boolean isTxHashAlreadyInUse(String txHash);
 
     int getTransactionAmount(int userId);
+
     Optional<Purchase> getPurchaseById(int userId, int purchaseId);
+
+    List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id);
+
 }

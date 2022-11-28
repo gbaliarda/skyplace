@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.model.Nft;
 import ar.edu.itba.paw.model.Publication;
 import ar.edu.itba.paw.model.User;
@@ -46,15 +47,13 @@ public class NftController {
     public Response listNfts(
             @QueryParam("page") @DefaultValue("1") final int page,
             @QueryParam("status") final String status,
-            //@QueryParam("category") final String category,
             @QueryParam("chain") final String chain,
-            //@QueryParam("minPrice") final BigDecimal minPrice,
-            //@QueryParam("maxPrice") final BigDecimal maxPrice,
             @QueryParam("sort") final String sort,
             @QueryParam("search") final String search,
-            @QueryParam("searchFor") final String searchFor
+            @QueryParam("searchFor") final String searchFor,
+            @QueryParam("owner") final Integer ownerId
     ) {
-        List<NftDto> nftList = nftService.getAll(page, status, null, chain, null, null, sort, search, searchFor)
+        List<NftDto> nftList = nftService.getAll(page, status, null, chain, null, null, sort, search, searchFor, ownerId)
                 .stream().map(n -> NftDto.fromNft(uriInfo, n)).collect(Collectors.toList());
 
         if (nftList.isEmpty())
@@ -102,64 +101,6 @@ public class NftController {
     public Response deleteNft(@PathParam("id") int id) {
         Optional<Nft> maybeNft = nftService.getNFTById(id);
         maybeNft.ifPresent(nftService::delete);
-        return Response.noContent().build();
-    }
-
-    @GET
-    @Path("/favorites")
-    public Response listUserFavorites(
-            @QueryParam("page") @DefaultValue("1") int page,
-            @QueryParam("sort") final String sort
-    ){
-        User user = userService.getCurrentUser().get();
-
-        List<NftDto> userFavorites = nftService.getAllPublicationsByUser(page, user, "favorited", sort)
-                .stream().map(Publication::getNft).map(n -> NftDto.fromNft(uriInfo, n)).collect(Collectors.toList());
-        if (userFavorites.isEmpty())
-            return Response.noContent().build();
-
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(userFavorites) {});
-        if (page > 1)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
-        int lastPage = nftService.getAmountPublicationPagesByUser(user, user, "favorited");
-        if (page < lastPage)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
-
-        return responseBuilder
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", lastPage).build(), "last")
-                .build();
-    }
-
-    @PUT
-    @Path("/{id}/favorite")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, })
-    public Response addUserFavorite(
-            @PathParam("id") int nftId
-    ) {
-        Optional<NftDto> maybeNft = nftService.getNFTById(nftId).map(n -> NftDto.fromNft(uriInfo, n));
-        if (!maybeNft.isPresent()) {
-            throw new NotFoundException("Nft not found");
-        }
-        User currentUser = userService.getCurrentUser().get();
-
-        favoriteService.addNftFavorite(nftId, currentUser);
-        return Response.noContent().build();
-    }
-
-    @DELETE
-    @Path("/{id}/favorite")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, })
-    public Response removeUserFavorite(
-            @PathParam("id") int nftId
-    ) {
-        Optional<NftDto> maybeNft = nftService.getNFTById(nftId).map(n -> NftDto.fromNft(uriInfo, n));
-        if (!maybeNft.isPresent()) {
-            throw new NotFoundException("Nft not found");
-        }
-        User user = userService.getCurrentUser().get();
-
-        favoriteService.removeNftFavorite(nftId, user);
         return Response.noContent().build();
     }
 
