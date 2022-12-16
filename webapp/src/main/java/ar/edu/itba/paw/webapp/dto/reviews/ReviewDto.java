@@ -1,6 +1,7 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.reviews;
 
 import ar.edu.itba.paw.model.Review;
+import ar.edu.itba.paw.webapp.dto.UserDto;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;

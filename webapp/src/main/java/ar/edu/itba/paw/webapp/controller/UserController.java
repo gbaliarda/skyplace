@@ -8,17 +8,21 @@ import ar.edu.itba.paw.model.Review;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.reviews.ReviewDto;
+import ar.edu.itba.paw.webapp.dto.reviews.ReviewStarScoreDto;
+import ar.edu.itba.paw.webapp.dto.reviews.ReviewsDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.ReviewForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -238,15 +242,28 @@ public class UserController {
     ) {
         Stream<Review> reviewStream = reviewService.getUserReviews(page, revieweeId).stream();
         List<ReviewDto> reviewList;
+        ReviewsDto reviewsInfo;
+        List<ReviewStarScoreDto> reviewRatings = new ArrayList<>();
+
+        final int reviewMaxScore = reviewService.getMaxScore();
+        final int reviewMinScore = reviewService.getMinScore();
 
         if(reviewerId > 0)
             reviewStream = reviewStream.filter(r -> r.getUsersByIdReviewer().getId() == reviewerId);
         reviewList = reviewStream.map(n -> ReviewDto.fromReview(uriInfo, n)).collect(Collectors.toList());
 
-        if(reviewList.isEmpty())
-            return Response.noContent().build();
+        List<Integer> userRatingsDesc = reviewService.getUserReviewsRatingsListSorted(revieweeId, "desc");
+        for(int i=reviewMaxScore, j=0 ; i >= reviewMinScore ; i--, j++){
+            reviewRatings.add(ReviewStarScoreDto.fromReviewStarScore(i, userRatingsDesc.get(j)));
+        }
 
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<ReviewDto>>(reviewList) {});
+        reviewsInfo = ReviewsDto.fromReviewList(uriInfo, reviewList, reviewService.getUserReviewsAmount(revieweeId),
+                reviewService.getUserScore(revieweeId), reviewRatings);
+
+        /* if(reviewList.isEmpty())
+            return Response.noContent().build(); */
+
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<ReviewsDto>(reviewsInfo) {});
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
         int lastPage = (int) Math.ceil(reviewService.getUserReviewsAmount(revieweeId) / (double) reviewService.getPageSize());
