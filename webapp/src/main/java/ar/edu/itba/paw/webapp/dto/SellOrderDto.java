@@ -1,29 +1,27 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.model.BuyOrder;
 import ar.edu.itba.paw.model.Category;
-import ar.edu.itba.paw.model.Nft;
 import ar.edu.itba.paw.model.SellOrder;
+import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
 
-import javax.persistence.*;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.List;
 
 public class SellOrderDto {
 
     private int id;
     private BigDecimal price;
     private Category category;
-    private NftDto nft;
 
     private URI self;
-    private URI offers;
+    private URI nft;
+    private URI buyorders;
 
     private final static String SELLORDERS_URI_PREFIX = "sellorders";
-    private final static String SELLOFFERS_URI_PREFIX = "selloffers";
+    private final static String BUYORDERS_URI_PREFIX = "buyorders";
+    private final static String NFTS_URI_PREFIX = "nfts";
 
     public static SellOrderDto fromSellOrder(final UriInfo uriInfo, final SellOrder sellOrder){
         final SellOrderDto dto = new SellOrderDto();
@@ -31,12 +29,15 @@ public class SellOrderDto {
         final UriBuilder sellOrderUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(SELLORDERS_URI_PREFIX)
                 .path(String.valueOf(sellOrder.getId()));
 
+        final UriBuilder nftUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(NFTS_URI_PREFIX)
+                .path(String.valueOf(sellOrder.getNft().getId()));
+
         dto.id = sellOrder.getId();
         dto.price = sellOrder.getPrice();
         dto.category = sellOrder.getCategory();
-        dto.nft = NftDto.fromNft(uriInfo, sellOrder.getNft());
+        dto.nft = nftUriBuilder.build();
         dto.self = sellOrderUriBuilder.build();
-        dto.offers = sellOrderUriBuilder.path(SELLOFFERS_URI_PREFIX).build();
+        dto.buyorders = sellOrderUriBuilder.path(BUYORDERS_URI_PREFIX).build();
 
         return dto;
     }
@@ -65,11 +66,11 @@ public class SellOrderDto {
         this.category = category;
     }
 
-    public NftDto getNft() {
+    public URI getNft() {
         return nft;
     }
 
-    public void setNft(NftDto nft) {
+    public void setNft(URI nft) {
         this.nft = nft;
     }
 
@@ -81,11 +82,11 @@ public class SellOrderDto {
         this.self = self;
     }
 
-    public URI getOffers() {
-        return offers;
+    public URI getBuyorders() {
+        return buyorders;
     }
 
-    public void setOffers(URI offers) {
-        this.offers = offers;
+    public void setBuyorders(URI offers) {
+        this.buyorders = offers;
     }
 }

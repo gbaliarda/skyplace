@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.webapp.dto.reviews;
 
-import javafx.util.Pair;
-
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
@@ -12,7 +10,7 @@ public class ReviewsDto {
     private List<ReviewStarScoreDto> ratings;
     private List<ReviewDto> reviews;
 
-    public static ReviewsDto fromReviewList(final UriInfo uriInfo, final List<ReviewDto> reviews, final long total, final double score, final List<ReviewStarScoreDto> ratings) {
+    public static ReviewsDto fromReviewList(final List<ReviewDto> reviews, final long total, final double score, final List<ReviewStarScoreDto> ratings) {
         final ReviewsDto dto = new ReviewsDto();
 
         dto.total = total;

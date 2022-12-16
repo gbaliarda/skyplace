@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.Purchase;
 import ar.edu.itba.paw.model.StatusPurchase;
+import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -12,25 +13,38 @@ import java.util.Date;
 public class PurchaseDto {
     private BigDecimal price;
     private Date buyDate;
-    private NftDto nft;
-    private UserDto buyer;
-    private UserDto seller;
     private StatusPurchase status;
     private String txHash;
 
     private URI self;
+    private URI nft;
+    private URI buyer;
+    private URI seller;
+
+    private final static String USERS_URI_PREFIX = "users";
+    private final static String NFTS_URI_PREFIX = "nfts";
+    private final static String PURCHASES_URI_PREFIX = "purchases";
 
     public static PurchaseDto fromPurchase(UriInfo uriInfo, Purchase purchase) {
         final PurchaseDto purchaseDto = new PurchaseDto();
 
-        final UriBuilder purchasesUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("purchases")
+        final UriBuilder purchasesUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(PURCHASES_URI_PREFIX)
                 .path(String.valueOf(purchase.getId()));
+
+        final UriBuilder nftUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(NFTS_URI_PREFIX)
+                .path(String.valueOf(purchase.getNftsByIdNft().getId()));
+
+        final UriBuilder buyerUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(USERS_URI_PREFIX)
+                .path(String.valueOf(purchase.getBuyer().getId()));
+
+        final UriBuilder sellerUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(USERS_URI_PREFIX)
+                .path(String.valueOf(purchase.getSeller().getId()));
 
         purchaseDto.price = purchase.getPrice();
         purchaseDto.buyDate = purchase.getBuyDate();
-        purchaseDto.nft = NftDto.fromNft(uriInfo, purchase.getNftsByIdNft());
-        purchaseDto.buyer = UserDto.fromUser(uriInfo, purchase.getBuyer());
-        purchaseDto.seller = UserDto.fromUser(uriInfo, purchase.getSeller());
+        purchaseDto.nft = nftUriBuilder.build();
+        purchaseDto.buyer = buyerUriBuilder.build();
+        purchaseDto.seller = sellerUriBuilder.build();
         purchaseDto.status = purchase.getStatus();
         purchaseDto.txHash = purchase.getTxHash();
 
@@ -55,27 +69,27 @@ public class PurchaseDto {
         this.buyDate = buyDate;
     }
 
-    public NftDto getNft() {
+    public URI getNft() {
         return nft;
     }
 
-    public void setNft(NftDto nft) {
+    public void setNft(URI nft) {
         this.nft = nft;
     }
 
-    public UserDto getBuyer() {
+    public URI getBuyer() {
         return buyer;
     }
 
-    public void setBuyer(UserDto buyer) {
+    public void setBuyer(URI buyer) {
         this.buyer = buyer;
     }
 
-    public UserDto getSeller() {
+    public URI getSeller() {
         return seller;
     }
 
-    public void setSeller(UserDto seller) {
+    public void setSeller(URI seller) {
         this.seller = seller;
     }
 

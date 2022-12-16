@@ -12,10 +12,10 @@ public class ReviewDto {
     private int score;
     private String title;
     private String comments;
-    private UserDto reviewer;
-    private UserDto reviewee;
 
     private URI self;
+    private URI reviewer;
+    private URI reviewee;
 
     private final static String USERS_URI_PREFIX = "users";
     private final static String REVIEWS_URI_PREFIX = "reviews";
@@ -29,9 +29,17 @@ public class ReviewDto {
                 .path(REVIEWS_URI_PREFIX)
                 .path(String.valueOf(review.getId()));
 
+        final UriBuilder revieweeUriBuilder = uriInfo.getAbsolutePathBuilder()
+                .replacePath(USERS_URI_PREFIX)
+                .path(String.valueOf(review.getUsersByIdReviewee().getId()));
+
+        final UriBuilder reviewerUriBuilder = uriInfo.getAbsolutePathBuilder()
+                .replacePath(USERS_URI_PREFIX)
+                .path(String.valueOf(review.getUsersByIdReviewer().getId()));
+
         dto.self = reviewUriBuilder.build();
-        dto.reviewer = UserDto.fromUser(uriInfo, review.getUsersByIdReviewer());
-        dto.reviewee = UserDto.fromUser(uriInfo, review.getUsersByIdReviewee());
+        dto.reviewee = revieweeUriBuilder.build();
+        dto.reviewer = reviewerUriBuilder.build();
 
         dto.score = review.getScore();
         dto.title = review.getTitle();
@@ -72,19 +80,19 @@ public class ReviewDto {
         this.self = self;
     }
 
-    public UserDto getReviewer() {
+    public URI getReviewer() {
         return reviewer;
     }
 
-    public void setReviewer(UserDto reviewer) {
+    public void setReviewer(URI reviewer) {
         this.reviewer = reviewer;
     }
 
-    public UserDto getReviewee() {
+    public URI getReviewee() {
         return reviewee;
     }
 
-    public void setReviewee(UserDto reviewee) {
+    public void setReviewee(URI reviewee) {
         this.reviewee = reviewee;
     }
 }

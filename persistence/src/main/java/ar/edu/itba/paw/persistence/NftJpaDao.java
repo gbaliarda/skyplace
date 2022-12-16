@@ -234,6 +234,8 @@ public class NftJpaDao implements NftDao {
                     return new Pair<>(" ", " ");
                 case "collection":
                     return new Pair<>(" ORDER BY nfts.collection ", " ORDER BY nft.collection ");
+                default:
+                    return new Pair<>(" ORDER BY nfts.nft_name ", " ORDER BY nft.nftName ");
             }
         }
         return new Pair<>(" ORDER BY nfts.nft_name ", " ORDER BY nft.nftName ");
@@ -316,6 +318,15 @@ public class NftJpaDao implements NftDao {
     @Override
     public int getAmountPublications(String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor) {
         Pair<String, List<Pair<String,Object>>> filterQuery = buildFilterQuery(status, category, chain, minPrice, maxPrice, search, searchFor);
+        return getIds(COUNT_ID_QUERY, filterQuery);
+    }
+
+    /**
+     * @return Amount of publications after aplying all filters.
+     */
+    @Override
+    public int getAmountPublicationsByUser(String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId) {
+        Pair<String, List<Pair<String,Object>>> filterQuery = buildFilterQuery(status, category, chain, minPrice, maxPrice, search, searchFor, ownerId);
         return getIds(COUNT_ID_QUERY, filterQuery);
     }
 

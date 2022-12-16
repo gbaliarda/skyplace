@@ -19,6 +19,8 @@ public interface NftDao {
 
     int getAmountPublications(String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor);
 
+    int getAmountPublicationsByUser(String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId);
+
     int getAmountPublicationPagesByUser(int pageSize, User user, User currentUser, boolean onlyFaved, boolean onlyOnSale);
 
     boolean isNftCreated(int nftId, String contractAddr, String chain);

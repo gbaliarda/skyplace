@@ -1,14 +1,11 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.model.Nft;
-import ar.edu.itba.paw.model.Publication;
-import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.FavoriteService;
 import ar.edu.itba.paw.service.NftService;
 import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.webapp.dto.NftDto;
-import ar.edu.itba.paw.webapp.exceptions.InvalidParameterException;
+import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
+import ar.edu.itba.paw.webapp.dto.nfts.NftsDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateNftForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -29,16 +25,14 @@ public class NftController {
 
     private final NftService nftService;
     private final UserService userService;
-    private final FavoriteService favoriteService;
 
     @Context
     private UriInfo uriInfo;
 
     @Autowired
-    public NftController(final NftService nftService, final UserService userService, final FavoriteService favoriteService) {
+    public NftController(final NftService nftService, final UserService userService) {
         this.nftService = nftService;
         this.userService = userService;
-        this.favoriteService = favoriteService;
     }
 
     // GET /nfts
@@ -56,10 +50,14 @@ public class NftController {
         List<NftDto> nftList = nftService.getAll(page, status, null, chain, null, null, sort, search, searchFor, ownerId)
                 .stream().map(n -> NftDto.fromNft(uriInfo, n)).collect(Collectors.toList());
 
+        NftsDto nfts = NftsDto.fromNftList(nftList,
+                nftService.getAmountPublicationsByUser(status, null, chain, null, null, sort, search, searchFor, ownerId));
+        /*
         if (nftList.isEmpty())
             return Response.noContent().build();
+         */
 
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(nftList) {});
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<NftsDto>(nfts) {});
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
         int lastPage = (int) Math.ceil(nftService.getAmountPublications(status, null, chain, null, null, sort, search, searchFor) / (double) nftService.getPageSize());

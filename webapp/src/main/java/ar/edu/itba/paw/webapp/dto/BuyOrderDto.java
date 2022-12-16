@@ -8,20 +8,30 @@ import java.net.URI;
 
 public class BuyOrderDto {
 
-    private URI sellorder;
-    private UserDto offeredBy;
     private BigDecimal amount;
+
+    private URI sellorder;
+    private URI offeredBy;
     private URI self;
+
+    private final static String USERS_URI_PREFIX = "users";
+    private final static String SELLORDERS_URI_PREFIX = "sellorders";
+    private final static String BUYORDERS_URI_PREFIX = "buyorders";
 
     public static BuyOrderDto fromBuyOrder(BuyOrder buyOrder, UriInfo uriInfo) {
         final BuyOrderDto buyOrderDto = new BuyOrderDto();
 
-        buyOrderDto.offeredBy = UserDto.fromUser(uriInfo, buyOrder.getOfferedBy());
-        buyOrderDto.amount = buyOrder.getAmount();
-        buyOrderDto.self = uriInfo.getAbsolutePathBuilder().replacePath("sellorders")
+        buyOrderDto.self = uriInfo.getAbsolutePathBuilder().replacePath(SELLORDERS_URI_PREFIX)
                 .path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId()))
-                .path("buyorders").path(String.valueOf(buyOrder.getOfferedBy().getId())).build();
-        buyOrderDto.sellorder = uriInfo.getAbsolutePathBuilder().replacePath("sellorders").path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId())).build();
+                .path(BUYORDERS_URI_PREFIX).path(String.valueOf(buyOrder.getOfferedBy().getId())).build();
+
+        buyOrderDto.sellorder = uriInfo.getAbsolutePathBuilder().replacePath(SELLORDERS_URI_PREFIX)
+                .path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId())).build();
+
+        buyOrderDto.offeredBy = uriInfo.getAbsolutePathBuilder().replacePath(USERS_URI_PREFIX)
+                .path(String.valueOf(buyOrder.getOfferedBy().getId())).build();
+
+        buyOrderDto.amount = buyOrder.getAmount();
 
         return buyOrderDto;
     }
@@ -34,11 +44,11 @@ public class BuyOrderDto {
         this.sellorder = sellorder;
     }
 
-    public UserDto getOfferedBy() {
+    public URI getOfferedBy() {
         return offeredBy;
     }
 
-    public void setOfferedBy(UserDto offeredBy) {
+    public void setOfferedBy(URI offeredBy) {
         this.offeredBy = offeredBy;
     }
 

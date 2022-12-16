@@ -130,6 +130,13 @@ public class NftServiceImpl implements NftService {
         }
     }
 
+    @Override
+    public int getAmountPublicationsByUser(String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId) {
+        if(ownerId == null)
+            return nftDao.getAmountPublications(status, category, chain, minPrice, maxPrice, sort, search, searchFor);
+        return nftDao.getAmountPublicationsByUser(status, category, chain, minPrice, maxPrice, sort, search, searchFor, ownerId);
+    }
+
     @Transactional
     @Override
     public void delete(Nft nft) {

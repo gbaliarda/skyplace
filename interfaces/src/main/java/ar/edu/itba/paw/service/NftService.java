@@ -24,6 +24,8 @@ public interface NftService {
 
     int getAmountPublications(String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor);
 
+    int getAmountPublicationsByUser(String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId);
+
     int getAmountPublicationPagesByUser(User user, User currentUser, String publicationType);
 
     void delete(Nft nft);

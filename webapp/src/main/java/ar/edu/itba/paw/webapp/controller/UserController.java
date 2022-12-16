@@ -8,13 +8,13 @@ import ar.edu.itba.paw.model.Review;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewStarScoreDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewsDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.ReviewForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -257,7 +257,7 @@ public class UserController {
             reviewRatings.add(ReviewStarScoreDto.fromReviewStarScore(i, userRatingsDesc.get(j)));
         }
 
-        reviewsInfo = ReviewsDto.fromReviewList(uriInfo, reviewList, reviewService.getUserReviewsAmount(revieweeId),
+        reviewsInfo = ReviewsDto.fromReviewList(reviewList, reviewService.getUserReviewsAmount(revieweeId),
                 reviewService.getUserScore(revieweeId), reviewRatings);
 
         /* if(reviewList.isEmpty())
