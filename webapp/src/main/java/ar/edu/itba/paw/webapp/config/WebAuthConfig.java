@@ -23,13 +23,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 @ComponentScan({"ar.edu.itba.paw.webapp.auth"})
-@EnableGlobalMethodSecurity(
-        prePostEnabled = true,
-        securedEnabled = true,
-        jsr250Enabled = true)
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     public static final String REMEMBERME_KEY_PARAMETER = "REMEMBERME_KEY";
@@ -81,21 +79,23 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(new SkyplaceAccessDeniedHandler())
             .and()
                 .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(this.corsFilter, ChannelProcessingFilter.class)
-            .csrf().disable();
-                //.cors().configurationSource(corsConfigurationSource());
+                //.addFilterBefore(this.corsFilter, ChannelProcessingFilter.class)
+            .csrf().disable()
+                .cors().configurationSource(corsConfigurationSource());
     }
 
     @Override
     public void configure(final WebSecurity web) {
         web.ignoring()
-                .antMatchers("/favicon.ico", "/css/**", "/js/**", "/resources/**", "/403", "/images/**");
+                .antMatchers("/favicon.ico", "/css/**", "/js/**", "/resources/**", "/403");
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "OPTIONS", "DELETE", "HEAD"));
+        configuration.setAllowedHeaders(Arrays.asList("Location", "Link", "X-Access-Token", "X-Renewal-Token"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

@@ -12,13 +12,13 @@ public class NftDto {
     private int nftId;
     private String contractAddr;
     private String nftName;
-    private int idImage;
     private String collection;
     private String description;
     private String chain;
 
     // hyperlinks to itself and to other entities
     private URI self;
+    private URI image;
     private URI owner;
     private URI sellorder;
 
@@ -30,6 +30,8 @@ public class NftDto {
                 .path(String.valueOf(nft.getId()));
         final UriBuilder userUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("users")
                 .path(String.valueOf(nft.getOwner().getId()));
+        final UriBuilder imageUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("images")
+                .path(String.valueOf(nft.getIdImage()));
 
         if (nft.getSellOrder() != null) {
             final UriBuilder sellorderUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("sellorders")
@@ -42,12 +44,12 @@ public class NftDto {
 
         dto.self = nftUriBuilder.build();
         dto.owner = userUriBuilder.build();
+        dto.image = imageUriBuilder.build();
 
         dto.id = nft.getId();
         dto.collection = nft.getCollection();
         dto.contractAddr = nft.getContractAddr();
         dto.description = nft.getDescription();
-        dto.idImage = nft.getIdImage();
         dto.chain = nft.getChain().name();
         dto.nftId = nft.getNftId();
         dto.nftName = nft.getNftName();
@@ -86,12 +88,12 @@ public class NftDto {
         this.nftName = nftName;
     }
 
-    public int getIdImage() {
-        return idImage;
+    public URI getImage() {
+        return image;
     }
 
-    public void setIdImage(int idImage) {
-        this.idImage = idImage;
+    public void setImage(URI image) {
+        this.image = image;
     }
 
     public String getCollection() {

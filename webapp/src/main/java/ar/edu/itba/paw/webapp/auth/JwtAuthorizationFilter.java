@@ -95,8 +95,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     refreshToken = JwtUtils.generateRefreshToken(claimsMap, "skyplace", userPass[0],
                             Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
 
-                    response.addHeader("Access Token", accessToken);
-                    response.addHeader("Renewal Token", refreshToken);
+                    response.addHeader("X-Access-Token", accessToken);
+                    response.addHeader("X-Renewal-Token", refreshToken);
                     break;
                 case JWTAUTH_PREFIX:
                     String email;
@@ -119,8 +119,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                             refreshToken = JwtUtils.generateRefreshToken(claimsMap, "skyplace", email,
                                     Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
 
-                            response.addHeader("Access Token", accessToken);
-                            response.addHeader("Renewal Token", refreshToken);
+                            response.addHeader("X-Access-Token", accessToken);
+                            response.addHeader("X-Renewal-Token", refreshToken);
                             break;
                         default:
                             break;
@@ -129,9 +129,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 default:
                     break;
             }
-
-            // go to the next filter in the filter chain
-            chain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
             final Gson gson = new Gson();
             final ErrorDto dto = ErrorDto.fromGenericException(e, HttpServletResponse.SC_UNAUTHORIZED, "14");
@@ -141,6 +138,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             response.getWriter().print(gson.toJson(errorList));
             response.getWriter().flush();
         }
+        // go to the next filter in the filter chain
+        chain.doFilter(request, response);
     }
 
 }
