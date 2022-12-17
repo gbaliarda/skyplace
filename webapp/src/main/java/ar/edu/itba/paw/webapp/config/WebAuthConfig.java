@@ -35,6 +35,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     public static final String REMEMBERME_KEY_PARAMETER = "REMEMBERME_KEY";
 
     @Autowired
+    private CorsFilter corsFilter;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -78,7 +81,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(new SkyplaceAccessDeniedHandler())
             .and()
                 .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-            .csrf().disable().cors().configurationSource(corsConfigurationSource());
+                .addFilterBefore(this.corsFilter, ChannelProcessingFilter.class)
+            .csrf().disable();
+                //.cors().configurationSource(corsConfigurationSource());
     }
 
     @Override
