@@ -1,11 +1,14 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.dto.ErrorDto;
 import ar.edu.itba.paw.webapp.dto.wrappers.ResponseErrorsDto;
 import com.google.gson.Gson;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -28,6 +31,7 @@ import java.util.*;
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
+    private final UserService userService;
     private final SkyplaceUserDetailsService userDetailsService;
     private final static Dotenv env = Dotenv.load();
 
@@ -41,7 +45,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final Key jwtKey;
 
-    public JwtAuthorizationFilter(SkyplaceUserDetailsService userDetailsService) {
+    public JwtAuthorizationFilter(SkyplaceUserDetailsService userDetailsService, UserService userService) {
+        this.userService = userService;
         this.userDetailsService = userDetailsService;
         this.jwtKey = new SecretKeySpec(Objects.requireNonNull(env.get(JWT_KEY_PARAMETER)).getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
     }
@@ -56,6 +61,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String refreshToken;
         String prefix = "";
         String credentials = "";
+
+        Optional<User> maybeUser;
 
         Map<String, Object> claimsMap;
 
@@ -81,7 +88,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(token);
 
                     claimsMap = new HashMap<>();
-                    claimsMap.put("user", userPass[0]);
+                    maybeUser = userService.getUserByEmail(userPass[0]);
+                    maybeUser.ifPresent(user -> claimsMap.put("user", user.getId()));
 
                     accessToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", userPass[0],
                             Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
@@ -104,7 +112,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         case "refresh":
                             email = tokenSubjectPair.getValue();
                             claimsMap = new HashMap<>();
-                            claimsMap.put("user", email);
+                            maybeUser = userService.getUserByEmail(email);
+                            maybeUser.ifPresent(user -> claimsMap.put("user", user.getId()));
 
                             accessToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", email,
                                     Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);

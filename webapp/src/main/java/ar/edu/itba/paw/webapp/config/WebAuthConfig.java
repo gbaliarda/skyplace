@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.auth.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +35,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     public static final String REMEMBERME_KEY_PARAMETER = "REMEMBERME_KEY";
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private SkyplaceUserDetailsService userDetailsService;
 
     @Bean
@@ -43,7 +47,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(userDetailsService);
+        return new JwtAuthorizationFilter(userDetailsService, userService);
     }
 
     @Bean
