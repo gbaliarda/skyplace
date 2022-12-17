@@ -8,6 +8,7 @@ import java.net.URI;
 
 public class UserDto {
 
+    private int id;
     private String username;
     private String wallet;
     private String email;
@@ -21,13 +22,21 @@ public class UserDto {
         final UriBuilder userUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("users")
                 .path(String.valueOf(user.getId()));
 
+        userDto.id = user.getId();
         userDto.username = user.getUsername();
         userDto.email = user.getEmail();
         userDto.wallet = user.getWallet();
         userDto.self = userUriBuilder.build();
 
-
         return userDto;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUsername() {

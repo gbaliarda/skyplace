@@ -9,6 +9,7 @@ import java.net.URI;
 
 public class ReviewDto {
 
+    private int id;
     private int score;
     private String title;
     private String comments;
@@ -41,11 +42,20 @@ public class ReviewDto {
         dto.reviewee = revieweeUriBuilder.build();
         dto.reviewer = reviewerUriBuilder.build();
 
+        dto.id = review.getId();
         dto.score = review.getScore();
         dto.title = review.getTitle();
         dto.comments = review.getComments();
 
         return dto;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getScore() {

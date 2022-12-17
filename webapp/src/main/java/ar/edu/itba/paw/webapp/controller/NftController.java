@@ -52,10 +52,6 @@ public class NftController {
 
         NftsDto nfts = NftsDto.fromNftList(nftList,
                 nftService.getAmountPublicationsByUser(status, null, chain, null, null, sort, search, searchFor, ownerId));
-        /*
-        if (nftList.isEmpty())
-            return Response.noContent().build();
-         */
 
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<NftsDto>(nfts) {});
         if (page > 1)

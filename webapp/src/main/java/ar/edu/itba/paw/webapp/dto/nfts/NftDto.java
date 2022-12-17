@@ -8,6 +8,7 @@ import java.net.URI;
 
 public class NftDto {
 
+    private int id;
     private int nftId;
     private String contractAddr;
     private String nftName;
@@ -20,7 +21,6 @@ public class NftDto {
     private URI self;
     private URI owner;
     private URI sellorder;
-    private URI purchases;
 
     // returns the DTO representation of the Nft
     public static NftDto fromNft(final UriInfo uriInfo, final Nft nft) {
@@ -30,7 +30,6 @@ public class NftDto {
                 .path(String.valueOf(nft.getId()));
         final UriBuilder userUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("users")
                 .path(String.valueOf(nft.getOwner().getId()));
-        final UriBuilder purchasesUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("purchases");
 
         if (nft.getSellOrder() != null) {
             final UriBuilder sellorderUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("sellorders")
@@ -43,9 +42,8 @@ public class NftDto {
 
         dto.self = nftUriBuilder.build();
         dto.owner = userUriBuilder.build();
-        // /purchases?nftId=21
-        dto.purchases = purchasesUriBuilder.queryParam("nftId", String.valueOf(nft.getId())).build();
 
+        dto.id = nft.getId();
         dto.collection = nft.getCollection();
         dto.contractAddr = nft.getContractAddr();
         dto.description = nft.getDescription();
@@ -54,6 +52,14 @@ public class NftDto {
         dto.nftId = nft.getNftId();
         dto.nftName = nft.getNftName();
         return dto;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getNftId() {
@@ -118,14 +124,6 @@ public class NftDto {
 
     public void setSelf(URI self) {
         this.self = self;
-    }
-
-    public URI getPurchases() {
-        return purchases;
-    }
-
-    public void setPurchases(URI purchases) {
-        this.purchases = purchases;
     }
 
     public URI getSellorder() {

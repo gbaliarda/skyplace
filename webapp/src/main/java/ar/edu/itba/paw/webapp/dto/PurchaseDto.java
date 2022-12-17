@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.Date;
 
 public class PurchaseDto {
+    private int id;
     private BigDecimal price;
     private Date buyDate;
     private StatusPurchase status;
@@ -40,6 +41,7 @@ public class PurchaseDto {
         final UriBuilder sellerUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(USERS_URI_PREFIX)
                 .path(String.valueOf(purchase.getSeller().getId()));
 
+        purchaseDto.id = purchase.getId();
         purchaseDto.price = purchase.getPrice();
         purchaseDto.buyDate = purchase.getBuyDate();
         purchaseDto.nft = nftUriBuilder.build();
@@ -51,6 +53,14 @@ public class PurchaseDto {
         purchaseDto.self = purchasesUriBuilder.build();
 
         return purchaseDto;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public BigDecimal getPrice() {
