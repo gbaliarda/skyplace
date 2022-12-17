@@ -95,7 +95,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "OPTIONS", "DELETE", "HEAD"));
-        configuration.setAllowedHeaders(Arrays.asList("Location", "Link", "X-Access-Token", "X-Renewal-Token"));
+        configuration.setExposedHeaders(Arrays.asList("Location", "Link", "X-Access-Token", "X-Renewal-Token"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
