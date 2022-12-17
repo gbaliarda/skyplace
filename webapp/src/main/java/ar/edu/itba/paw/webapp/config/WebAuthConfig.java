@@ -71,7 +71,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().headers().cacheControl().disable()
              .and().authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/users/*/buyorders", "/users/*/purchases", "/users/*/purchases/*", "/users/*/favorites").hasAnyRole("USER","ADMIN")
-                .antMatchers(HttpMethod.GET, "/nfts", "/nfts/*", "/users/*", "/users/*/reviews", "/users/*/reviews/*", "/sellorders", "/sellorders/*", "/sellorders/*/buyorders").permitAll()
+                .antMatchers(HttpMethod.GET, "/images/*","/nfts", "/nfts/*", "/users/*", "/users/*/reviews", "/users/*/reviews/*", "/sellorders", "/sellorders/*", "/sellorders/*/buyorders").permitAll()
                 .antMatchers(HttpMethod.PUT, "/users/*/favorites/*", "/sellorders/*", "/sellorders/*/buyorders/*").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/nfts", "/users/*/reviews", "/sellorders", "/sellorders/*/buyorders", "/sellorders/*/buyorders/*").hasAnyRole("USER","ADMIN")

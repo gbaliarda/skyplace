@@ -4,11 +4,10 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.dto.ErrorDto;
 import ar.edu.itba.paw.webapp.dto.wrappers.ResponseErrorsDto;
+import ar.edu.itba.paw.webapp.helpers.Pair;
 import com.google.gson.Gson;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
-import javafx.util.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -102,15 +101,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 case JWTAUTH_PREFIX:
                     String email;
                     Pair<String, String> tokenSubjectPair = JwtUtils.validateAccessToken(credentials, jwtKey, Date.from(now));
-                    switch (tokenSubjectPair.getKey()) {
+                    switch (tokenSubjectPair.getLeftValue()) {
                         case "access":
-                            email = tokenSubjectPair.getValue();
+                            email = tokenSubjectPair.getRightValue();
                             token = userDetailsService.jwtLogin(email);
                             if (token.isAuthenticated())
                                 SecurityContextHolder.getContext().setAuthentication(token);
                             break;
                         case "refresh":
-                            email = tokenSubjectPair.getValue();
+                            email = tokenSubjectPair.getRightValue();
                             claimsMap = new HashMap<>();
                             maybeUser = userService.getUserByEmail(email);
                             maybeUser.ifPresent(user -> claimsMap.put("user", user.getId()));

@@ -10,7 +10,6 @@ import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateSellOrderForm;
 import ar.edu.itba.paw.webapp.form.PriceForm;
 import ar.edu.itba.paw.webapp.form.SellNftForm;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
