@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.dto.reviews;
 
-import javax.ws.rs.core.UriInfo;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class ReviewsDto {
@@ -12,9 +12,10 @@ public class ReviewsDto {
 
     public static ReviewsDto fromReviewList(final List<ReviewDto> reviews, final long total, final double score, final List<ReviewStarScoreDto> ratings) {
         final ReviewsDto dto = new ReviewsDto();
+        final DecimalFormat scoreFormat = new DecimalFormat("#.##");
 
         dto.total = total;
-        dto.score = score;
+        dto.score = Double.parseDouble(scoreFormat.format(score));
         dto.ratings = ratings;
         dto.reviews = reviews;
 
