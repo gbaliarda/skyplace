@@ -14,7 +14,7 @@ public class ReviewsDto {
 
     public static ReviewsDto fromReviewList(final List<ReviewDto> reviews, final long total, final double score, final List<ReviewStarScoreDto> ratings) {
         final ReviewsDto dto = new ReviewsDto();
-        BigDecimal bd = new BigDecimal(score).setScale(2, RoundingMode.HALF_EVEN);
+        BigDecimal bd = new BigDecimal(score).setScale(2, RoundingMode.HALF_UP);
 
         dto.total = total;
         dto.score = bd.doubleValue();
