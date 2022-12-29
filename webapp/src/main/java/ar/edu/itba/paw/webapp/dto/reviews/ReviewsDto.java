@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.dto.reviews;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -12,10 +14,10 @@ public class ReviewsDto {
 
     public static ReviewsDto fromReviewList(final List<ReviewDto> reviews, final long total, final double score, final List<ReviewStarScoreDto> ratings) {
         final ReviewsDto dto = new ReviewsDto();
-        final DecimalFormat scoreFormat = new DecimalFormat("#.##");
+        BigDecimal bd = new BigDecimal(score).setScale(2, RoundingMode.HALF_EVEN);
 
         dto.total = total;
-        dto.score = Double.parseDouble(scoreFormat.format(score));
+        dto.score = bd.doubleValue();
         dto.ratings = ratings;
         dto.reviews = reviews;
 
