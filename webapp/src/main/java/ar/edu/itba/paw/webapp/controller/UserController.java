@@ -125,7 +125,7 @@ public class UserController {
             throw new UserNoPermissionException();
 
         List<NftDto> userFavorites = nftService.getAllPublicationsByUser(page, currentUser, "favorited", sort)
-                .stream().map(Publication::getNft).map(n -> NftDto.fromNft(uriInfo, n)).collect(Collectors.toList());
+                .stream().map(Publication::getNft).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
         if (userFavorites.isEmpty())
             return Response.noContent().build();
 
@@ -154,7 +154,7 @@ public class UserController {
         if(currentUser.getId() != userId)
             throw new UserNoPermissionException();
 
-        Optional<NftDto> maybeNft = nftService.getNFTById(nftId).map(n -> NftDto.fromNft(uriInfo, n));
+        Optional<NftDto> maybeNft = nftService.getNFTById(nftId).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId())));
         if (!maybeNft.isPresent()) {
             throw new NotFoundException("Nft not found");
         }
@@ -175,7 +175,7 @@ public class UserController {
         if(currentUser.getId() != userId)
             throw new UserNoPermissionException();
 
-        Optional<NftDto> maybeNft = nftService.getNFTById(nftId).map(n -> NftDto.fromNft(uriInfo, n));
+        Optional<NftDto> maybeNft = nftService.getNFTById(nftId).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId())));
         if (!maybeNft.isPresent()) {
             throw new NotFoundException("Nft not found");
         }

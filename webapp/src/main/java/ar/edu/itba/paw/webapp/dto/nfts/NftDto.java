@@ -15,6 +15,7 @@ public class NftDto {
     private String collection;
     private String description;
     private String chain;
+    private int favorites;
 
     // hyperlinks to itself and to other entities
     private URI self;
@@ -23,7 +24,7 @@ public class NftDto {
     private URI sellorder;
 
     // returns the DTO representation of the Nft
-    public static NftDto fromNft(final UriInfo uriInfo, final Nft nft) {
+    public static NftDto fromNft(final UriInfo uriInfo, final Nft nft, final int nftFavorites) {
         final NftDto dto = new NftDto();
 
         final UriBuilder nftUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("nfts")
@@ -53,6 +54,7 @@ public class NftDto {
         dto.chain = nft.getChain().name();
         dto.nftId = nft.getNftId();
         dto.nftName = nft.getNftName();
+        dto.favorites = nftFavorites;
         return dto;
     }
 
@@ -118,6 +120,14 @@ public class NftDto {
 
     public void setChain(String chain) {
         this.chain = chain;
+    }
+
+    public int getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(int favorites) {
+        this.favorites = favorites;
     }
 
     public URI getSelf() {

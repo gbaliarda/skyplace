@@ -88,7 +88,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                     claimsMap = new HashMap<>();
                     maybeUser = userService.getUserByEmail(userPass[0]);
-                    maybeUser.ifPresent(user -> claimsMap.put("user", user.getId()));
+                    maybeUser.ifPresent(user -> {
+                        claimsMap.put("user", user.getId());
+                        claimsMap.put("roles", Collections.singletonList(user.getRole()));
+                    });
 
                     accessToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", userPass[0],
                             Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
@@ -112,7 +115,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                             email = tokenSubjectPair.getRightValue();
                             claimsMap = new HashMap<>();
                             maybeUser = userService.getUserByEmail(email);
-                            maybeUser.ifPresent(user -> claimsMap.put("user", user.getId()));
+                            maybeUser.ifPresent(user -> {
+                                claimsMap.put("user", user.getId());
+                                claimsMap.put("roles", Collections.singletonList(user.getRole()));
+                            });
 
                             accessToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", email,
                                     Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);

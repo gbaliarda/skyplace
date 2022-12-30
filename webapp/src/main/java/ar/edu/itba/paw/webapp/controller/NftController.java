@@ -25,14 +25,16 @@ public class NftController {
 
     private final NftService nftService;
     private final UserService userService;
+    private final FavoriteService favoriteService;
 
     @Context
     private UriInfo uriInfo;
 
     @Autowired
-    public NftController(final NftService nftService, final UserService userService) {
+    public NftController(final NftService nftService, final UserService userService, final FavoriteService favoriteService) {
         this.nftService = nftService;
         this.userService = userService;
+        this.favoriteService = favoriteService;
     }
 
     // GET /nfts
@@ -48,7 +50,7 @@ public class NftController {
             @QueryParam("owner") final Integer ownerId
     ) {
         List<NftDto> nftList = nftService.getAll(page, status, null, chain, null, null, sort, search, searchFor, ownerId)
-                .stream().map(n -> NftDto.fromNft(uriInfo, n)).collect(Collectors.toList());
+                .stream().map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
 
         NftsDto nfts = NftsDto.fromNftList(nftList,
                 nftService.getAmountPublicationsByUser(status, null, chain, null, null, sort, search, searchFor, ownerId));
@@ -83,7 +85,7 @@ public class NftController {
     @GET
     @Path("/{id}")
     public Response getNft(@PathParam("id") int id) {
-        Optional<NftDto> maybeNft = nftService.getNFTById(id).map(n -> NftDto.fromNft(uriInfo, n));
+        Optional<NftDto> maybeNft = nftService.getNFTById(id).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId())));
         if (maybeNft.isPresent()) {
             return Response.ok(maybeNft.get()).build();
         }
