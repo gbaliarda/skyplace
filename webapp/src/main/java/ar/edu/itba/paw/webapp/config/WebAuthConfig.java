@@ -33,9 +33,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     public static final String REMEMBERME_KEY_PARAMETER = "REMEMBERME_KEY";
 
     @Autowired
-    private CorsFilter corsFilter;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
@@ -64,6 +61,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.cors().configurationSource(corsConfigurationSource());
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().headers().cacheControl().disable()
@@ -80,8 +78,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 //.addFilterBefore(this.corsFilter, ChannelProcessingFilter.class)
-            .csrf().disable()
-                .cors().configurationSource(corsConfigurationSource());
+            .csrf().disable();
+
     }
 
     @Override
@@ -95,6 +93,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "OPTIONS", "DELETE", "HEAD"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Location", "Link", "X-Access-Token", "X-Renewal-Token"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -100,4 +100,17 @@ public class NftController {
         return Response.noContent().build();
     }
 
+    @GET
+    @Path("/{id}/recommendations")
+    public Response listNftRecommendations(@PathParam("id") int id) {
+        /*
+        Optional<Nft> maybeNft = nftService.getNFTById(id);
+        if(!maybeNft.isPresent()) {
+            throw new NotFoundException("Nft not found");
+        }
+        */
+        List<NftDto> recommended = nftService.getRecommended(id).stream().map(p -> NftDto.fromNft(uriInfo, p.getNft(), favoriteService.getNftFavorites(p.getNft().getId()))).collect(Collectors.toList());
+        return Response.ok(NftsDto.fromNftList(recommended, recommended.size())).build();
+    }
+
 }
