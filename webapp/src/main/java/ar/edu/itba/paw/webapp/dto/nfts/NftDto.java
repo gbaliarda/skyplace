@@ -15,6 +15,7 @@ public class NftDto {
     private String collection;
     private String description;
     private String chain;
+    private boolean isDeleted;
     private int favorites;
 
     // hyperlinks to itself and to other entities
@@ -55,6 +56,7 @@ public class NftDto {
         dto.nftId = nft.getNftId();
         dto.nftName = nft.getNftName();
         dto.favorites = nftFavorites;
+        dto.isDeleted = nft.isDeleted();
         return dto;
     }
 
@@ -152,5 +154,13 @@ public class NftDto {
 
     public void setOwner(URI owner) {
         this.owner = owner;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }
