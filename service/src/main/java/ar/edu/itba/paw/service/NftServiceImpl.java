@@ -64,14 +64,14 @@ public class NftServiceImpl implements NftService {
     }
 
     @Override
-    public List<Publication> getAllPublications(int page, String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor) {
+    public List<Publication> getAllPublications(int page, List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor) {
         List<Nft> nfts = nftDao.getAllPublications(page, pageSize, status, category, chain, minPrice, maxPrice, sort, search, searchFor, null);
         User currentUser = userService.getCurrentUser().orElse(null);
         return createPublicationsWithNfts(nfts, currentUser);
     }
 
     @Override
-    public List<Nft> getAll(int page, String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId) {
+    public List<Nft> getAll(int page, List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId) {
         return nftDao.getAllPublications(page, pageSize, status, category, chain, minPrice, maxPrice, sort, search, searchFor, ownerId);
     }
 
@@ -112,7 +112,7 @@ public class NftServiceImpl implements NftService {
     }
 
     @Override
-    public int getAmountPublications(String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor) {
+    public int getAmountPublications(List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor) {
         return nftDao.getAmountPublications(status, category, chain, minPrice, maxPrice, sort, search, searchFor);
     }
 
@@ -131,7 +131,7 @@ public class NftServiceImpl implements NftService {
     }
 
     @Override
-    public int getAmountPublicationsByUser(String status, String category, String chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId) {
+    public int getAmountPublicationsByUser(List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId) {
         if(ownerId == null)
             return nftDao.getAmountPublications(status, category, chain, minPrice, maxPrice, sort, search, searchFor);
         return nftDao.getAmountPublicationsByUser(status, category, chain, minPrice, maxPrice, sort, search, searchFor, ownerId);

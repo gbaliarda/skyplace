@@ -139,11 +139,11 @@ public class NftServiceImplTest {
     public void testGetAllPublicationsWithNoPublications(){
         User user = new User(ID_USER1, USERNAME_USER1, WALLET_USER1, MAIL_USER1, PASSWORD_USER1, WALLETCHAIN_USER1, ROLE_USER1, LOCALE_USER1);
 
-        Mockito.when(nftDao.getAllPublications(PAGE_NUM, PAGE_SIZE, DEFAULT_STATUS_BUY_ORDER, PUBLICATIONS_CATEGORY, PUBLICATIONS_CHAIN,
+        Mockito.when(nftDao.getAllPublications(PAGE_NUM, PAGE_SIZE, Collections.singletonList(DEFAULT_STATUS_BUY_ORDER), Collections.singletonList(PUBLICATIONS_CATEGORY), Collections.singletonList(PUBLICATIONS_CHAIN),
                 PUBLICATIONS_MIN_PRICE, PUBLICATIONS_MAX_PRICE, PUBLICATIONS_SORT, PUBLICATIONS_SEARCH, PUBLICATIONS_SEARCHFOR, null)).thenReturn(Collections.emptyList());
         Mockito.when(userService.getCurrentUser()).thenReturn(Optional.of(user));
 
-        List<Publication> publications = nftService.getAllPublications(PAGE_NUM, DEFAULT_STATUS_BUY_ORDER, PUBLICATIONS_CATEGORY, PUBLICATIONS_CHAIN,
+        List<Publication> publications = nftService.getAllPublications(PAGE_NUM, Collections.singletonList(DEFAULT_STATUS_BUY_ORDER), Collections.singletonList(PUBLICATIONS_CATEGORY), Collections.singletonList(PUBLICATIONS_CHAIN),
                 PUBLICATIONS_MIN_PRICE, PUBLICATIONS_MAX_PRICE, PUBLICATIONS_SORT, PUBLICATIONS_SEARCH, PUBLICATIONS_SEARCHFOR);
 
         assertEquals(0, publications.size());

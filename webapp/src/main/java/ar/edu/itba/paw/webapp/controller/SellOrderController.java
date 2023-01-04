@@ -19,6 +19,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,14 +51,14 @@ public class SellOrderController {
             @QueryParam("page") @DefaultValue("1") final int page,
             @QueryParam("minPrice") @DefaultValue("0") final BigDecimal minPrice,
             @QueryParam("maxPrice") @DefaultValue("-1") final BigDecimal maxPrice,
-            @QueryParam("category") final String category,
-            @QueryParam("chain") final String chain,
+            @QueryParam("category") final List<String> category,
+            @QueryParam("chain") final List<String> chain,
             @QueryParam("sort") final String sort,
             @QueryParam("search") final String search,
             @QueryParam("searchFor") final String searchFor,
             @QueryParam("seller") final Integer sellerId
     ) {
-        Stream<Nft> stream = nftService.getAll(page, "onSale", category, chain, minPrice, maxPrice, sort, search, searchFor, null)
+        Stream<Nft> stream = nftService.getAll(page, Collections.singletonList("onSale"), category, chain, minPrice, maxPrice, sort, search, searchFor, null)
                 .stream();
 
         // TODO: Get only user nfts instead of all and then filter
@@ -73,7 +74,7 @@ public class SellOrderController {
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<SellOrderDto>>(sellOrderList) {});
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
-        int lastPage = (int) Math.ceil(nftService.getAmountPublications("onSale", category, chain, minPrice, maxPrice, sort, search, "") / (double) nftService.getPageSize());
+        int lastPage = (int) Math.ceil(nftService.getAmountPublications(Collections.singletonList("onSale"), category, chain, minPrice, maxPrice, sort, search, "") / (double) nftService.getPageSize());
         if (page < lastPage)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
 

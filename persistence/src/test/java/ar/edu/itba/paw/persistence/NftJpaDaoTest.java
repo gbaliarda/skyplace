@@ -16,6 +16,8 @@ import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,7 +109,7 @@ public class NftJpaDaoTest {
             em.persist(nft);
         }
 
-        List<Nft> publications = nftJpaDao.getAllPublications(1, PAGE_SIZE, null, null, CHAIN.name(), null, null, "noSort", null, null, null);
+        List<Nft> publications = nftJpaDao.getAllPublications(1, PAGE_SIZE, null, null, Collections.singletonList(CHAIN.name()), null, null, "noSort", null, null, null);
 
         assertEquals(PAGE_SIZE, publications.size());
     }
@@ -119,7 +121,7 @@ public class NftJpaDaoTest {
             em.persist(nft);
         }
 
-        List<Nft> publications = nftJpaDao.getAllPublications(1, PAGE_SIZE, "onSale", "Other,Art", CHAIN.name(), new BigDecimal(1), new BigDecimal(2), "name", "abc", null, null);
+        List<Nft> publications = nftJpaDao.getAllPublications(1, PAGE_SIZE, Collections.singletonList("onSale"),  Arrays.asList("Other","Art"), Collections.singletonList(CHAIN.name()), new BigDecimal(1), new BigDecimal(2), "name", "abc", null, null);
 
         assertEquals(0, publications.size());
     }
@@ -143,7 +145,7 @@ public class NftJpaDaoTest {
             em.persist(nft);
         }
 
-        int amountPublications = nftJpaDao.getAmountPublications( null, null, CHAIN.name(), null, null, null, null, null);
+        int amountPublications = nftJpaDao.getAmountPublications( null, null, Collections.singletonList(CHAIN.name()), null, null, null, null, null);
 
         assertEquals(15, amountPublications);
     }
