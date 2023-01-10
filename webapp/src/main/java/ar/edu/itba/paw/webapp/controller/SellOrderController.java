@@ -4,8 +4,9 @@ import ar.edu.itba.paw.exceptions.SellOrderNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNoPermissionException;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.dto.BuyOrderDto;
+import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrderDto;
 import ar.edu.itba.paw.webapp.dto.SellOrderDto;
+import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrdersDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateSellOrderForm;
 import ar.edu.itba.paw.webapp.form.PriceForm;
@@ -157,13 +158,14 @@ public class SellOrderController {
         long amountOfferPages;
         amountOfferPages = buyOrderService.getAmountPagesBySellOrderId(maybeSellOrder.get());
 
-        List<BuyOrderDto> buyOffers;
-        buyOffers = buyOrderService.getOrdersBySellOrderId(offerPage, maybeSellOrder.get().getId()).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
+        List<BuyOrderDto> buyOrdersList = buyOrderService.getOrdersBySellOrderId(offerPage, maybeSellOrder.get().getId()).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
 
-        if(buyOffers.isEmpty()){
+        BuyOrdersDto buyOrders = BuyOrdersDto.fromBuyOrdersList(buyOrdersList, amountOfferPages);
+
+        if(buyOrders.getBuyorders().isEmpty()){
             return Response.noContent().build();
         }
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<BuyOrderDto>>(buyOffers) {});
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<BuyOrdersDto>(buyOrders) {});
         if (offerPage > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", offerPage - 1).build(), "prev");
         if (offerPage < amountOfferPages)

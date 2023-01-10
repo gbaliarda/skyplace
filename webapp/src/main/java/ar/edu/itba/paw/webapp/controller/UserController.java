@@ -8,6 +8,7 @@ import ar.edu.itba.paw.model.Review;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrderDto;
 import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewStarScoreDto;

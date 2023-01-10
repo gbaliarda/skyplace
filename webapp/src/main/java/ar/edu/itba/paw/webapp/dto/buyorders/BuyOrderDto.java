@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.buyorders;
 
 import ar.edu.itba.paw.model.BuyOrder;
 
