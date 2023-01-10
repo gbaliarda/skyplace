@@ -10,6 +10,7 @@ import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrderDto;
 import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
+import ar.edu.itba.paw.webapp.dto.nfts.NftsDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewStarScoreDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewsDto;
@@ -127,10 +128,11 @@ public class UserController {
 
         List<NftDto> userFavorites = nftService.getAllPublicationsByUser(page, currentUser, "favorited", sort)
                 .stream().map(Publication::getNft).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
-        if (userFavorites.isEmpty())
-            return Response.noContent().build();
 
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(userFavorites) {});
+        NftsDto nftsDto = NftsDto.fromNftList(userFavorites,
+                favoriteService.getUserFavoritesAmount(userId));
+
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<NftsDto>(nftsDto) {});
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
         int lastPage = nftService.getAmountPublicationPagesByUser(currentUser, currentUser, "favorited");

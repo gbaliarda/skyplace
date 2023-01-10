@@ -63,4 +63,15 @@ public class FavoriteJpaDao implements FavoriteDao{
         query.setParameter("id_nft", productId);
         return ((BigInteger)query.getSingleResult()).intValue();
     }
+
+    /**
+     * Retrieves the amount of favorites a user has
+     * @return User favorites amount.
+     */
+    @Override
+    public int getUserFavoritesAmount(int userId) {
+        final Query query = em.createNativeQuery("SELECT count(*) FROM Favorited where user_id = :user_id");
+        query.setParameter("user_id", userId);
+        return ((BigInteger)query.getSingleResult()).intValue();
+    }
 }

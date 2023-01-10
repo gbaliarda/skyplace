@@ -15,4 +15,6 @@ public interface FavoriteService {
     Optional<Favorited> userFavedNft(int userId, int nftId);
 
     boolean isNftFavedByUser(int userId, int nftId);
+
+    int getUserFavoritesAmount(int userId);
 }

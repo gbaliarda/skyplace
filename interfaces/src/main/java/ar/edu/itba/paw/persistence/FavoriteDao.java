@@ -14,4 +14,6 @@ public interface FavoriteDao {
     Optional<Favorited> userFavedNft(int userId, int idNft);
 
     int getNftFavorites(int productId);
+
+    int getUserFavoritesAmount(int userId);
 }
