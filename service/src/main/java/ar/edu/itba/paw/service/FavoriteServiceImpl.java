@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.exceptions.NftNotFoundException;
+import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.model.Favorited;
 import ar.edu.itba.paw.model.Nft;
 import ar.edu.itba.paw.model.User;
@@ -16,11 +17,13 @@ import java.util.Optional;
 public class FavoriteServiceImpl implements FavoriteService{
     private final FavoriteDao favoriteDao;
     private final NftService nftService;
+    private final UserService userService;
 
     @Autowired
-    public FavoriteServiceImpl(FavoriteDao favoriteDao, NftService nftService) {
+    public FavoriteServiceImpl(FavoriteDao favoriteDao, NftService nftService, UserService userService) {
         this.favoriteDao = favoriteDao;
         this.nftService = nftService;
+        this.userService = userService;
     }
 
     @Transactional
@@ -44,6 +47,12 @@ public class FavoriteServiceImpl implements FavoriteService{
     @Override
     public int getNftFavorites(int productId) {
         return favoriteDao.getNftFavorites(productId);
+    }
+
+    @Override
+    public int getUserFavoritesAmount(int userId) {
+        User maybeUser = userService.getUserById(userId).orElseThrow(UserNotFoundException::new);
+        return favoriteDao.getUserFavoritesAmount(maybeUser.getId());
     }
 
     @Override

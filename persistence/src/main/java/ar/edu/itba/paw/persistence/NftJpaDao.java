@@ -75,57 +75,6 @@ public class NftJpaDao implements NftDao {
         return new Pair<>(nativeQuery.toString(), arg);
     }
 
-    protected Pair<String,List<Pair<String,Object>>> buildFilterQuery(List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String search, String searchFor) {
-        StringBuilder nativeQuery = new StringBuilder();
-        List<Pair<String,Object>> args = new ArrayList<>();
-        nativeQuery.append(" WHERE nfts.is_deleted = false ");
-
-        if(status != null && !status.isEmpty()) {
-            StringBuilder statusNativeAux = new StringBuilder();
-            final int[] bothStatus = {0};
-            status.forEach(s -> {
-                if(s.equals("onSale") || s.equals("notSale")) {
-                    statusNativeAux.append(String.format(" AND sellorders.id IS %s NULL ", s.equals("onSale") ? "NOT":""));
-                    bothStatus[0]++;
-                }
-            });
-            if(bothStatus[0] < 2) {
-                nativeQuery.append(statusNativeAux);
-            }
-        }
-
-        Pair<String,Pair<String,Object>> applyCategoryFilter = applyFilter("sellorders.category", "category", category);
-        if(applyCategoryFilter != null) {
-            nativeQuery.append(applyCategoryFilter.getLeft());
-            args.add(applyCategoryFilter.getRight());
-        }
-
-        Pair<String,Pair<String,Object>> applyChainFilter = applyFilter("nfts.chain", "chain", chain);
-        if(applyChainFilter != null) {
-            nativeQuery.append(applyChainFilter.getLeft());
-            args.add(applyChainFilter.getRight());
-        }
-
-        if(minPrice != null && minPrice.compareTo(BigDecimal.ZERO) > 0) {
-            nativeQuery.append(" AND sellorders.price >= :minPrice ");
-            args.add(new Pair<>("minPrice", minPrice));
-        }
-        if(maxPrice != null && maxPrice.compareTo(BigDecimal.ZERO) > 0) {
-            nativeQuery.append(" AND sellorders.price <=  :maxPrice ");
-            args.add(new Pair<>("maxPrice", maxPrice));
-        }
-
-        if(search != null && !search.equals("")) {
-            if(searchFor != null && searchFor.equals("collection"))
-                nativeQuery.append(" AND LOWER(nfts.collection) LIKE LOWER(:search) ");
-            else
-                nativeQuery.append(" AND LOWER(nfts.nft_name) LIKE '%'||LOWER(:search)||'%' ");
-            args.add(new Pair<>("search", search));
-        }
-
-        return new Pair<>(nativeQuery.toString(), args);
-    }
-
     protected Pair<String,List<Pair<String,Object>>> buildFilterQuery(List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String search, String searchFor, Integer ownerId) {
         StringBuilder nativeQuery = new StringBuilder();
         List<Pair<String,Object>> args = new ArrayList<>();
@@ -315,7 +264,7 @@ public class NftJpaDao implements NftDao {
      */
     @Override
     public int getAmountPublications(List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor) {
-        Pair<String, List<Pair<String,Object>>> filterQuery = buildFilterQuery(status, category, chain, minPrice, maxPrice, search, searchFor);
+        Pair<String, List<Pair<String,Object>>> filterQuery = buildFilterQuery(status, category, chain, minPrice, maxPrice, search, searchFor, null);
         return getIds(COUNT_ID_QUERY, filterQuery);
     }
 
