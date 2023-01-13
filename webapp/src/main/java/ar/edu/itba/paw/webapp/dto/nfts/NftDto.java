@@ -40,8 +40,6 @@ public class NftDto {
                     .path(String.valueOf(nft.getSellOrder().getId()));
             // /orders/12
             dto.sellorder = sellorderUriBuilder.build();
-        } else {
-            dto.sellorder = URI.create("");
         }
 
         dto.self = nftUriBuilder.build();
