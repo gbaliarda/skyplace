@@ -39,6 +39,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final static String JWTAUTH_PREFIX = "bearer";
     private final static String JWT_KEY_PARAMETER = "JWT_KEY";
 
+    private final static String ACCESS_TOKEN_HEADER = "X-Access-Token";
+    private final static String REFRESH_TOKEN_HEADER = "X-Renewal-Token";
+
+    private final static String JWT_ISSUER = "skyplace";
+
     private final static int accessTokenValidMinutes = 10;
     private final static int refreshTokenValidMinutes = 15;
 
@@ -74,35 +79,34 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 credentials = contentInfo[1];
             }
         }
-        try {
-            switch (prefix) {
-                case USERAUTH_PREFIX:
-                    // validate user credentails and, if valid, return new jwt auth and refresh tokens
-                    String decodedCredentials = new String(Base64.getDecoder().decode(credentials));
-                    String[] userPass = decodedCredentials.split(":", 2);
+        switch (prefix) {
+            case USERAUTH_PREFIX:
+                // validate user credentails and, if valid, return new jwt auth and refresh tokens
+                String decodedCredentials = new String(Base64.getDecoder().decode(credentials));
+                String[] userPass = decodedCredentials.split(":", 2);
+                token = userDetailsService.restLogin(userPass[0], userPass[1]);
 
-                    token = userDetailsService.restLogin(userPass[0], userPass[1]);
+                if (token.isAuthenticated())
+                    SecurityContextHolder.getContext().setAuthentication(token);
 
-                    if (token.isAuthenticated())
-                        SecurityContextHolder.getContext().setAuthentication(token);
+                claimsMap = new HashMap<>();
+                maybeUser = userService.getUserByEmail(userPass[0]);
+                maybeUser.ifPresent(user -> {
+                    claimsMap.put("user", user.getId());
+                    claimsMap.put("roles", Collections.singletonList(user.getRole()));
+                });
 
-                    claimsMap = new HashMap<>();
-                    maybeUser = userService.getUserByEmail(userPass[0]);
-                    maybeUser.ifPresent(user -> {
-                        claimsMap.put("user", user.getId());
-                        claimsMap.put("roles", Collections.singletonList(user.getRole()));
-                    });
+                accessToken = JwtUtils.generateAccessToken(claimsMap, JWT_ISSUER, userPass[0],
+                        Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
+                refreshToken = JwtUtils.generateRefreshToken(claimsMap, JWT_ISSUER, userPass[0],
+                        Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
 
-                    accessToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", userPass[0],
-                            Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
-                    refreshToken = JwtUtils.generateRefreshToken(claimsMap, "skyplace", userPass[0],
-                            Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
-
-                    response.addHeader("X-Access-Token", accessToken);
-                    response.addHeader("X-Renewal-Token", refreshToken);
-                    break;
-                case JWTAUTH_PREFIX:
-                    String email;
+                response.addHeader(ACCESS_TOKEN_HEADER, accessToken);
+                response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
+                break;
+            case JWTAUTH_PREFIX:
+                String email;
+                try {
                     Pair<String, String> tokenSubjectPair = JwtUtils.validateAccessToken(credentials, jwtKey, Date.from(now));
                     switch (tokenSubjectPair.getLeftValue()) {
                         case "access":
@@ -120,29 +124,27 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                                 claimsMap.put("roles", Collections.singletonList(user.getRole()));
                             });
 
-                            accessToken = JwtUtils.generateAccessToken(claimsMap, "skyplace", email,
+                            accessToken = JwtUtils.generateAccessToken(claimsMap, JWT_ISSUER, email,
                                     Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
-                            refreshToken = JwtUtils.generateRefreshToken(claimsMap, "skyplace", email,
+                            refreshToken = JwtUtils.generateRefreshToken(claimsMap, JWT_ISSUER, email,
                                     Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
 
-                            response.addHeader("X-Access-Token", accessToken);
-                            response.addHeader("X-Renewal-Token", refreshToken);
-                            break;
-                        default:
+                            response.addHeader(ACCESS_TOKEN_HEADER, accessToken);
+                            response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
                             break;
                     }
-                    break;
-                default:
-                    break;
-            }
-        } catch (ExpiredJwtException e) {
-            final Gson gson = new Gson();
-            final ErrorDto dto = ErrorDto.fromGenericException(e, HttpServletResponse.SC_UNAUTHORIZED, "14");
-            final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));
-            response.setContentType(MediaType.APPLICATION_JSON);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().print(gson.toJson(errorList));
-            response.getWriter().flush();
+                } catch (ExpiredJwtException e) {
+                    final Gson gson = new Gson();
+                    final ErrorDto dto = ErrorDto.fromGenericException(e, HttpServletResponse.SC_UNAUTHORIZED, "14");
+                    final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));
+                    response.setContentType(MediaType.APPLICATION_JSON);
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().print(gson.toJson(errorList));
+                    response.getWriter().flush();
+                    return;
+                }
+            default:
+                break;
         }
         // go to the next filter in the filter chain
         chain.doFilter(request, response);

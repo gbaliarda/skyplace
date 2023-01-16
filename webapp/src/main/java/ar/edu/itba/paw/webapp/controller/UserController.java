@@ -9,6 +9,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrderDto;
+import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrdersDto;
 import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
 import ar.edu.itba.paw.webapp.dto.nfts.NftsDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewDto;
@@ -90,20 +91,17 @@ public class UserController {
             throw new UserNotFoundException();
         }
 
-        long amountOfferPages;
-        amountOfferPages = buyOrderService.getAmountPagesForUser(maybeUser.get());
+        /* TODO: Add filter to get amount of pages */
+        long amountOfferPages = buyOrderService.getAmountPagesForUser(maybeUser.get());
 
         if(page > amountOfferPages || page < 0 ) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        List<BuyOrderDto> buyOffers;
-        buyOffers = buyOrderService.getBuyOrdersForUser(maybeUser.get(), page, status).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
+        List<BuyOrderDto> buyOffers = buyOrderService.getBuyOrdersForUser(maybeUser.get(), page, status).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
+        BuyOrdersDto buyOrdersResponse = BuyOrdersDto.fromBuyOrdersList(buyOffers, amountOfferPages);
 
-        if(buyOffers.isEmpty()){
-            return Response.noContent().build();
-        }
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<BuyOrderDto>>(buyOffers) {});
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<BuyOrdersDto>(buyOrdersResponse) {});
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
         if (page < amountOfferPages)
