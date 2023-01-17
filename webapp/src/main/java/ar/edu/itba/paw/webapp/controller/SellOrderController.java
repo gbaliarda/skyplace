@@ -149,16 +149,20 @@ public class SellOrderController {
     @GET
     @Path("/{id}/buyorders")
     @Produces({ MediaType.APPLICATION_JSON})
-    public Response getBuyOrdersBySellOrder(@PathParam("id") int id, @QueryParam("page") @DefaultValue("1") int offerPage){
+    public Response getBuyOrdersBySellOrder(
+            @PathParam("id") int id,
+            @QueryParam("page") @DefaultValue("1") int offerPage,
+            @QueryParam("status") @DefaultValue("ALL") String status
+    ){
         Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
         if (!maybeSellOrder.isPresent()) {
             throw new NotFoundException();
         }
 
         long amountOfferPages;
-        amountOfferPages = buyOrderService.getAmountPagesBySellOrderId(maybeSellOrder.get());
+        amountOfferPages = buyOrderService.getAmountPagesBySellOrderId(maybeSellOrder.get(), status);
 
-        List<BuyOrderDto> buyOrdersList = buyOrderService.getOrdersBySellOrderId(offerPage, maybeSellOrder.get().getId()).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
+        List<BuyOrderDto> buyOrdersList = buyOrderService.getOrdersBySellOrderId(offerPage, maybeSellOrder.get().getId(), status).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
 
         BuyOrdersDto buyOrders = BuyOrdersDto.fromBuyOrdersList(buyOrdersList, amountOfferPages);
 

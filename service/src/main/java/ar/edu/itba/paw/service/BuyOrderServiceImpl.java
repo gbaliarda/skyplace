@@ -66,14 +66,14 @@ public class BuyOrderServiceImpl implements BuyOrderService {
 
     @Transactional
     @Override
-    public List<BuyOrder> getOrdersBySellOrderId(int page, int sellOrderId) {
+    public List<BuyOrder> getOrdersBySellOrderId(int page, int sellOrderId, String status) {
         checkPendingOrdersDateBySellOrderId(sellOrderId);
-        return buyOrderDao.getOrdersBySellOrderId(page, sellOrderId, getPageSize());
+        return buyOrderDao.getOrdersBySellOrderId(page, sellOrderId, status, getPageSize());
     }
 
     @Override
-    public int getAmountPagesBySellOrderId(SellOrder sellOrder) {
-        return (buyOrderDao.getAmountBuyOrders(sellOrder) - 1) / getPageSize() + 1;
+    public int getAmountPagesBySellOrderId(SellOrder sellOrder, String status) {
+        return (buyOrderDao.getAmountBuyOrders(sellOrder, status) - 1) / getPageSize() + 1;
     }
 
     @Transactional

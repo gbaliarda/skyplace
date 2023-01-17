@@ -174,9 +174,9 @@ public class BuyOrderServiceImplTest {
         Nft nft = new Nft(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, NFT_CHAIN, ID_IMAGE_NFT, NFT_COLLECTION, NFT_DESCRIPTION, seller);
         SellOrder sellOrder = new SellOrder(testPrice, nft, CATEGORY);
 
-        Mockito.when(buyOrderDao.getAmountBuyOrders(sellOrder)).thenReturn(0);
+        Mockito.when(buyOrderDao.getAmountBuyOrders(sellOrder, "ALL")).thenReturn(0);
 
-        int pageAmount = buyOrderService.getAmountPagesBySellOrderId(sellOrder);
+        int pageAmount = buyOrderService.getAmountPagesBySellOrderId(sellOrder, "ALL");
 
         assertEquals(1, pageAmount);
     }

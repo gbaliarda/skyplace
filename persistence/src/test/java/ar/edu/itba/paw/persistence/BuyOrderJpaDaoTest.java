@@ -88,7 +88,7 @@ public class BuyOrderJpaDaoTest {
         BuyOrder buyOrder = new BuyOrder(BigDecimal.ONE, sellOrder, owner, StatusBuyOrder.NEW, null);
         em.persist(buyOrder);
 
-        List<BuyOrder> buyOrders = buyOrderJpaDao.getOrdersBySellOrderId(1, sellOrder.getId() ,pageSize);
+        List<BuyOrder> buyOrders = buyOrderJpaDao.getOrdersBySellOrderId(1, sellOrder.getId() ,"ALL", pageSize);
 
         assertEquals(1, buyOrders.size());
     }

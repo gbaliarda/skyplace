@@ -12,9 +12,9 @@ public interface BuyOrderService {
 
     boolean create(int sellOrderId, BigDecimal price, int userId);
 
-    List<BuyOrder> getOrdersBySellOrderId(int offerPage, int sellOrderId);
+    List<BuyOrder> getOrdersBySellOrderId(int offerPage, int sellOrderId, String status);
 
-    int getAmountPagesBySellOrderId(SellOrder sellOrder);
+    int getAmountPagesBySellOrderId(SellOrder sellOrder, String status);
 
     List<BuyOrder> getBuyOrdersForUser(User user, int page, String status);
 

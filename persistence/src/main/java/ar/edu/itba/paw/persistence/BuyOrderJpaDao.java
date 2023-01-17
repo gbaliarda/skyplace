@@ -79,9 +79,10 @@ public class BuyOrderJpaDao implements BuyOrderDao {
      * @return The amount of buy orders for a specific sell order.
      */
     @Override
-    public int getAmountBuyOrders(SellOrder sellOrder) {
-        final Query query = em.createNativeQuery("SELECT count(*) FROM buyorders WHERE id_sellorder = :sellOrderId");
-        query.setParameter("sellOrderId",sellOrder.getId());
+    public int getAmountBuyOrders(SellOrder sellOrder, String status) {
+        final Query query = em.createNativeQuery("SELECT count(*) FROM buyorders WHERE id_sellorder = :sellOrderId AND status = :status");
+        query.setParameter("sellOrderId", sellOrder.getId());
+        query.setParameter("status", status);
         return ((BigInteger)query.getSingleResult()).intValue();
     }
 
@@ -205,11 +206,12 @@ public class BuyOrderJpaDao implements BuyOrderDao {
      * @return A list of pageSize or less elements with all the different buy orders in a certain page for a certain sell order.
      */
     @Override
-    public List<BuyOrder> getOrdersBySellOrderId(int page, int sellOrderId, int pageSize) {
-        final Query idQuery = em.createNativeQuery("SELECT id_buyer FROM buyorders WHERE id_sellorder = :sellOrderId LIMIT :pageSize OFFSET :pageOffset");
+    public List<BuyOrder> getOrdersBySellOrderId(int page, int sellOrderId, String status, int pageSize) {
+        final Query idQuery = em.createNativeQuery("SELECT id_buyer FROM buyorders WHERE id_sellorder = :sellOrderId AND status = :status LIMIT :pageSize OFFSET :pageOffset");
         idQuery.setParameter("sellOrderId", sellOrderId);
         idQuery.setParameter("pageSize", pageSize);
         idQuery.setParameter("pageOffset", (page-1) * pageSize);
+        idQuery.setParameter("status", status);
 
         @SuppressWarnings("unchecked")
         final List<Integer> ids = (List<Integer>) idQuery.getResultList();

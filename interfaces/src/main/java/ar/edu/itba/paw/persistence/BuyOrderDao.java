@@ -27,11 +27,11 @@ public interface BuyOrderDao {
 
     List<BuyOrder> getPendingBuyOrdersToUser(User user, int page, int pageSize);
 
-    List<BuyOrder> getOrdersBySellOrderId(int page, int sellOrderId, int pageSize);
+    List<BuyOrder> getOrdersBySellOrderId(int page, int sellOrderId, String status, int pageSize);
 
     List<BuyOrder> getExpiredPendingOffersByUser(User user);
 
-    int getAmountBuyOrders(SellOrder sellOrder);
+    int getAmountBuyOrders(SellOrder sellOrder, String status);
 
     int getAmountBuyOrdersForUser(User user);
 
