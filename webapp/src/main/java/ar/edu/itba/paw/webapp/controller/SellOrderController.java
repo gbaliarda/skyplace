@@ -169,6 +169,7 @@ public class SellOrderController {
         if(buyOrders.getBuyorders().isEmpty()){
             return Response.noContent().build();
         }
+
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<BuyOrdersDto>(buyOrders) {});
         if (offerPage > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", offerPage - 1).build(), "prev");

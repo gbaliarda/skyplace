@@ -207,11 +207,19 @@ public class BuyOrderJpaDao implements BuyOrderDao {
      */
     @Override
     public List<BuyOrder> getOrdersBySellOrderId(int page, int sellOrderId, String status, int pageSize) {
-        final Query idQuery = em.createNativeQuery("SELECT id_buyer FROM buyorders WHERE id_sellorder = :sellOrderId AND status = :status LIMIT :pageSize OFFSET :pageOffset");
+        boolean isValidStatus = StatusBuyOrder.hasStatus(status);
+        StringBuilder baseQuery = new StringBuilder("SELECT id_buyer FROM buyorders WHERE id_sellorder = :sellOrderId");
+        if(isValidStatus) {
+            baseQuery.append(" AND status = :status");
+        }
+        final Query idQuery = em.createNativeQuery(baseQuery.append(" LIMIT :pageSize OFFSET :pageOffset").toString());
         idQuery.setParameter("sellOrderId", sellOrderId);
         idQuery.setParameter("pageSize", pageSize);
         idQuery.setParameter("pageOffset", (page-1) * pageSize);
-        idQuery.setParameter("status", status);
+
+        if(isValidStatus) {
+            idQuery.setParameter("status", status);
+        }
 
         @SuppressWarnings("unchecked")
         final List<Integer> ids = (List<Integer>) idQuery.getResultList();
