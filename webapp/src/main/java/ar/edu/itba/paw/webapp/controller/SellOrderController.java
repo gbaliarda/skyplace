@@ -7,6 +7,7 @@ import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrderDto;
 import ar.edu.itba.paw.webapp.dto.SellOrderDto;
 import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrdersDto;
+import ar.edu.itba.paw.webapp.dto.txHashDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateSellOrderForm;
 import ar.edu.itba.paw.webapp.form.PriceForm;
@@ -208,9 +209,10 @@ public class SellOrderController {
     }
 
     @POST
+    @Consumes({ MediaType.APPLICATION_JSON })
     @Path("/{id}/buyorders/{userId}")
-    public Response confirmBuyOrderFromBuyerId(@PathParam("id") int sellOrderId, @PathParam("userId") int buyerId, @RequestParam String txHash) {
-        Optional<Integer> response = buyOrderService.validateTransaction(txHash, sellOrderId, buyerId);
+    public Response confirmBuyOrderFromBuyerId(@PathParam("id") int sellOrderId, @PathParam("userId") int buyerId, final @Valid txHashDto txHashDto) {
+        Optional<Integer> response = buyOrderService.validateTransaction(txHashDto.getTxHash(), sellOrderId, buyerId);
         if (!response.isPresent()) {
             throw new UserNoPermissionException();
         }
