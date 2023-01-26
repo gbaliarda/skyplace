@@ -23,7 +23,7 @@ public class EtherscanServiceImpl implements EtherscanService {
 
     private final Dotenv env = Dotenv.load();
     private final String ETHERSCAN_URL = "https://api.etherscan.io/api";
-    private final String RINKEBY_URL = "https://api-rinkeby.etherscan.io/api";
+    private final String GOERLI_URL = "https://api-goerli.etherscan.io/api";
     private final boolean USE_TESTNET = true;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EtherscanServiceImpl.class);
@@ -61,7 +61,7 @@ public class EtherscanServiceImpl implements EtherscanService {
 
     private HttpURLConnection getConnection(Map<String,String> args) throws IOException {
         URL url;
-        String API_URL = USE_TESTNET ? RINKEBY_URL : ETHERSCAN_URL;
+        String API_URL = USE_TESTNET ? GOERLI_URL : ETHERSCAN_URL;
         StringBuilder argString = new StringBuilder(API_URL).append("?");
         for(Map.Entry<String,String> entry:args.entrySet())
             argString.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
