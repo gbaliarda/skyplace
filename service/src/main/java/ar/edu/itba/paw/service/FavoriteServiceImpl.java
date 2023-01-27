@@ -4,13 +4,16 @@ import ar.edu.itba.paw.exceptions.NftNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.model.Favorited;
 import ar.edu.itba.paw.model.Nft;
+import ar.edu.itba.paw.model.Publication;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.persistence.FavoriteDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -53,6 +56,13 @@ public class FavoriteServiceImpl implements FavoriteService{
     public int getUserFavoritesAmount(int userId) {
         User maybeUser = userService.getUserById(userId).orElseThrow(UserNotFoundException::new);
         return favoriteDao.getUserFavoritesAmount(maybeUser.getId());
+    }
+
+    @Override
+    public List<Nft> getFavedNftsFromUser(int page, User user, String sort, List<Integer> nftId) {
+        if (nftId.isEmpty())
+            return nftService.getAllPublicationsByUser(page, user, "favorited", sort).stream().map(Publication::getNft).collect(Collectors.toList());
+        return nftService.getFavedNftsByUser(user, nftId);
     }
 
     @Override

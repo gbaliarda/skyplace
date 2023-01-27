@@ -112,6 +112,11 @@ public class NftServiceImpl implements NftService {
     }
 
     @Override
+    public List<Nft> getFavedNftsByUser(User user, List<Integer> nftId) {
+        return nftDao.getFavedNftsByUser(user.getId(), nftId);
+    }
+
+    @Override
     public int getAmountPublications(List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor) {
         return nftDao.getAmountPublications(status, category, chain, minPrice, maxPrice, sort, search, searchFor);
     }

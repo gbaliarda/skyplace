@@ -40,4 +40,6 @@ public interface NftDao {
     int[] getRandomNftTableSizes(Nft nft, int currentUserId);
 
     Optional<Favorited> isNftFavedByUser(int userId, int productId);
+
+    List<Nft> getFavedNftsByUser(int userId, List<Integer> nftId);
 }

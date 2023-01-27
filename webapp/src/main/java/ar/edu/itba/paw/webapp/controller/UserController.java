@@ -117,15 +117,19 @@ public class UserController {
     public Response listUserFavorites(
             @PathParam("id") final int userId,
             @QueryParam("page") @DefaultValue("1") int page,
-            @QueryParam("sort") final String sort
+            @QueryParam("sort") final String sort,
+            @QueryParam("nftId") final List<Integer> nftId
     ){
-        User currentUser = userService.getCurrentUser().get();
+        Optional<User> optCurrentUser = userService.getCurrentUser();
 
-        if(currentUser.getId() != userId)
+        if(!optCurrentUser.isPresent() || optCurrentUser.get().getId() != userId)
             throw new UserNoPermissionException();
 
-        List<NftDto> userFavorites = nftService.getAllPublicationsByUser(page, currentUser, "favorited", sort)
-                .stream().map(Publication::getNft).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
+        User currentUser = optCurrentUser.get();
+
+//        List<NftDto> userFavorites = nftService.getAllPublicationsByUser(page, currentUser, "favorited", sort)
+//                .stream().map(Publication::getNft).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
+        List<NftDto> userFavorites = favoriteService.getFavedNftsFromUser(page, currentUser, sort, nftId).stream().map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
 
         NftsDto nftsDto = NftsDto.fromNftList(userFavorites,
                 favoriteService.getUserFavoritesAmount(userId));

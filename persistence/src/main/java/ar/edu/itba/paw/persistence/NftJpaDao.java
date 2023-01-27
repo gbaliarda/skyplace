@@ -32,6 +32,8 @@ public class NftJpaDao implements NftDao {
     private static final String SELECT_FAVORITED_ID_QUERY = SELECT_ID_QUERY.concat(
                                         " LEFT OUTER JOIN favorited ON nfts.id=favorited.id_nft");
 
+    private static final String SELECT_FAVED_NFT_IDS_IN_LIST = "SELECT n.id FROM nfts n INNER JOIN favorited f ON (f.id_nft = n.id) WHERE f.user_id = ?1 AND n.id IN ?2";
+
     /**
      * Creates a new NFT product with the provided data.
      * @param nftId id of the NFT inside its contract.
@@ -441,6 +443,23 @@ public class NftJpaDao implements NftDao {
         query.setParameter("userId",userId);
         query.setParameter("productId",productId);
         return query.getResultList().stream().findFirst();
+    }
+
+    @Override
+    public List<Nft> getFavedNftsByUser(int userId, List<Integer> nftId) {
+        final Query idQuery = em.createNativeQuery(SELECT_FAVED_NFT_IDS_IN_LIST);
+        idQuery.setParameter(1,userId);
+        idQuery.setParameter(2,nftId);
+
+        @SuppressWarnings("unchecked")
+        final List<Integer> ids = (List<Integer>) idQuery.getResultList();
+
+        if(ids.size() == 0)
+            return Collections.emptyList();
+
+        final TypedQuery<Nft> query = em.createQuery("FROM Nft AS nft WHERE nft.id IN :ids ", Nft.class);
+        query.setParameter("ids", ids);
+        return query.getResultList();
     }
 
     protected static class Pair<T, U> {

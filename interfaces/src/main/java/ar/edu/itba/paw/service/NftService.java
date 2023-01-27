@@ -22,6 +22,8 @@ public interface NftService {
 
     List<Publication> getAllPublicationsByUser(int page, User user, String publicationType, String sort);
 
+    List<Nft> getFavedNftsByUser(User user, List<Integer> nftId);
+
     int getAmountPublications(List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor);
 
     int getAmountPublicationsByUser(List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId);
