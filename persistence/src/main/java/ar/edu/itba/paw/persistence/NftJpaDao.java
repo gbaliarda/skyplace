@@ -151,7 +151,7 @@ public class NftJpaDao implements NftDao {
      */
     @Override
     public List<Nft> getAllPublications(int page, int pageSize, List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId) {
-        if ((sort.equals("priceAsc") || sort.equals("priceDsc")))
+        if (sort != null && (sort.equals("priceAsc") || sort.equals("priceDsc")))
             status = Collections.singletonList("onSale");
         Pair<String,List<Pair<String,Object>>> filterQuery = buildFilterQuery(status, category, chain, minPrice, maxPrice, search, searchFor, ownerId);
         return executeQueries(SELECT_ID_QUERY,filterQuery, pageSize, page, sort);
@@ -268,7 +268,7 @@ public class NftJpaDao implements NftDao {
      */
     @Override
     public int getAmountPublications(List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor) {
-        if ((sort.equals("priceAsc") || sort.equals("priceDsc")))
+        if (sort != null && (sort.equals("priceAsc") || sort.equals("priceDsc")))
             status = Collections.singletonList("onSale");
         Pair<String, List<Pair<String,Object>>> filterQuery = buildFilterQuery(status, category, chain, minPrice, maxPrice, search, searchFor, null);
         return getIds(COUNT_ID_QUERY, filterQuery);
@@ -279,7 +279,7 @@ public class NftJpaDao implements NftDao {
      */
     @Override
     public int getAmountPublicationsByUser(List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId) {
-        if ((sort.equals("priceAsc") || sort.equals("priceDsc")))
+        if (sort != null && (sort.equals("priceAsc") || sort.equals("priceDsc")))
             status = Collections.singletonList("onSale");
         Pair<String, List<Pair<String,Object>>> filterQuery = buildFilterQuery(status, category, chain, minPrice, maxPrice, search, searchFor, ownerId);
         return getIds(COUNT_ID_QUERY, filterQuery);
