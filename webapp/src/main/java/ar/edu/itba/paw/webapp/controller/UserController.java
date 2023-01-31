@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
-
 import ar.edu.itba.paw.exceptions.UserNoPermissionException;
 import ar.edu.itba.paw.exceptions.UserNotFoundException;
-import ar.edu.itba.paw.model.Publication;
 import ar.edu.itba.paw.model.Review;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.*;
@@ -12,6 +10,8 @@ import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrderDto;
 import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrdersDto;
 import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
 import ar.edu.itba.paw.webapp.dto.nfts.NftsDto;
+import ar.edu.itba.paw.webapp.dto.purchases.PurchaseDto;
+import ar.edu.itba.paw.webapp.dto.purchases.PurchasesDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewStarScoreDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewsDto;
@@ -197,20 +197,18 @@ public class UserController {
         if(!currentUser.isPresent() || currentUser.get().getId() != userId)
             throw new UserNoPermissionException();
 
-        long amountPurchasesPages;
+        int amountPurchasesPages;
         amountPurchasesPages = purchaseService.getAmountPagesByUserId(userId);
-
-        if(page > amountPurchasesPages || page < 0 ) {
-            throw new NotFoundException();
-        }
 
         List<PurchaseDto> historyPurchases;
         historyPurchases = purchaseService.getAllTransactions(userId, page).stream().map(n -> PurchaseDto.fromPurchase(uriInfo, n)).collect(Collectors.toList());
 
+        /*
         if(historyPurchases.isEmpty()){
             return Response.noContent().build();
         }
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<PurchaseDto>>(historyPurchases) {});
+        */
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<PurchasesDto>(PurchasesDto.fromPurchaseList(historyPurchases, amountPurchasesPages)) {});
 
         //TODO REUSE THIS CODE
         if (page > 1)

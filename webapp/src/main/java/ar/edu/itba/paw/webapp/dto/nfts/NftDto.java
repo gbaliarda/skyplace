@@ -8,15 +8,14 @@ import java.net.URI;
 
 public class NftDto {
 
-    private int id;
+    private Integer id;
     private int nftId;
     private String contractAddr;
     private String nftName;
     private String collection;
     private String description;
     private String chain;
-    private boolean isDeleted;
-    private int favorites;
+    private Integer favorites;
 
     // hyperlinks to itself and to other entities
     private URI self;
@@ -25,7 +24,7 @@ public class NftDto {
     private URI sellorder;
 
     // returns the DTO representation of the Nft
-    public static NftDto fromNft(final UriInfo uriInfo, final Nft nft, final int nftFavorites) {
+    public static NftDto fromNft(final UriInfo uriInfo, final Nft nft, final Integer nftFavorites) {
         final NftDto dto = new NftDto();
 
         final UriBuilder nftUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("nfts")
@@ -35,34 +34,41 @@ public class NftDto {
         final UriBuilder imageUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("images")
                 .path(String.valueOf(nft.getIdImage()));
 
-        if (nft.getSellOrder() != null) {
-            final UriBuilder sellorderUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("sellorders")
-                    .path(String.valueOf(nft.getSellOrder().getId()));
-            // /orders/12
-            dto.sellorder = sellorderUriBuilder.build();
+        if(!nft.isDeleted()) {
+            dto.self = nftUriBuilder.build();
+            dto.id = nft.getId();
+            dto.favorites = nftFavorites;
+            dto.owner = userUriBuilder.build();
+
+            if (nft.getSellOrder() != null) {
+                final UriBuilder sellorderUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("sellorders")
+                        .path(String.valueOf(nft.getSellOrder().getId()));
+                // /orders/12
+                dto.sellorder = sellorderUriBuilder.build();
+            }
         }
 
-        dto.self = nftUriBuilder.build();
-        dto.owner = userUriBuilder.build();
         dto.image = imageUriBuilder.build();
 
-        dto.id = nft.getId();
         dto.collection = nft.getCollection();
         dto.contractAddr = nft.getContractAddr();
         dto.description = nft.getDescription();
         dto.chain = nft.getChain().name();
         dto.nftId = nft.getNftId();
         dto.nftName = nft.getNftName();
-        dto.favorites = nftFavorites;
-        dto.isDeleted = nft.isDeleted();
+
         return dto;
     }
 
-    public int getId() {
+    public static NftDto fromNft(final UriInfo uriInfo, final Nft nft) {
+        return fromNft(uriInfo, nft, null);
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -122,11 +128,11 @@ public class NftDto {
         this.chain = chain;
     }
 
-    public int getFavorites() {
+    public Integer getFavorites() {
         return favorites;
     }
 
-    public void setFavorites(int favorites) {
+    public void setFavorites(Integer favorites) {
         this.favorites = favorites;
     }
 
@@ -154,11 +160,4 @@ public class NftDto {
         this.owner = owner;
     }
 
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
 }

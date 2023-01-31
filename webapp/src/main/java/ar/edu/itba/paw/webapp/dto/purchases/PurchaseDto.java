@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.purchases;
 
 import ar.edu.itba.paw.model.Purchase;
 import ar.edu.itba.paw.model.StatusPurchase;
@@ -18,12 +18,11 @@ public class PurchaseDto {
     private String txHash;
 
     private URI self;
-    private URI nft;
+    private NftDto nft;         // Nft can be deleted or not -> Not deleted is URI, deleted is DeletedNftDto
     private URI buyer;
     private URI seller;
 
     private final static String USERS_URI_PREFIX = "users";
-    private final static String NFTS_URI_PREFIX = "nfts";
     private final static String PURCHASES_URI_PREFIX = "purchases";
 
     public static PurchaseDto fromPurchase(UriInfo uriInfo, Purchase purchase) {
@@ -31,9 +30,6 @@ public class PurchaseDto {
 
         final UriBuilder purchasesUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(PURCHASES_URI_PREFIX)
                 .path(String.valueOf(purchase.getId()));
-
-        final UriBuilder nftUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(NFTS_URI_PREFIX)
-                .path(String.valueOf(purchase.getNftsByIdNft().getId()));
 
         final UriBuilder buyerUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(USERS_URI_PREFIX)
                 .path(String.valueOf(purchase.getBuyer().getId()));
@@ -44,12 +40,12 @@ public class PurchaseDto {
         purchaseDto.id = purchase.getId();
         purchaseDto.price = purchase.getPrice();
         purchaseDto.buyDate = purchase.getBuyDate();
-        purchaseDto.nft = nftUriBuilder.build();
-        purchaseDto.buyer = buyerUriBuilder.build();
-        purchaseDto.seller = sellerUriBuilder.build();
         purchaseDto.status = purchase.getStatus();
         purchaseDto.txHash = purchase.getTxHash();
+        purchaseDto.nft = NftDto.fromNft(uriInfo, purchase.getNftsByIdNft());
 
+        purchaseDto.buyer = buyerUriBuilder.build();
+        purchaseDto.seller = sellerUriBuilder.build();
         purchaseDto.self = purchasesUriBuilder.build();
 
         return purchaseDto;
@@ -79,11 +75,11 @@ public class PurchaseDto {
         this.buyDate = buyDate;
     }
 
-    public URI getNft() {
+    public NftDto getNft() {
         return nft;
     }
 
-    public void setNft(URI nft) {
+    public void setNft(NftDto nft) {
         this.nft = nft;
     }
 
@@ -126,4 +122,5 @@ public class PurchaseDto {
     public void setSelf(URI self) {
         this.self = self;
     }
+
 }
