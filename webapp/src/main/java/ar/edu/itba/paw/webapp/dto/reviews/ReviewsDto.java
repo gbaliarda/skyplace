@@ -2,21 +2,22 @@ package ar.edu.itba.paw.webapp.dto.reviews;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class ReviewsDto {
 
     private long total;
+    private int totalPages;
     private double score;
     private List<ReviewStarScoreDto> ratings;
     private List<ReviewDto> reviews;
 
-    public static ReviewsDto fromReviewList(final List<ReviewDto> reviews, final long total, final double score, final List<ReviewStarScoreDto> ratings) {
+    public static ReviewsDto fromReviewList(final List<ReviewDto> reviews, final long total, final int totalPages, final double score, final List<ReviewStarScoreDto> ratings) {
         final ReviewsDto dto = new ReviewsDto();
         BigDecimal bd = new BigDecimal(score).setScale(2, RoundingMode.HALF_UP);
 
         dto.total = total;
+        dto.totalPages = totalPages;
         dto.score = bd.doubleValue();
         dto.ratings = ratings;
         dto.reviews = reviews;
@@ -30,6 +31,14 @@ public class ReviewsDto {
 
     public void setTotal(long total) {
         this.total = total;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
     }
 
     public double getScore() {

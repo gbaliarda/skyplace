@@ -261,6 +261,7 @@ public class UserController {
         }
 
         reviewsInfo = ReviewsDto.fromReviewList(reviewList, reviewService.getUserReviewsAmount(revieweeId),
+                reviewService.getUserReviewsPageAmount(revieweeId),
                 reviewService.getUserScore(revieweeId), reviewRatings);
 
         /* if(reviewList.isEmpty())
