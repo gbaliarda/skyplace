@@ -25,6 +25,8 @@ public interface PurchaseService {
 
     Optional<Purchase> getPurchaseById(int userId, int purchaseId);
 
-    List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id);
+    List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id, int page);
+
+    long getTransactionPagesBetweenUsers(int user1Id, int user2Id);
 
 }

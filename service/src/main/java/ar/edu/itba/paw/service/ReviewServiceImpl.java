@@ -41,7 +41,7 @@ public class ReviewServiceImpl implements ReviewService{
     public Review addReview(int reviewerId, int revieweeId, int score, String title, String comments) {
         if(reviewerId == revieweeId || hasReviewByUser(reviewerId, revieweeId))
             throw new InvalidReviewException();
-        if(purchaseService.getTransactionsBetweenUsers(reviewerId, revieweeId).isEmpty())
+        if(purchaseService.getTransactionsBetweenUsers(reviewerId, revieweeId, 1).isEmpty())
             throw new NoTransactionBetweenUsersException();
         User reviewer = userDao.getUserById(reviewerId).orElseThrow(UserNotFoundException::new);
         User reviewee = userDao.getUserById(revieweeId).orElseThrow(UserNotFoundException::new);

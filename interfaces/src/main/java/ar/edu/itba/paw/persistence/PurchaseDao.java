@@ -25,6 +25,8 @@ public interface PurchaseDao {
 
     Optional<Purchase> getPurchaseById(int userId, int purchaseId);
 
-    List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id);
+    List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id, int page, int pageSize);
+
+    long getTransactionPagesBetweenUsers(int user1Id, int user2Id, int pageSize);
 
 }

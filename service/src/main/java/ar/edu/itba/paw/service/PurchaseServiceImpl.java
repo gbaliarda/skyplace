@@ -57,8 +57,13 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     @Override
-    public List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id) {
-        return purchaseDao.getTransactionsBetweenUsers(user1Id, user2Id);
+    public List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id, int page) {
+        return purchaseDao.getTransactionsBetweenUsers(user1Id, user2Id, page, pageSize);
+    }
+
+    @Override
+    public long getTransactionPagesBetweenUsers(int user1Id, int user2Id) {
+        return purchaseDao.getTransactionPagesBetweenUsers(user1Id, user2Id, pageSize);
     }
 
     @Override

@@ -192,16 +192,25 @@ public class UserController {
     @GET
     @Path("/{id}/purchases")
     @Produces({ MediaType.APPLICATION_JSON})
-    public Response getHistoryTransactions(@PathParam("id") int userId, @QueryParam("page") @DefaultValue("1") int page){
+    public Response getHistoryTransactions(
+            @PathParam("id") int userId,
+            @QueryParam("page") @DefaultValue("1") int page,
+            @QueryParam("purchaser") @DefaultValue("-1") int purchaser
+    ){
         Optional<User> currentUser = userService.getCurrentUser();
         if(!currentUser.isPresent() || currentUser.get().getId() != userId)
             throw new UserNoPermissionException();
 
         int amountPurchasesPages;
-        amountPurchasesPages = purchaseService.getAmountPagesByUserId(userId);
-
         List<PurchaseDto> historyPurchases;
-        historyPurchases = purchaseService.getAllTransactions(userId, page).stream().map(n -> PurchaseDto.fromPurchase(uriInfo, n)).collect(Collectors.toList());
+
+        if(purchaser > 0) {
+            amountPurchasesPages = (int)purchaseService.getTransactionPagesBetweenUsers(userId, purchaser);
+            historyPurchases = purchaseService.getTransactionsBetweenUsers(userId, purchaser, page).stream().map(n -> PurchaseDto.fromPurchase(uriInfo, n)).collect(Collectors.toList());
+        } else {
+            amountPurchasesPages = purchaseService.getAmountPagesByUserId(userId);
+            historyPurchases = purchaseService.getAllTransactions(userId, page).stream().map(n -> PurchaseDto.fromPurchase(uriInfo, n)).collect(Collectors.toList());
+        }
 
         /*
         if(historyPurchases.isEmpty()){

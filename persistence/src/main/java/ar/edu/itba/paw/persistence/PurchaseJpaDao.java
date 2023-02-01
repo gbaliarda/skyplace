@@ -42,11 +42,30 @@ public class PurchaseJpaDao implements PurchaseDao {
 
     // FIXME: Falta paginacion
     @Override
-    public List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id) {
-        final TypedQuery<Purchase> query = em.createQuery("FROM Purchase p WHERE p.seller.id = :user1Id AND p.buyer.id = :user2Id OR p.seller.id = :user2Id AND p.buyer.id = :user1Id", Purchase.class);
-        query.setParameter("user1Id", user1Id);
-        query.setParameter("user2Id", user2Id);
+    public List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id, int page, int pageSize) {
+        final Query idQuery = em.createNativeQuery("SELECT id FROM purchases WHERE id_buyer = :user1 AND id_seller = :user2 OR id_buyer = :user2 AND id_seller = :user1 ORDER BY buy_date DESC LIMIT :pageSize OFFSET :offset");
+        idQuery.setParameter("user1", user1Id);
+        idQuery.setParameter("user2", user2Id);
+        idQuery.setParameter("pageSize", pageSize);
+        idQuery.setParameter("offset", pageSize * (page - 1));
+        @SuppressWarnings("unchecked")
+        List<Integer> ids = (List<Integer>) idQuery.getResultList();
+
+        if(ids.size() == 0)
+            return new ArrayList<>();
+
+        final TypedQuery<Purchase> query = em.createQuery("FROM Purchase WHERE id in :ids ORDER BY buyDate DESC", Purchase.class);
+        query.setParameter("ids", ids);
         return query.getResultList();
+    }
+
+    @Override
+    public long getTransactionPagesBetweenUsers(int user1Id, int user2Id, int pageSize) {
+        final Query query = em.createNativeQuery("SELECT count(*) FROM purchases WHERE id_buyer = :user1 AND id_seller = :user2 OR id_buyer = :user2 AND id_seller = :user1");
+        query.setParameter("user1", user1Id);
+        query.setParameter("user2", user2Id);
+        long transactionsAmount = ((BigInteger)query.getSingleResult()).intValue();
+        return (transactionsAmount + pageSize - 1) / pageSize;
     }
 
     @Override
