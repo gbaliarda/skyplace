@@ -44,8 +44,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final static String JWT_ISSUER = "skyplace";
 
-    private final static int accessTokenValidMinutes = 10;
-    private final static int refreshTokenValidMinutes = 15;
+    private final static int accessTokenValidMinutes = 60 * 2;              // 2 hs
+    private final static int refreshTokenValidMinutes = 60 * 24 * 7;        // 7 days
 
     private final Key jwtKey;
 
