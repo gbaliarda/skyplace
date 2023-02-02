@@ -10,6 +10,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -84,7 +85,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // validate user credentails and, if valid, return new jwt auth and refresh tokens
                 String decodedCredentials = new String(Base64.getDecoder().decode(credentials));
                 String[] userPass = decodedCredentials.split(":", 2);
-                token = userDetailsService.restLogin(userPass[0], userPass[1]);
+                try {
+                    token = userDetailsService.restLogin(userPass[0], userPass[1]);
+                } catch (UsernameNotFoundException e) {
+                    final Gson gson = new Gson();
+                    final ErrorDto dto = ErrorDto.fromGenericException(e, HttpServletResponse.SC_BAD_REQUEST, "21");
+                    final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));
+                    response.setContentType(MediaType.APPLICATION_JSON);
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().print(gson.toJson(errorList));
+                    response.getWriter().flush();
+                    return;
+                }
 
                 if (token.isAuthenticated())
                     SecurityContextHolder.getContext().setAuthentication(token);
