@@ -1,10 +1,8 @@
 package ar.edu.itba.paw.webapp.form;
 
-import ar.edu.itba.paw.webapp.validators.interfaces.ImageConstraint;
 import ar.edu.itba.paw.webapp.validators.interfaces.UniqueNftConstraint;
 import ar.edu.itba.paw.webapp.validators.interfaces.ValidChainConstraint;
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.*;
 
@@ -27,9 +25,6 @@ public class CreateNftForm {
     @NotBlank
     @ValidChainConstraint
     private String chain;
-
-    @ImageConstraint(maxSizeMB = 5)
-    private MultipartFile image;
 
     @NotBlank
     @Size(min = 1, max = 30)
@@ -68,14 +63,6 @@ public class CreateNftForm {
 
     public void setChain(String chain) {
         this.chain = chain;
-    }
-
-    public MultipartFile getImage() {
-        return image;
-    }
-
-    public void setImage(MultipartFile image) {
-        this.image = image;
     }
 
     public String getCollection() {

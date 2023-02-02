@@ -3,14 +3,13 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.model.Nft;
 import ar.edu.itba.paw.model.Publication;
 import ar.edu.itba.paw.model.User;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 public interface NftService {
-    Nft create(int nftId, String contractAddr, String nftName, String chain, MultipartFile image, int idOwner, String collection, String description);
+    Nft create(int nftId, String contractAddr, String nftName, String chain, byte[] image, int idOwner, String collection, String description);
 
     Optional<Nft> getNFTById(int nftId);
 

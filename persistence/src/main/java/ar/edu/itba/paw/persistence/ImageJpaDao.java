@@ -24,6 +24,17 @@ public class  ImageJpaDao implements ImageDao {
      * @return The new image entity created.
      */
     @Override
+    public Image createImage(byte[] image) {
+        Image newImage = new Image(image);
+        em.persist(newImage);
+        return newImage; // has ID field populated by JPA
+    }
+
+    /**
+     * @param image File that contains the image
+     * @return The new image entity created.
+     */
+    @Deprecated
     public Image createImage(MultipartFile image) {
         Image newImage = null;
         try {

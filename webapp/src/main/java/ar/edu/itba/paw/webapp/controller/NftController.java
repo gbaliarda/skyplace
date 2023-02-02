@@ -8,12 +8,21 @@ import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
 import ar.edu.itba.paw.webapp.dto.nfts.NftsDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateNftForm;
+import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
@@ -73,17 +82,27 @@ public class NftController {
                 .build();
     }
 
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, })
+    @Consumes({ MediaType.MULTIPART_FORM_DATA, })
     @POST
-    public Response createNft(@Valid final CreateNftForm nftForm) {
-        if(nftForm == null)
+    public Response createNft(@ModelAttribute @FormDataParam("model") FormDataBodyPart model,
+                              @FormDataParam("image") InputStream imageInput) {
+        if(model == null)
             throw new NoBodyException();
+        if(!userService.getCurrentUser().isPresent())
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         int ownerId = userService.getCurrentUser().get().getId();
-        final Nft newNft = nftService.create(nftForm.getNftId(), nftForm.getContractAddr(), nftForm.getName(), nftForm.getChain(), nftForm.getImage(), ownerId, nftForm.getCollection(), nftForm.getDescription());
-        // appends the new ID to the path of this route (/nfts)
-        final URI location = uriInfo.getAbsolutePathBuilder()
-                .path(String.valueOf(newNft.getId())).build();
-        return Response.created(location).build();
+        try {
+            model.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+            CreateNftForm nftForm = model.getValueAs(CreateNftForm.class);
+            byte[] image = IOUtils.toByteArray(imageInput);
+            final Nft newNft = nftService.create(nftForm.getNftId(), nftForm.getContractAddr(), nftForm.getName(), nftForm.getChain(), image, ownerId, nftForm.getCollection(), nftForm.getDescription());
+            // appends the new ID to the path of this route (/nfts)
+            final URI location = uriInfo.getAbsolutePathBuilder()
+                    .path(String.valueOf(newNft.getId())).build();
+            return Response.created(location).build();
+        } catch (IOException e) {
+            return Response.serverError().build();
+        }
     }
 
     // GET /nfts/{id}

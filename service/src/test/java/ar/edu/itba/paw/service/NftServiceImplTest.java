@@ -11,8 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -84,8 +82,7 @@ public class NftServiceImplTest {
     @Test(expected = InvalidChainException.class)
     public void testCreateNftOnInvalidChain(){
         byte[] imageBytes = new byte[]{};
-        MultipartFile image = new MockMultipartFile("image", imageBytes);
-        nftService.create(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, INVALID_CHAIN_TEXT, image, ID_OWNER, NFT_COLLECTION, NFT_DESCRIPTION);
+        nftService.create(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, INVALID_CHAIN_TEXT, imageBytes, ID_OWNER, NFT_COLLECTION, NFT_DESCRIPTION);
     }
 
     @Test(expected = UserNotFoundException.class)
@@ -94,12 +91,11 @@ public class NftServiceImplTest {
         Nft nft = new Nft(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, NFT_CHAIN, ID_IMAGE_NFT, NFT_COLLECTION, NFT_DESCRIPTION, user);
 
         byte[] imageBytes = new byte[]{};
-        MultipartFile image = new MockMultipartFile("image", imageBytes);
 
         Mockito.when(nftDao.getNftByPk(ID_NFT, NFT_CONTRACT_ADDR, NFT_CHAIN_TEXT)).thenReturn(Optional.of(nft));
         Mockito.when(userService.getUserById(ID_OWNER)).thenReturn(Optional.empty());
 
-        nftService.create(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, NFT_CHAIN_TEXT, image, ID_OWNER, NFT_COLLECTION, NFT_DESCRIPTION);
+        nftService.create(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, NFT_CHAIN_TEXT, imageBytes, ID_OWNER, NFT_COLLECTION, NFT_DESCRIPTION);
     }
 
     @Test(expected = ImageNotFoundException.class)
@@ -108,13 +104,12 @@ public class NftServiceImplTest {
         Nft nft = new Nft(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, NFT_CHAIN, ID_IMAGE_NFT, NFT_COLLECTION, NFT_DESCRIPTION, user);
 
         byte[] imageBytes = new byte[]{};
-        MultipartFile image = new MockMultipartFile("image", imageBytes);
 
         Mockito.when(nftDao.getNftByPk(ID_NFT, NFT_CONTRACT_ADDR, NFT_CHAIN_TEXT)).thenReturn(Optional.of(nft));
         Mockito.when(userService.getUserById(ID_OWNER)).thenReturn(Optional.of(user));
         Mockito.when(imageService.getImage(ID_IMAGE_NFT)).thenReturn(Optional.empty());
 
-        nftService.create(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, NFT_CHAIN_TEXT, image, ID_OWNER, NFT_COLLECTION, NFT_DESCRIPTION);
+        nftService.create(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, NFT_CHAIN_TEXT, imageBytes, ID_OWNER, NFT_COLLECTION, NFT_DESCRIPTION);
     }
 
     @Test
@@ -123,7 +118,6 @@ public class NftServiceImplTest {
         Nft nft = new Nft(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, NFT_CHAIN, ID_IMAGE_NFT, NFT_COLLECTION, NFT_DESCRIPTION, user);
 
         byte[] imageBytes = new byte[]{ 10, 20, 30, 40 };
-        MultipartFile imageFile = new MockMultipartFile("image", imageBytes);
         Image image = new Image(ID_IMAGE_NFT, imageBytes);
         Locale userLocale = new Locale(LOCALE_USER1);
 
@@ -132,7 +126,7 @@ public class NftServiceImplTest {
         Mockito.when(imageService.getImage(ID_IMAGE_NFT)).thenReturn(Optional.of(image));
         Mockito.doNothing().when(mailingService).sendNftCreatedMail(MAIL_USER1, USERNAME_USER1, ID_NFT, NFT_NAME, NFT_CONTRACT_ADDR, imageBytes, userLocale, ID_NFT);
 
-        nftService.create(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, NFT_CHAIN_TEXT, imageFile, ID_OWNER, NFT_COLLECTION, NFT_DESCRIPTION);
+        nftService.create(ID_NFT, NFT_CONTRACT_ADDR, NFT_NAME, NFT_CHAIN_TEXT, imageBytes, ID_OWNER, NFT_COLLECTION, NFT_DESCRIPTION);
     }
 
     @Test
