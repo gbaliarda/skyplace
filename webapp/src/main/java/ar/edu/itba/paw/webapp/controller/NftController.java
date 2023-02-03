@@ -66,8 +66,8 @@ public class NftController {
                 .stream().map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
 
         int amountPublications = nftService.getAmountPublicationsByUser(status, category, chain, minPrice, maxPrice, sort, search, searchFor, ownerId);
-        NftsDto nfts = NftsDto.fromNftList(nftList,
-                amountPublications, (int) Math.ceil((double)amountPublications/nftService.getPageSize()));
+        int amountPages = amountPublications == 0 ? 1 : (amountPublications + nftService.getPageSize() - 1) / nftService.getPageSize();
+        NftsDto nfts = NftsDto.fromNftList(nftList, amountPublications, amountPages);
 
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<NftsDto>(nfts) {});
         if (page > 1)
