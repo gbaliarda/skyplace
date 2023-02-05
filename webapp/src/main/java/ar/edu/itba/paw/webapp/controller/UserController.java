@@ -18,12 +18,16 @@ import ar.edu.itba.paw.webapp.dto.reviews.ReviewsDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.ReviewForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -291,12 +295,14 @@ public class UserController {
 
     @POST
     @Path("/{id}/reviews")
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, })
-    public Response createUserReview(@PathParam("id") final int userId, @Valid final ReviewForm reviewForm){
-        if(reviewForm == null)
+    @Consumes({ MediaType.MULTIPART_FORM_DATA, })
+    public Response createUserReview(@PathParam("id") final int userId, @ModelAttribute @FormDataParam("model") final FormDataBodyPart reviewModel){
+        if(reviewModel == null)
             throw new NoBodyException();
 
         int reviewerId = userService.getCurrentUser().get().getId();
+        reviewModel.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+        ReviewForm reviewForm = reviewModel.getValueAs(ReviewForm.class);
         int score = Integer.parseInt(reviewForm.getScore());
         Review newReview = reviewService.addReview(reviewerId, userId, score, reviewForm.getTitle(), reviewForm.getComments());
         final URI location = uriInfo.getAbsolutePathBuilder()
@@ -324,16 +330,5 @@ public class UserController {
         maybeReview.ifPresent(r -> reviewService.deleteReview(r.getId()));
         return Response.noContent().build();
     }
-
-    /*
-    // TODO: Make summary dto?
-    @GET()
-    @Path("/{id}/reviews/summary")
-    @Produces({ MediaType.APPLICATION_JSON, })
-    public Response getUserReviewsSummary(@PathParam("id") final int revieweeId) {
-        Response.ResponseBuilder responseBuilder = Response.ok();
-        responseBuilder.
-    }
-    */
 
 }
