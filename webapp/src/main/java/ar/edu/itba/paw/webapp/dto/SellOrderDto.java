@@ -26,10 +26,10 @@ public class SellOrderDto {
     public static SellOrderDto fromSellOrder(final UriInfo uriInfo, final SellOrder sellOrder){
         final SellOrderDto dto = new SellOrderDto();
 
-        final UriBuilder sellOrderUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(SELLORDERS_URI_PREFIX)
+        final UriBuilder sellOrderUriBuilder = uriInfo.getBaseUriBuilder().path(SELLORDERS_URI_PREFIX)
                 .path(String.valueOf(sellOrder.getId()));
 
-        final UriBuilder nftUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(NFTS_URI_PREFIX)
+        final UriBuilder nftUriBuilder = uriInfo.getBaseUriBuilder().path(NFTS_URI_PREFIX)
                 .path(String.valueOf(sellOrder.getNft().getId()));
 
         dto.id = sellOrder.getId();

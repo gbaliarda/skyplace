@@ -16,7 +16,7 @@ public class ImageDto {
     public static ImageDto fromImage(final UriInfo uriInfo, final Image image) {
         final ImageDto dto = new ImageDto();
 
-        final UriBuilder imageUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("images")
+        final UriBuilder imageUriBuilder = uriInfo.getBaseUriBuilder().path("images")
                 .path(String.valueOf(image.getIdImage()));
 
         dto.self = imageUriBuilder.build();

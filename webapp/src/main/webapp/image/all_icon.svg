@@ -1,6 +1,0 @@
-<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M5 16C5 10.4772 9.47715 6 15 6H35V36H5V16Z" fill="#00A7F5"/>
-<path d="M5 43H35V73H15C9.47715 73 5 68.5228 5 63V43Z" fill="#00A7F5"/>
-<path d="M44 43H74V63C74 68.5228 69.5228 73 64 73H44V43Z" fill="#00A7F5"/>
-<path d="M44 6H64C69.5228 6 74 10.4772 74 16V36H44V6Z" fill="#00A7F5"/>
-</svg>

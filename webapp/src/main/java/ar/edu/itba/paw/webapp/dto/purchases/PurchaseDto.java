@@ -28,13 +28,13 @@ public class PurchaseDto {
     public static PurchaseDto fromPurchase(UriInfo uriInfo, Purchase purchase) {
         final PurchaseDto purchaseDto = new PurchaseDto();
 
-        final UriBuilder purchasesUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(PURCHASES_URI_PREFIX)
+        final UriBuilder purchasesUriBuilder = uriInfo.getBaseUriBuilder().path(PURCHASES_URI_PREFIX)
                 .path(String.valueOf(purchase.getId()));
 
-        final UriBuilder buyerUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(USERS_URI_PREFIX)
+        final UriBuilder buyerUriBuilder = uriInfo.getBaseUriBuilder().path(USERS_URI_PREFIX)
                 .path(String.valueOf(purchase.getBuyer().getId()));
 
-        final UriBuilder sellerUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath(USERS_URI_PREFIX)
+        final UriBuilder sellerUriBuilder = uriInfo.getBaseUriBuilder().path(USERS_URI_PREFIX)
                 .path(String.valueOf(purchase.getSeller().getId()));
 
         purchaseDto.id = purchase.getId();

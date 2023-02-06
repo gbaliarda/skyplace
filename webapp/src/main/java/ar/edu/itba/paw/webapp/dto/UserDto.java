@@ -19,7 +19,7 @@ public class UserDto {
     public static UserDto fromUser(final UriInfo uriInfo, final User user) {
         final UserDto userDto = new UserDto();
 
-        final UriBuilder userUriBuilder = uriInfo.getAbsolutePathBuilder().replacePath("users")
+        final UriBuilder userUriBuilder = uriInfo.getBaseUriBuilder().path("users")
                 .path(String.valueOf(user.getId()));
 
         userDto.id = user.getId();

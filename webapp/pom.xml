@@ -7,7 +7,6 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>ar.edu.itba.paw</groupId>
   <artifactId>webapp</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
@@ -15,6 +14,11 @@
   <name>webapp Maven Webapp</name>
 
   <dependencies>
+    <!-- SPA -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
     <!-- JERSEY -->
     <dependency>
       <groupId>org.glassfish.jersey.containers</groupId>
