@@ -4,7 +4,6 @@ import ar.edu.itba.paw.model.Image;
 import ar.edu.itba.paw.persistence.ImageDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -19,7 +18,7 @@ public class ImageServiceImpl implements ImageService{
     }
 
     @Override
-    public Image createImage(MultipartFile image) {
+    public Image createImage(byte[] image) {
         return imageDao.createImage(image);
     }
 

@@ -13,8 +13,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.BadRequestException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +29,9 @@ public class SkyplaceUserDetailsService implements UserDetailsService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public SkyplaceUserDetailsService(final UserService us) {
@@ -48,9 +53,13 @@ public class SkyplaceUserDetailsService implements UserDetailsService {
 
     public UsernamePasswordAuthenticationToken restLogin(String email, String password) throws UsernameNotFoundException {
         final User user = us.getUserByEmail(email).
-                orElseThrow(()->new UsernameNotFoundException("No such user with email: " + email));
+                orElseThrow(() -> new UsernameNotFoundException("No such user with credentials sent"));
+        if(!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UsernameNotFoundException("No such user with credentials sent");
+        }
+
         final List<GrantedAuthority> roles = new ArrayList<>();
-        for(String rol:Role.getRoles()) {
+        for(String rol : Role.getRoles()) {
             if (user.getRole().name().equals(rol)) {
                 roles.add(new SimpleGrantedAuthority(String.format("ROLE_%s", rol.toUpperCase())));
             }
@@ -60,7 +69,8 @@ public class SkyplaceUserDetailsService implements UserDetailsService {
 
     public UsernamePasswordAuthenticationToken jwtLogin(String email) throws UsernameNotFoundException {
         final User user = us.getUserByEmail(email).
-                orElseThrow(()->new UsernameNotFoundException("No such user with email: " + email));
+                orElseThrow(() -> new UsernameNotFoundException("No such user with credentials sent"));
+
         final List<GrantedAuthority> roles = new ArrayList<>();
         for(String rol:Role.getRoles()) {
             if (user.getRole().name().equals(rol)) {

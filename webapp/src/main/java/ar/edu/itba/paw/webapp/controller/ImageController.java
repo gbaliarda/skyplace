@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.Optional;
 
-@Path("/images")
+@Path("images")
 @Component
 public class ImageController {
 

@@ -6,7 +6,6 @@ import ar.edu.itba.paw.persistence.NftDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -31,7 +30,7 @@ public class NftServiceImpl implements NftService {
 
     @Transactional
     @Override
-    public Nft create(int nftId, String contractAddr, String nftName, String chain, MultipartFile image, int idOwner, String collection, String description) {
+    public Nft create(int nftId, String contractAddr, String nftName, String chain, byte[] image, int idOwner, String collection, String description) {
         if(Arrays.stream(Chain.values()).noneMatch(e -> e.name().equals(chain)))
             throw new InvalidChainException();
 
