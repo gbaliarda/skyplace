@@ -67,7 +67,7 @@ export default function Create() {
     fd.append("model", JSON.stringify(body))
 
     try {
-      await fetcher(
+      fetcher(
         "/nfts",
         {
           method: "POST",
@@ -77,12 +77,14 @@ export default function Create() {
           body: fd,
         },
         true,
-      )
-      await Swal.fire({ title: t("create.createSuccess"), icon: "success" })
-      // TODO: redirect to NFT page
+      ).then((result: any) => {
+        Swal.fire({ title: t("create.createSuccess"), icon: "success" }).then(() => {
+          const url = result.headers.get("Location").replace(/\/$/, "")
+          router.push(`/product/${url.split("/").slice(-1)}`)
+        })
+      })
     } catch (err: any) {
-      console.log(err.name, err.message)
-      Swal.fire({ title: t("errors.createNft"), text: err.message, icon: "error" })
+      await Swal.fire({ title: t("errors.createNft"), text: err.message, icon: "error" })
     }
   }
 

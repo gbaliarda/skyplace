@@ -54,13 +54,13 @@ export default function Login() {
                 type="email"
                 value={data.email}
                 onChange={(e) => updateFields({ email: e.target.value })}
-                placeholder="Email"
+                placeholder={t("login.email")}
               />
               <LoginInput
                 type="password"
                 value={data.password}
                 onChange={(e) => updateFields({ password: e.target.value })}
-                placeholder="********"
+                placeholder={t("login.password")}
               />
             </div>
 
