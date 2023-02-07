@@ -1,0 +1,61 @@
+{
+  "name": "skyplace",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && next export && npm run deploy",
+    "deploy": "cd out && copyfiles ./** ../../webapp/src/main/webapp/WEB-INF",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "prettier --write **/*.ts **/*.tsx **/**/*.tsx",
+    "prepare": "cd .. && husky install spa/.husky"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.0.13",
+    "daisyui": "^2.39.1",
+    "next": "12.2.5",
+    "next-export-i18n": "2.1.0",
+    "react": "18.2.0",
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-dom": "18.2.0",
+    "react-loading-skeleton": "^3.1.0",
+    "sweetalert2": "^11.4.8",
+    "swr": "^2.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
+    "@tailwindcss/forms": "^0.5.3",
+    "@types/node": "18.7.13",
+    "@types/react": "18.0.17",
+    "@types/react-copy-to-clipboard": "^5.0.4",
+    "@types/react-dom": "18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.35.1",
+    "@typescript-eslint/parser": "^5.35.1",
+    "autoprefixer": "^10.4.8",
+    "copyfiles": "^2.4.1",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-next": "12.2.5",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "postcss": "^8.4.16",
+    "prettier": "^2.7.1",
+    "tailwindcss": "^3.1.8",
+    "typescript": "4.8.2"
+  },
+  "lint-staged": {
+    "*.(ts|tsx)": [
+      "prettier --write",
+      "eslint"
+    ]
+  }
+}

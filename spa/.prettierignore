@@ -1,0 +1,7 @@
+public
+styles
+node_modules
+build
+.next
+.husky
+next-env.d.ts
