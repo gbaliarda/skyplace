@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export && npm run deploy",
-    "deploy": "cd out && copyfiles ./** ../../webapp/src/main/webapp/WEB-INF",
+    "deploy": "cd out && copyfiles ./** ../../webapp/src/main/webapp",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "prettier --write **/*.ts **/*.tsx **/**/*.tsx",
