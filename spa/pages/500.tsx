@@ -10,7 +10,7 @@ export default function Custom500() {
       <div className="h-screen flex flex-col">
         <Navbar />
         <div className="flex flex-col sm:flex-row justify-center items-center flex-grow sm:divide-x h-">
-          <h1 className="text-8xl text-cyan-500 pr-5 text-bold">500 | Skyplace</h1>
+          <h1 className="text-8xl text-cyan-500 pr-5 text-bold">500</h1>
           <div className="flex flex-col justify-start pl-5 gap-y-1">
             <h2 suppressHydrationWarning className="text-5xl text-bold font-bold">
               {t("500.badRequest")}
