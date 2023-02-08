@@ -36,7 +36,7 @@ export const useRecommendedNfts = (nftId: string | number) => {
     data: recommendations,
     error,
     mutate,
-  } = useSWR<NftApi>(`/nfts/${nftId}/recommendations`, fetcher)
+  } = useSWR<NftApi>(nftId ? `/nfts/${nftId}/recommendations` : null, fetcher)
   const loading = !error && !recommendations
   return { recommendations, loading, error, mutate }
 }

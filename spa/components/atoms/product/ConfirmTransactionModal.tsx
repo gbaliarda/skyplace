@@ -54,29 +54,29 @@ export default function ConfirmTransactionModal({
           <div className="flex flex-col gap-3 mt-3">
             <ModalSection title={t("product.transactionFrom")}>
               <li className="list-disc ml-4 marker:text-cyan-600">
-                <span className="font-bold">{t("product.user")}</span>:{" "}
+                <span suppressHydrationWarning className="font-bold">{t("product.user")}</span>:{" "}
                 {userPendingBuyOrder?.username}
               </li>
               <li className="list-disc ml-4 marker:text-cyan-600">
-                <span className="font-bold">{t("product.wallet")}</span>:{" "}
+                <span suppressHydrationWarning className="font-bold">{t("product.wallet")}</span>:{" "}
                 {userPendingBuyOrder?.wallet}
               </li>
             </ModalSection>
             <ModalSection title={t("product.transactionTo")}>
               <li className="list-disc ml-4 marker:text-cyan-600">
-                <span className="font-bold">{t("product.user")}</span>: {owner?.username}
+                <span suppressHydrationWarning className="font-bold">{t("product.user")}</span>: {owner?.username}
               </li>
               <li className="list-disc ml-4 marker:text-cyan-600">
-                <span className="font-bold">{t("product.wallet")}</span>: {owner?.wallet}
+                <span suppressHydrationWarning className="font-bold">{t("product.wallet")}</span>: {owner?.wallet}
               </li>
             </ModalSection>
             <ModalSection title={t("product.transactionNft")}>
               <li className="list-disc ml-4 marker:text-cyan-600">
-                <span className="font-bold">{t("product.name")}</span>: {product?.nftName} #
+                <span suppressHydrationWarning className="font-bold">{t("product.name")}</span>: {product?.nftName} #
                 {product?.nftId}
               </li>
               <li className="list-disc ml-4 marker:text-cyan-600">
-                <span className="font-bold">{t("product.contract")}</span>: {product?.contractAddr}
+                <span suppressHydrationWarning className="font-bold">{t("product.contract")}</span>: {product?.contractAddr}
               </li>
             </ModalSection>
             <ModalSection title={t("product.transactionValue")}>

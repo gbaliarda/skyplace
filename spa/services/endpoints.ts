@@ -26,7 +26,7 @@ const checkStatus = async (res: Response) => {
     const { errors } = await res.json()
     // @ts-ignore
     const userLang = errorTranslations[navigator.language.substring(0, 2)]
-      ? navigator.language
+      ? navigator.language.substring(0, 2)
       : "en"
     const error = new Error() as FetchError
     error.name = res.statusText

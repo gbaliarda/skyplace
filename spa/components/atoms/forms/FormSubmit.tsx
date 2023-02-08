@@ -7,5 +7,5 @@ export default function FormSubmit({
   classes: string
   disabled?: boolean
 }) {
-  return <input type="submit" value={value} disabled={disabled} className={classes} />
+  return <input suppressHydrationWarning type="submit" value={value} disabled={disabled} className={classes} />
 }
