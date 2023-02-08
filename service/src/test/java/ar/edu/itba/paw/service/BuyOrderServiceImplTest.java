@@ -38,6 +38,7 @@ public class BuyOrderServiceImplTest {
 
     private final static int ID_BUYER = 1;
     private final static int ID_SELLER = 2;
+    private final static int ID_PURCHASE = 1;
 
     private final static int ID_NFT = 1;
     private final static String NFT_CONTRACT_ADDR = "0xC37575F40b525FCA00554cB627CfFF8693d6b8B4";
@@ -389,7 +390,7 @@ public class BuyOrderServiceImplTest {
         Mockito.when(sellOrderService.getOrderById(ID_SELLORDER)).thenReturn(Optional.of(sellOrder));
         Mockito.when(userService.getUserById(ID_BUYER)).thenReturn(Optional.of(bidder));
         Mockito.when(etherscanService.isTransactionValid(TX_HASH, WALLET_USER1, WALLET_USER2, testPrice)).thenReturn(false);
-        Mockito.doReturn(false).when(buyOrderService).confirmBuyOrder(ID_SELLORDER, ID_BUYER, TX_HASH);
+        Mockito.doReturn(Optional.empty()).when(buyOrderService).confirmBuyOrder(ID_SELLORDER, ID_BUYER, TX_HASH);
 
         boolean result = buyOrderService.nftHasValidTransaction(ID_SELLORDER, ID_BUYER, testPrice, TX_HASH);
 
@@ -406,7 +407,7 @@ public class BuyOrderServiceImplTest {
         Mockito.when(sellOrderService.getOrderById(ID_SELLORDER)).thenReturn(Optional.of(sellOrder));
         Mockito.when(userService.getUserById(ID_BUYER)).thenReturn(Optional.of(bidder));
         Mockito.when(etherscanService.isTransactionValid(TX_HASH, WALLET_USER1, WALLET_USER2, testPrice)).thenReturn(true);
-        Mockito.doReturn(true).when(buyOrderService).confirmBuyOrder(ID_SELLORDER, ID_BUYER, TX_HASH);
+        Mockito.doReturn(Optional.of(ID_PURCHASE)).when(buyOrderService).confirmBuyOrder(ID_SELLORDER, ID_BUYER, TX_HASH);
 
         boolean result = buyOrderService.nftHasValidTransaction(ID_SELLORDER, ID_BUYER, testPrice, TX_HASH);
 
