@@ -12,6 +12,7 @@
     "@next/next/no-img-element": "off",
     "@typescript-eslint/semi": "off",
     "arrow-body-style": "off",
+    "no-console": "off",
     "no-nested-ternary": "off",
     "consistent-return": "off",
     "jsx-a11y/label-has-associated-control": "off",
