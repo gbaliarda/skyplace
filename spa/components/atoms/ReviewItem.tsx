@@ -60,9 +60,9 @@ export default function ReviewItem({
           />
           <div className="space-y-1 font-medium">
             <Link href={reviewerProfileUrl}>
-              <span className="text-lg text-cyan-600 decoration-current hover:text-cyan-800 hover:underline cursor-pointer">
+              <a className="text-lg text-cyan-600 decoration-current hover:text-cyan-800 hover:underline cursor-pointer">
                 {reviewer?.username}
-              </span>
+              </a>
             </Link>
           </div>
         </div>

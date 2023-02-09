@@ -143,12 +143,12 @@ const Product = () => {
                       ) : (
                         <>
                           <Link href={collectionUrl}>
-                            <span
+                            <a
                               suppressHydrationWarning
                               className="mr-2 text-cyan-600 font-bold hover:underline hover:text-cyan-800 max-w-[24rem] truncate cursor-pointer"
                             >
                               {t("product.collection", { collectionName: nft?.collection })}
-                            </span>
+                            </a>
                           </Link>
                           <div className="flex">
                             {currentUserId !== null && !errorFavorites && (
@@ -187,9 +187,9 @@ const Product = () => {
                           {t("product.own")}
                         </span>
                         <Link href={ownerUrl} className="text-accent block">
-                          <span className="text-sm font-bold pl-2 text-cyan-600 hover:underline hover:text-cyan-800 cursor-pointer">
+                          <a className="text-sm font-bold pl-2 text-cyan-600 hover:underline hover:text-cyan-800 cursor-pointer">
                             {owner?.username}
-                          </span>
+                          </a>
                         </Link>
                       </div>
                     )}
@@ -240,12 +240,12 @@ const Product = () => {
                       currentUserId !== null &&
                       currentUserId === owner?.id && (
                         <Link href={`/sell/${nft?.id}`}>
-                          <span
+                          <a
                             suppressHydrationWarning
                             className="btn normal-case font-medium bg-cyan-600 hover:bg-cyan-800 text-white px-6 rounded-md border-0"
                           >
                             {t("product.sell")}
-                          </span>
+                          </a>
                         </Link>
                       )}
 

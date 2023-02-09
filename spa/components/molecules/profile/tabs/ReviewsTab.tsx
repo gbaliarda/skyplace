@@ -131,12 +131,14 @@ export default function ReviewsTab({ userId }: Props) {
 
             {purchasesBetweenUsers?.totalPages !== 0 && reviewsBetweenUsers?.total === 0 && (
               <Link href={newReviewPath}>
-                <button
-                  type="button"
-                  className="shadow-md px-6 py-2.5 rounded-md transition duration-300 bg-cyan-600 hover:bg-cyan-800 text-white hover:shadow-xl"
-                >
-                  {t("profile.addReview")}
-                </button>
+                <a>
+                  <button
+                    type="button"
+                    className="shadow-md px-6 py-2.5 rounded-md transition duration-300 bg-cyan-600 hover:bg-cyan-800 text-white hover:shadow-xl"
+                  >
+                    {t("profile.addReview")}
+                  </button>
+                </a>
               </Link>
             )}
 
