@@ -19,7 +19,7 @@ import ErrorBox from "../../components/atoms/ErrorBox"
 import useSession from "../../hooks/useSession"
 import { useCryptoPrice } from "../../hooks/useCryptoPrice"
 import ConfirmTransactionModal from "../../components/atoms/product/ConfirmTransactionModal"
-import { postJson } from "../../services/endpoints"
+import { sendJson, getResourceUrl } from '../../services/endpoints';
 import { useFavoritedNft } from "../../services/favorites"
 
 const Product = () => {
@@ -76,7 +76,8 @@ const Product = () => {
 
   const handleConfirmPendingOffer = async (txHash: string) => {
     // do not handle the error here, it will be handled in ConfirmTransactionModal
-    await postJson(
+    await sendJson(
+      "POST",
       `/sellorders/${sellorder?.id}/buyorders/${userPendingBuyOrder?.id}`,
       { txHash },
       accessToken!!,
@@ -159,7 +160,7 @@ const Product = () => {
                               />
                             )}
                             {(currentUserId === owner!!.id || isAdmin) && !pendingBuyOrder && (
-                              <ProductDropdown isOnSale={nft?.sellorder !== undefined} />
+                              <ProductDropdown nft={nft!!} />
                             )}
                           </div>
                         </>
@@ -200,7 +201,7 @@ const Product = () => {
                         </>
                       ) : nft?.sellorder !== undefined ? (
                         <>
-                          <img className="h-8 -ml-1" src="/product/eth.svg" alt="Eth icon" />
+                          <img className="h-8 -ml-1" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
                           <div>
                             <span className="font-bold tracking-tight">{sellorder?.price}</span>
                             <span className="ml-4 text-slate-500 text-base">
@@ -210,7 +211,7 @@ const Product = () => {
                         </>
                       ) : (
                         <>
-                          <img className="h-8 -ml-1" src="/product/eth.svg" alt="Eth icon" />
+                          <img className="h-8 -ml-1" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
                           <span
                             suppressHydrationWarning
                             className="text-[1.1rem] font-bold tracking-tight"

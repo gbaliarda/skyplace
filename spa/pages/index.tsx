@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { useTranslation } from "next-export-i18n"
 import Layout from "../components/Layout"
+import { getResourceUrl } from '../services/endpoints';
 
 const Home = () => {
   const { t } = useTranslation()
@@ -49,7 +50,7 @@ const Home = () => {
             <div className="absolute -top-4 -left-8 w-80 h-80 bg-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-75 animate-blob z-0" />
             <div className="absolute -top-4 -right-8 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-75 animate-blob delay-2000 z-0" />
             <div className="absolute top-8 w-80 h-80 bg-red-300 rounded-full mix-blend-multiply filter blur-xl opacity-75 animate-blob delay-4000 z-0" />
-            <img className="z-10 h-80 w-68" src="/index/monkeyNft.jpg" alt="" />
+            <img className="z-10 h-80 w-68" src={getResourceUrl("/index/monkeyNft.jpg")} alt="" />
           </div>
         </div>
       </div>

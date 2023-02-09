@@ -6,7 +6,7 @@ import Layout from "../../../components/Layout"
 import useSession from "../../../hooks/useSession"
 import { useUser } from "../../../services/users"
 import useForm from "../../../hooks/useForm"
-import { fetcher } from "../../../services/endpoints"
+import { fetcher, getResourceUrl } from '../../../services/endpoints';
 import FormSubmit from "../../../components/atoms/forms/FormSubmit"
 import FormType from "../../../components/atoms/forms/FormType"
 import FormTextArea from "../../../components/atoms/forms/FormTextArea"
@@ -79,7 +79,7 @@ export default function CreateReview() {
               <div className="flex flex-row items-center">
                 <img
                   className="w-14 h-14 rounded-full"
-                  src="/profile/profile_picture.png"
+                  src={getResourceUrl("/profile/profile_picture.png")}
                   alt={t("profile.pictureAlt")}
                 />
                 <span className="ml-2 text-lg">{reviewee?.username}</span>

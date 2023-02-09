@@ -4,6 +4,7 @@ import Swal from "sweetalert2"
 import { Review } from "../../types/Review"
 import { useUser } from "../../services/users"
 import { deleteReview } from "../../services/reviews"
+import { getResourceUrl } from '../../services/endpoints';
 
 export default function ReviewItem({
   review,
@@ -54,7 +55,7 @@ export default function ReviewItem({
         <div className="flex items-center space-x-4">
           <img
             className="w-14 h-14 rounded-full"
-            src="/profile/profile_picture.png"
+            src={getResourceUrl("/profile/profile_picture.png")}
             alt={t("profile.profileIcon")}
           />
           <div className="space-y-1 font-medium">
@@ -67,10 +68,10 @@ export default function ReviewItem({
         </div>
         <div className="flex flex-row">
           {auxFilled.map((value) => (
-            <img className="h-9 w-9" src="/profile/filled_star.svg" alt="" key={value} />
+            <img className="h-9 w-9" src={getResourceUrl("/profile/filled_star.svg")} alt="" key={value} />
           ))}
           {auxEmpty.map((value) => (
-            <img className="h-9 w-9" src="/profile/empty_star.svg" alt="" key={value} />
+            <img className="h-9 w-9" src={getResourceUrl("/profile/empty_star.svg")} alt="" key={value} />
           ))}
         </div>
       </div>

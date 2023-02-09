@@ -1,6 +1,7 @@
 import { useTranslation } from "next-export-i18n"
 import User from "../../types/User"
 import ReviewsInfo from "../../types/Review"
+import { getResourceUrl } from '../../services/endpoints';
 
 export default function ProfileDescription({
   user,
@@ -18,7 +19,7 @@ export default function ProfileDescription({
     <div className="flex flex-col flex-grow md:flex-row items-center mt-10">
       <img
         className="rounded-full h-40 w-40"
-        src="/profile/profile_picture.png"
+        src={getResourceUrl("/profile/profile_picture.png")}
         alt={t("profile.profileIcon")}
       />
       <div className="flex flex-col mt-5 md:ml-5 md:mt-0 items-start justify-center gap-3">
@@ -36,7 +37,7 @@ export default function ProfileDescription({
             >
               <img
                 className="w-6 h-6"
-                src="/profile/utility_icon.svg"
+                src={getResourceUrl("/profile/utility_icon.svg")}
                 alt={t("profile.walletIcon")}
               />
               <span
@@ -65,7 +66,7 @@ export default function ProfileDescription({
           {user?.email}
         </span>
         <div className="flex flex-row items-center">
-          <img className="h-9 w-9" src="/profile/filled_star.svg" alt={t("profile.starIcon")} />
+          <img className="h-9 w-9" src={getResourceUrl("/profile/filled_star.svg")} alt={t("profile.starIcon")} />
           <p className="text-lg font-bold text-gray-900 ml-1">{reviewsInfo?.score}</p>
           <span className="w-1.5 h-1.5 mx-2 bg-gray-500 rounded-full dark:bg-gray-400" />
           <a

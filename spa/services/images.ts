@@ -1,8 +1,8 @@
 import useSWR from "swr"
 import Image from "../types/Image"
-import { fetcher, genericFetcher, postJson } from "./endpoints"
+import { fetcher, genericFetcher, sendJson } from "./endpoints"
 
-export const createImage = (url: string) => postJson("/images", { url })
+export const createImage = (url: string) => sendJson("POST", "/images", { url })
 
 export const useImage = (id: number) => {
   const { data: img, error, mutate } = useSWR<Image>(`/images/${id}`, fetcher)

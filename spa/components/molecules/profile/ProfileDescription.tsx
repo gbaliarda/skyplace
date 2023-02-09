@@ -6,6 +6,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard"
 import { useUser } from "../../../services/users"
 import ErrorBox from "../../atoms/ErrorBox"
 import { useReviews } from "../../../services/reviews"
+import { getResourceUrl } from '../../../services/endpoints';
 
 interface Props {
   userId: number
@@ -69,7 +70,7 @@ export default function ProfileDescription({ userId }: Props) {
     <div className="flex mt-10">
       <img
         className="rounded-full h-40 w-40"
-        src="/profile/profile_picture.png"
+        src={getResourceUrl("/profile/profile_picture.png")}
         alt={t("profile.profileIcon")}
       />
       <div className="flex flex-col mt-5 md:ml-5 md:mt-0 justify-center gap-3">
@@ -89,7 +90,7 @@ export default function ProfileDescription({ userId }: Props) {
               >
                 <img
                   className="w-6 h-6"
-                  src="/profile/utility_icon.svg"
+                  src={getResourceUrl("/profile/utility_icon.svg")}
                   alt={t("profile.walletIcon")}
                 />
                 <span
@@ -106,7 +107,7 @@ export default function ProfileDescription({ userId }: Props) {
           {user?.email}
         </span>
         <div className="flex flex-row items-center">
-          <img className="h-9 w-9" src="/profile/filled_star.svg" alt={t("profile.starIcon")} />
+          <img className="h-9 w-9" src={getResourceUrl("/profile/filled_star.svg")} alt={t("profile.starIcon")} />
           <p className="text-lg font-bold text-gray-900 ml-1">{reviewsInfo?.score}</p>
           <span className="w-1.5 h-1.5 mx-2 bg-gray-500 rounded-full dark:bg-gray-400" />
           <Link href={reviewsPath}>

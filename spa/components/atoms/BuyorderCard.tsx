@@ -6,7 +6,7 @@ import { KeyedMutator } from "swr"
 import Swal from "sweetalert2"
 import Buyorder, { BuyOrderApi } from "../../types/Buyorder"
 import { useUserUrl } from "../../services/users"
-import { fetcher } from "../../services/endpoints"
+import { fetcher, getResourceUrl } from '../../services/endpoints';
 import { useSellorderUrl, usePendingBuyOrder } from "../../services/sellorders"
 import useSession from "../../hooks/useSession"
 import User from "../../types/User"
@@ -120,7 +120,7 @@ const BuyorderCard = ({ buyorder, owner, index, mutate }: Props) => {
       </div>
       <div className="flex flex-col gap-1 items-end">
         <div className="flex">
-          <img className="h-6 -ml-1" src="/product/eth.svg" alt="Eth icon" />
+          <img className="h-6 -ml-1" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
           <span className="text-slate-700">{buyorder.amount}</span>
         </div>
         {isUserOfferer && userPendingBuyOrder?.id !== userId && (

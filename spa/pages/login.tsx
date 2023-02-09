@@ -7,6 +7,7 @@ import Swal from "sweetalert2"
 import Layout from "../components/Layout"
 import useForm from "../hooks/useForm"
 import { loginUser } from "../services/users"
+import { getResourceUrl } from '../services/endpoints';
 
 interface FormData {
   email: string
@@ -41,7 +42,7 @@ export default function Login() {
     <Layout>
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
-          <img className="mx-auto h-12 w-auto" src="/logo.svg" alt="" />
+          <img className="mx-auto h-12 w-auto" src={getResourceUrl("/logo.svg")} alt="" />
           <h2
             suppressHydrationWarning
             className="mt-6 text-center text-3xl font-extrabold text-gray-900"

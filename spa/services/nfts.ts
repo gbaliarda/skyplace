@@ -1,5 +1,5 @@
 import useSWR from "swr"
-import { genericFetcher, fetcher, patchJson } from "./endpoints"
+import { genericFetcher, fetcher } from "./endpoints"
 import Nft, { NftApi } from "../types/Nft"
 import { NftsFilter, SearchFilter } from "../types/Filters"
 import { FetchError } from "../types/FetchError"
@@ -54,7 +54,3 @@ export const useNftUrl = (url: string | undefined) => {
   const loading = !error && !nft
   return { nft, loading, error, mutate }
 }
-
-// TODO: remove, just for testing
-export const updateNft = (id: string | number, dataToUpdate: Object) =>
-  patchJson(`/nfts/${id}`, dataToUpdate)

@@ -1,5 +1,5 @@
 import useSWR from "swr"
-import { fetcher, genericFetcher, postJson } from "./endpoints"
+import { fetcher, genericFetcher, sendJson } from "./endpoints"
 import User from "../types/User"
 import { NftApi } from "../types/Nft"
 import { BuyOrderApi } from "../types/Buyorder"
@@ -72,7 +72,7 @@ export const createUser = ({
   password,
   confirmPassword,
 }: Omit<User, "id"> & { walletChain: string; password: string; confirmPassword: string }) =>
-  postJson("/users", {
+  sendJson("POST", "/users", {
     email,
     walletAddress: wallet,
     walletChain,

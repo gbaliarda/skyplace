@@ -2,7 +2,7 @@ import { BaseSyntheticEvent, useState, useRef } from "react"
 import { useTranslation } from "next-export-i18n"
 import { TagIcon } from "@heroicons/react/24/outline"
 import Swal from "sweetalert2"
-import { postJson } from "../../../services/endpoints"
+import { sendJson, getResourceUrl } from '../../../services/endpoints';
 import useSession from "../../../hooks/useSession"
 import Sellorder from "../../../types/Sellorder"
 import { useBuyOrders } from "../../../services/sellorders"
@@ -23,7 +23,7 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
 
     setLoading(true)
     try {
-      await postJson(`/sellorders/${sellOrder.id}/buyorders`, { price: offer }, accessToken)
+      await sendJson("POST", `/sellorders/${sellOrder.id}/buyorders`, { price: offer }, accessToken)
       priceRef.current!!.value = "0"
       setOffer(0)
       mutate() // FIXME: this will only work if the user is on the first page of offers
@@ -53,7 +53,7 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
             <span suppressHydrationWarning className="text-[1.1rem] pr-2">
               {t("product.yourOffer")}
             </span>
-            <img className="h-8 -ml-1" src="/product/eth.svg" alt="Eth icon" />
+            <img className="h-8 -ml-1" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
             <input
               ref={priceRef}
               type="number"

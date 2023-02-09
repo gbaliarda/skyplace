@@ -8,7 +8,7 @@ import { useImageUrl } from "../../services/images"
 import { useSellorderUrl } from "../../services/sellorders"
 import { useUserUrl } from "../../services/users"
 import useSession from "../../hooks/useSession"
-import { fetcher } from "../../services/endpoints"
+import { fetcher, getResourceUrl } from '../../services/endpoints';
 import ErrorBox from "./ErrorBox"
 
 interface Props {
@@ -85,7 +85,7 @@ const Card = ({ nft, mutateFavs, isFaved }: Props) => {
             <h3 className="max-w-[20ch] truncate text-lg">{`${nft.nftName} #${nft.nftId}`}</h3>
             {sellorder !== undefined ? (
               <div className="flex items-center">
-                <img className="h-8" src="/product/eth.svg" alt="Eth icon" />
+                <img className="h-8" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
                 <span>{sellorder.price}</span>
               </div>
             ) : (

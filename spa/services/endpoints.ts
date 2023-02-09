@@ -7,7 +7,13 @@ const errorTranslations = {
   es: { ...ESErrorCodes.errorCodes },
 }
 
-export const api = "http://localhost:8080/api"
+export const api = process.env.NODE_ENV === "development"
+  ? "http://localhost:8080/api"
+  : "http://pawserver.it.itba.edu.ar/paw-2022a-09/api"
+
+export const getResourceUrl = (resource: string) => process.env.NODE_ENV === "development"
+  ? resource
+  : "/paw-2022a-09" + resource
 
 const jsonHeader = (accessToken: string = "") => ({
   headers: {
@@ -31,7 +37,7 @@ const checkStatus = async (res: Response) => {
     const error = new Error() as FetchError
     error.name = res.statusText
     // @ts-ignore
-    error.message = errorTranslations[userLang][errors[0].code] ?? "Error :("
+    error.message = errorTranslations[userLang][errors[0].code] ?? (errorTranslations[userLang][res.status] ?? "Error :(")
     error.cause = {
       statusCode: res.status,
       errorCode: errors[0].code,
@@ -87,14 +93,8 @@ export const fetcher = (resource: string, options?: RequestInit, withHeaders: bo
 export const fetcherWithAuth = (resource: string, accessToken: string = "") =>
   fetcher(resource, { ...jsonHeader(accessToken) })
 
-export const postJson = (resource: string, data: Object, accessToken?: string | null) =>
+export const sendJson = (method: "PUT" | "POST", resource: string, data: Object, accessToken?: string | null) =>
   fetcher(resource, {
-    method: "POST",
+    method,
     ...jsonOptions(data, accessToken || ""),
-  })
-
-export const patchJson = (resource: string, data: Object) =>
-  fetcher(resource, {
-    method: "PATCH",
-    ...jsonOptions(data),
   })

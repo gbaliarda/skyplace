@@ -3,6 +3,7 @@ import { useTranslation } from "next-export-i18n"
 
 import SearchBar from "../atoms/SearchBar"
 import NavbarDropdown from "../atoms/NavbarDropdown"
+import { getResourceUrl } from '../../services/endpoints';
 
 const Navbar = () => {
   const { t } = useTranslation()
@@ -11,7 +12,7 @@ const Navbar = () => {
     <nav className="absolute flex items-center w-full justify-around h-16 lg:h-20 shadow-md lg:shadow-none">
       <Link href="/">
         <div className="cursor-pointer flex flex-row flex-start gap-2">
-          <img src="/logo.svg" alt="Skyplace" className="w-10 md:w-14" />
+          <img src={getResourceUrl("/logo.svg")} alt="Skyplace" className="w-10 md:w-14" />
           <h1 className="font-semibold text-xl md:text-2xl">Skyplace</h1>
         </div>
       </Link>

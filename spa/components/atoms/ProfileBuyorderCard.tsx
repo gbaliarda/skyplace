@@ -6,6 +6,7 @@ import { useNftUrl } from "../../services/nfts"
 import { useImageUrl } from "../../services/images"
 import { useUserUrl } from "../../services/users"
 import useSession from "../../hooks/useSession"
+import { getResourceUrl } from '../../services/endpoints';
 
 interface Props {
   buyorder: Buyorder
@@ -41,7 +42,7 @@ export default function ProfileBuyorderCard({ buyorder, status }: Props) {
   if (errorImage) return <h1>Error loading Image of nft</h1>
   if (loadingImage) return <h1>Loading Image of nftr...</h1>
 
-  const imageSrc = `data:image/jpg;base64,${img?.image.toString()}`
+  const imageSrc = getResourceUrl(`data:image/jpg;base64,${img?.image.toString()}`)
   const nftName = `${nft?.nftName} #${nft?.nftId}`
   const userIsBidder = bidder?.id === userId
 
