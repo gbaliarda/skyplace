@@ -14,6 +14,16 @@
     "username": "Username",
     "searchAlt": "search"
   },
+  "sell": {
+    "publish": "Publish",
+    "update": "Update",
+    "sellNft": "Sell an NFT",
+    "updateSail": "Update sail",
+    "category": "Category",
+    "price": "Price",
+    "nftContract": "NFT Contract",
+    "nftId": "NFT ID"
+  },
   "index": {
     "discover": "Discover, buy and sell NFTs",
     "become": "Become the owner of any NFT available in the market",
@@ -56,6 +66,7 @@
     "removeOffer": "Error removing offer",
     "acceptOffer": "Error accepting offer",
     "sellNft": "Error selling NFT",
+    "updateSellorder": "Error updating sell order",
     "createNft": "Error creating NFT",
     "createReview": "Error creating review"
   },
@@ -111,7 +122,8 @@
     "31": "There's already a sell order created for this NFT",
     "41": "A buy offer has already been accepted for this sell order",
     "42": "Buy offer is pending",
-    "51": "There isn't a transaction between the two parties"
+    "51": "There isn't a transaction between the two parties",
+    "403": "You don't have permission to execute this action"
   },
   "explore": {
     "title": "Explore | Skyplace",
@@ -151,6 +163,7 @@
     "offerBy": "Offered By",
     "offers": "Offers",
     "confirm": "Confirm offer",
+    "cancel": "Cancel",
     "contractAddress": "Contract address",
     "category": "Category",
     "noProperty": "This NFT does not contain any special property",
@@ -172,9 +185,15 @@
     "buy": "Buy",
     "yourOffer": "Your offer",
     "deleteSellOrder": "Delete Sell Order",
-    "deleteSellOrderConfirm": "Are you sure you want to delete this sell order? All buy orders for this NFT will be lost.",
+    "deleteSellOrderConfirm": "Are you sure you want to remove this sell order?",
+    "deleteSellOrderInfo": "All buy orders for this NFT will be lost.",
+    "deleteSellOrderError": "Error removing sell order",
+    "deleteSellOrderSuccess": "Successfully removed sell order",
     "deleteNft": "Delete NFT",
-    "deleteNftConfirm": "Are you sure you want to delete this NFT? This action is irreversible.",
+    "deleteNftConfirm": "Are you sure you want to delete this NFT?",
+    "deleteNftInfo": "This action is irreversible.",
+    "deleteNftError": "Error deleting NFT",
+    "deleteNftSuccess": "Successfully deleted NFT",
     "makeOffer": "Make offer",
     "makeOfferError": "Error making offer",
     "pendingOffer": "Pending offer",

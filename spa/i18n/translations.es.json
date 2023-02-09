@@ -14,6 +14,16 @@
     "username": "Usuario",
     "searchAlt": "buscar"
   },
+  "sell": {
+    "publish": "Publicar",
+    "update": "Actualizar",
+    "sellNft": "Vender un NFT",
+    "updateSail": "Actualizar venta",
+    "category": "Categoría",
+    "price": "Precio",
+    "nftContract": "Contrato del NFT",
+    "nftId": "ID del NFT"
+  },
   "index": {
     "discover": "Descubre, compra y vende NFTs",
     "become": "Conviértete en propietario de cualquier NFT disponible en el mercado",
@@ -56,6 +66,7 @@
     "removeOffer": "Error al eliminar la oferta",
     "acceptOffer": "Error al aceptar la oferta",
     "sellNft": "Error al poner a la venta el NFT",
+    "updateSellorder": "Error al actualizar la orden de venta",
     "createNft": "Error al crear NFT",
     "createReview": "Error al crear la reseña"
   },
@@ -111,7 +122,8 @@
     "31": "Ya hay una orden de venta creada para este nft",
     "41": "Ya hay una oferta aceptada para esta orden de venta",
     "42": "La oferta está pendiente",
-    "51": "No existe una transaccion entre ambas partes"
+    "51": "No existe una transaccion entre ambas partes",
+    "403": "No tiene permiso para ejecutar esta acción"
   },
   "explore": {
     "title": "Explorar | Skyplace",
@@ -151,12 +163,13 @@
     "offerBy": "Oferta de",
     "offers": "Ofertas",
     "confirm": "Confirmar oferta",
+    "cancel": "Cancelar",
     "contractAddress": "Dirección del contrato",
     "category": "Categoría",
     "noProperty": "Este NFT no contiene ninguna propiedad especial",
     "by": "por",
     "reject": "Rechazar",
-    "removeOffer": "Remover",
+    "removeOffer": "Eliminar",
     "accept": "Aceptar",
     "noSale": "¡Este NFT no está a la venta!",
     "noOffers": "Todavía no hay ofertas para este NFT",
@@ -172,9 +185,15 @@
     "buy": "Comprar",
     "yourOffer": "Tu oferta",
     "deleteSellOrder": "Eliminar orden de venta",
-    "deleteSellOrderConfirm": "¿Está seguro de que desea eliminar esta orden de venta? Todas las órdenes de compra para este NFT se perderán.",
+    "deleteSellOrderConfirm": "¿Seguro que desea eliminar esta orden de venta?",
+    "deleteSellOrderInfo": "Todas las órdenes de compra para este NFT se perderán.",
+    "deleteSellOrderError": "Error al eliminar la orden de venta",
+    "deleteSellOrderSuccess": "Orden de venta eliminada con éxito",
     "deleteNft": "Eliminar NFT",
-    "deleteNftConfirm": "¿Está seguro de que desea eliminar este NFT? Esta acción es irreversible.",
+    "deleteNftConfirm": "¿Está seguro de que desea eliminar este NFT?",
+    "deleteNftInfo": "Esta acción es irreversible.",
+    "deleteNftError": "No se pudo borrar el NFT",
+    "deleteNftSuccess": "NFT borrado exitosamente",
     "makeOffer": "Ofertar",
     "makeOfferError": "Error al ofertar",
     "collection": "Colección: {{collectionName}}",
