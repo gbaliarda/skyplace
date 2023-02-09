@@ -106,7 +106,7 @@
     "12": "Resource already exists",
     "13": "Body missing on request",
     "14": "Expired auth token",
-    "21": "Username with password sent doesn´t exist",
+    "21": "You have entered an invalid username or password",
     "22": "You do not own this NFT",
     "31": "There's already a sell order created for this NFT",
     "41": "A buy offer has already been accepted for this sell order",
