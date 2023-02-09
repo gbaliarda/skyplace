@@ -47,57 +47,59 @@ export default function ProfileBuyorderCard({ buyorder, status }: Props) {
 
   return (
     <Link href={`/product/${nft?.id}`} className="flex inset-0 absolute w-full gap-2">
-      <div className="border-jacarta-100 rounded-2.5xl h-32 relative flex items-center border bg-white p-4 transition-shadow hover:shadow-lg z-0 cursor-pointer">
-        <div className="flex flex-row items-center ml-4">
-          <figure className="mr-5">
-            <img
-              src={imageSrc}
-              className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
-              alt="avatar 2"
-              loading="lazy"
-            />
-          </figure>
+      <a>
+        <div className="border-jacarta-100 rounded-2.5xl h-32 relative flex items-center border bg-white p-4 transition-shadow hover:shadow-lg z-0 cursor-pointer">
+          <div className="flex flex-row items-center ml-4">
+            <figure className="mr-5">
+              <img
+                src={imageSrc}
+                className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
+                alt="avatar 2"
+                loading="lazy"
+              />
+            </figure>
 
-          <div className="max-w-[34rem]">
-            <h3 className="font-display text-jacarta-700 mb-1 text-base font-semibold truncate">
-              {nftName}
-            </h3>
-            <div suppressHydrationWarning className="text-jacarta-500 block text-sm">
-              {!userIsBidder
-                ? t("buyorders.forSale", { bidder: bidder?.username, amount: buyorder.amount })
-                : t("buyorders.bidded", { amount: buyorder.amount })}
-            </div>
-            <div suppressHydrationWarning className="text-sm pt-3">
-              {/*
-                <c:when test="${param.isMySale == true}">
-                  <spring:message code="buyoffer.pendingDate" arguments="${param.offerDate}" />
-                </c:when>
-                */}
-              {status === "NEW" ? t("buyorders.pending") : t("buyorders.accepted")}
+            <div className="max-w-[34rem]">
+              <h3 className="font-display text-jacarta-700 mb-1 text-base font-semibold truncate">
+                {nftName}
+              </h3>
+              <div suppressHydrationWarning className="text-jacarta-500 block text-sm">
+                {!userIsBidder
+                  ? t("buyorders.forSale", { bidder: bidder?.username, amount: buyorder.amount })
+                  : t("buyorders.bidded", { amount: buyorder.amount })}
+              </div>
+              <div suppressHydrationWarning className="text-sm pt-3">
+                {/*
+                  <c:when test="${param.isMySale == true}">
+                    <spring:message code="buyoffer.pendingDate" arguments="${param.offerDate}" />
+                  </c:when>
+                  */}
+                {status === "NEW" ? t("buyorders.pending") : t("buyorders.accepted")}
+              </div>
             </div>
           </div>
+          {/* Modals
+        <c:if
+          test="${param.isAdmin == true || (param.isMySale == false && param.isOwner != null && param.isOwner == true)}">
+          <c:choose>
+            <c:when test="${param.status == 'NEW'}">
+              <button type="submit" onClick="openDeleteOfferModal(${param.sellOrderId}, ${param.buyerId})"
+                      className="px-5 py-2 rounded-md text-white transition duration-300 shadow-md hover:shadow-xl bg-red-500 hover:bg-red-900 z-10 absolute right-8">
+                <spring:message code="buyoffer.delete" />
+              </button>
+            </c:when>
+            <c:otherwise>
+              <button
+                onClick="openConfirmBuyOfferModal('${param.buyerUsername}', '${param.buyerWallet}', '${param.sellerUsername}', '${param.sellerWallet}', '${param.nftName}', '${param.nftContractAddr}', ${param.price}, ${param.nftCollectionId}, ${param.productId}, ${param.sellOrderId}, ${param.buyerId})"
+                className="px-5 py-2 rounded-md text-white transition duration-300 shadow-md hover:shadow-xl bg-cyan-600 hover:bg-cyan-800 z-10 absolute right-8">
+                <spring:message code="buyoffer.confirm" />
+              </button>
+            </c:otherwise>
+          </c:choose>
+        </c:if>
+        */}
         </div>
-        {/* Modals
-      <c:if
-        test="${param.isAdmin == true || (param.isMySale == false && param.isOwner != null && param.isOwner == true)}">
-        <c:choose>
-          <c:when test="${param.status == 'NEW'}">
-            <button type="submit" onClick="openDeleteOfferModal(${param.sellOrderId}, ${param.buyerId})"
-                    className="px-5 py-2 rounded-md text-white transition duration-300 shadow-md hover:shadow-xl bg-red-500 hover:bg-red-900 z-10 absolute right-8">
-              <spring:message code="buyoffer.delete" />
-            </button>
-          </c:when>
-          <c:otherwise>
-            <button
-              onClick="openConfirmBuyOfferModal('${param.buyerUsername}', '${param.buyerWallet}', '${param.sellerUsername}', '${param.sellerWallet}', '${param.nftName}', '${param.nftContractAddr}', ${param.price}, ${param.nftCollectionId}, ${param.productId}, ${param.sellOrderId}, ${param.buyerId})"
-              className="px-5 py-2 rounded-md text-white transition duration-300 shadow-md hover:shadow-xl bg-cyan-600 hover:bg-cyan-800 z-10 absolute right-8">
-              <spring:message code="buyoffer.confirm" />
-            </button>
-          </c:otherwise>
-        </c:choose>
-      </c:if>
-      */}
-      </div>
+      </a>
     </Link>
   )
 }

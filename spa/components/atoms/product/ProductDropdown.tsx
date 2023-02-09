@@ -24,22 +24,22 @@ const ProductDropdown = ({ isOnSale }: Props) => {
         >
           <li>
             <Link href={""}>
-              <span
+              <a
                 suppressHydrationWarning
                 className="text-xs whitespace-nowrap hover:bg-gray-600 rounded-t-md hover:text-white transition-none py-1.5"
               >
                 {t("product.updateSell")}
-              </span>
+              </a>
             </Link>
           </li>
           <li>
             <Link href={""}>
-              <span
+              <a
                 suppressHydrationWarning
                 className="text-xs whitespace-nowrap hover:bg-gray-600 rounded-b-md hover:text-white transition-none py-2 pr-12"
               >
                 {t("product.deleteSell")}
-              </span>
+              </a>
             </Link>
           </li>
         </ul>
@@ -50,22 +50,22 @@ const ProductDropdown = ({ isOnSale }: Props) => {
         >
           <li>
             <Link href={""}>
-              <span
+              <a
                 suppressHydrationWarning
                 className="text-xs whitespace-nowrap hover:bg-gray-600 rounded-t-md hover:text-white transition-none py-1.5"
               >
                 {t("product.sell")}
-              </span>
+              </a>
             </Link>
           </li>
           <li>
             <Link href={""}>
-              <span
+              <a
                 suppressHydrationWarning
                 className="text-xs whitespace-nowrap hover:bg-gray-600 rounded-b-md hover:text-white transition-none py-2 pr-12"
               >
                 {t("product.delete")}
-              </span>
+              </a>
             </Link>
           </li>
         </ul>

@@ -112,9 +112,9 @@ const BuyorderCard = ({ buyorder, owner, index, mutate }: Props) => {
           {t("product.by")}
           &nbsp;
           <Link href={offererUrl} className="text-cyan-600 hover:underline hover:text-cyan-800">
-            <span className="text-cyan-600 hover:underline hover:text-cyan-800 cursor-pointer">
+            <a className="text-cyan-600 hover:underline hover:text-cyan-800 cursor-pointer">
               {offerer?.username}
-            </span>
+            </a>
           </Link>
         </p>
       </div>

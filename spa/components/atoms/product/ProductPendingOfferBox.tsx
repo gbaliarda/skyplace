@@ -29,9 +29,9 @@ const ProductPendingOfferBox = ({ pendingBuyOrder }: Props) => {
             <Spinner />
           ) : (
             <Link href={`/profile/${user!!.id}`}>
-              <span className="ml-1 text-cyan-600 hover:underline hover:text-cyan-800 cursor-pointer">
+              <a className="ml-1 text-cyan-600 hover:underline hover:text-cyan-800 cursor-pointer">
                 {user!!.username}
-              </span>
+              </a>
             </Link>
           )}
         </div>

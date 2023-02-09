@@ -25,22 +25,26 @@ const Home = () => {
             </p>
             <div className="flex justify-center flex-wrap gap-6">
               <Link href="/create">
-                <button
-                  suppressHydrationWarning
-                  type="button"
-                  className="shadow-md px-6 rounded-md transition duration-300 bg-cyan-600 hover:bg-cyan-800 text-white hover:shadow-xl h-12"
-                >
-                  {t("index.create")}
-                </button>
+                <a>
+                  <button
+                    suppressHydrationWarning
+                    type="button"
+                    className="shadow-md px-6 rounded-md transition duration-300 bg-cyan-600 hover:bg-cyan-800 text-white hover:shadow-xl h-12"
+                  >
+                    {t("index.create")}
+                  </button>
+                </a>
               </Link>
               <Link href="/explore">
-                <button
-                  suppressHydrationWarning
-                  type="button"
-                  className="shadow-md px-6 rounded-md transition duration-300 border-2 border-cyan-600 hover:border-cyan-800 hover:bg-cyan-800 text-cyan-600 hover:text-white hover:shadow-xl h-12"
-                >
-                  {t("index.explore")}
-                </button>
+                <a>
+                  <button
+                    suppressHydrationWarning
+                    type="button"
+                    className="shadow-md px-6 rounded-md transition duration-300 border-2 border-cyan-600 hover:border-cyan-800 hover:bg-cyan-800 text-cyan-600 hover:text-white hover:shadow-xl h-12"
+                  >
+                    {t("index.explore")}
+                  </button>
+                </a>
               </Link>
             </div>
           </div>

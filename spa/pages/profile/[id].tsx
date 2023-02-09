@@ -68,10 +68,12 @@ export default function Profile() {
                       },
                     }}
                   >
-                    <div className="flex flex-row cursor-pointer">
-                      <img className="h-6 w-6 mr-2" src={tabImage} alt="tab_icon" />
-                      {t(`profile.${value.key}`)}
-                    </div>
+                    <a>
+                      <div className="flex flex-row cursor-pointer">
+                        <img className="h-6 w-6 mr-2" src={tabImage} alt="tab_icon" />
+                        {t(`profile.${value.key}`)}
+                      </div>
+                    </a>
                   </Link>
                 </li>
               )

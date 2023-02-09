@@ -110,12 +110,12 @@ export default function ProfileDescription({ userId }: Props) {
           <p className="text-lg font-bold text-gray-900 ml-1">{reviewsInfo?.score}</p>
           <span className="w-1.5 h-1.5 mx-2 bg-gray-500 rounded-full dark:bg-gray-400" />
           <Link href={reviewsPath}>
-            <span
+            <a
               suppressHydrationWarning
               className="text-lg text-cyan-600 hover:text-cyan-800 hover:underline cursor-pointer font-bold"
             >
               {t("profile.reviewAmount", { amount: reviewsInfo?.total })}
-            </span>
+            </a>
           </Link>
         </div>
       </div>

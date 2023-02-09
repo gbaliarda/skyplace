@@ -19,13 +19,15 @@ export default function Custom500() {
               {t("500.requestInfo")}
             </p>
             <Link href="/">
-              <button
-                suppressHydrationWarning
-                type="button"
-                className="w-fit shadow-md mt-3 py-2 px-6 rounded-md transition duration-300 bg-cyan-600 text-white"
-              >
-                {t("500.goBack")}
-              </button>
+              <a>
+                <button
+                  suppressHydrationWarning
+                  type="button"
+                  className="w-fit shadow-md mt-3 py-2 px-6 rounded-md transition duration-300 bg-cyan-600 text-white"
+                >
+                  {t("500.goBack")}
+                </button>
+              </a>
             </Link>
           </div>
         </div>

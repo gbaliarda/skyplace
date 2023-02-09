@@ -47,34 +47,34 @@ const NavbarDropdown = () => {
           <>
             <li>
               <Link href={userProfileUrl} className="py-2 px-4">
-                <span className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none">
                   <UserIcon className="h-4 w-4" />
                   Profile
-                </span>
+                </a>
               </Link>
             </li>
             <li>
               <Link href={userBuyordersUrl} className="py-2 px-4">
-                <span className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none">
                   <BanknotesIcon className="h-4 w-4" />
                   Bidding
-                </span>
+                </a>
               </Link>
             </li>
             <li>
               <Link href={userSellordersUrl} className="py-2 px-4">
-                <span className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none">
                   <ShoppingCartIcon className="h-4 w-4" />
                   Selling
-                </span>
+                </a>
               </Link>
             </li>
             <li>
               <Link href={userFavoritesUrl} className="py-2 px-4">
-                <span className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none">
                   <HeartIcon className="h-4 w-4" />
                   Favorited
-                </span>
+                </a>
               </Link>
             </li>
             <li>
@@ -91,16 +91,16 @@ const NavbarDropdown = () => {
           <>
             <li>
               <Link href="/login" className="py-2 px-4">
-                <span className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	">
+                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	">
                   Log in
-                </span>
+                </a>
               </Link>
             </li>
             <li>
               <Link href="/register" className="py-2 px-4">
-                <span className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	">
+                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	">
                   Sign up
-                </span>
+                </a>
               </Link>
             </li>
           </>
