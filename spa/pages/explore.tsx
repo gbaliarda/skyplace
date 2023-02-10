@@ -13,11 +13,9 @@ import { api } from "../services/endpoints"
 const Explore = () => {
   const router = useRouter()
 
-  const [search, setSearch] = useState<SearchFilter>({
-    searchFor: (router.query.searchFor as SearchType) ?? SearchType.Nft,
-    search: Array.isArray(router.query.search) ? router.query.search[0] : router.query.search ?? "",
-  })
+  const [search, setSearch] = useState<SearchFilter>({} as SearchFilter)
   useEffect(() => {
+    if (router.query.search === undefined || router.query.searchFor === undefined) return
     const querySearch = router.query.search
     setSearch({
       searchFor: (router.query.searchFor as SearchType) ?? SearchType.Nft,
