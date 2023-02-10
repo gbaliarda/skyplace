@@ -14,8 +14,6 @@ export interface ReviewStarScore {
 }
 
 export default interface ReviewsInfo {
-  total: number
-  totalPages: number
   score: number
   ratings: Array<ReviewStarScore>
   reviews: Array<Review>

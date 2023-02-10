@@ -1,5 +1,6 @@
 import { useCallback } from "react"
 import { useTranslation } from "next-export-i18n"
+import parse from "parse-link-header"
 import Card from "../atoms/Card"
 import Paginator from "./Paginator"
 import SortDropdown, { SortOption } from "../atoms/SortDropdown"
@@ -9,13 +10,21 @@ import useSession from "../../hooks/useSession"
 
 interface Props {
   nfts: Array<Nft>
-  amountPages: number | undefined
-  setPage: (page: number) => void
+  links?: parse.Links
+  updateUrl: (_url: string) => void
+  amountPages: number
   sortDefaultValue: string
   setSort: (sort: string) => void
 }
 
-const ExploreContent = ({ nfts, amountPages = 0, setPage, sortDefaultValue, setSort }: Props) => {
+const ExploreContent = ({
+  nfts,
+  links,
+  updateUrl,
+  sortDefaultValue,
+  amountPages,
+  setSort,
+}: Props) => {
   const { t } = useTranslation()
   const { userId, accessToken } = useSession()
   const { favorites, mutate } = useFavoritedNfts(
@@ -23,14 +32,7 @@ const ExploreContent = ({ nfts, amountPages = 0, setPage, sortDefaultValue, setS
     nfts.map((nft) => nft.id),
     accessToken,
   )
-  const favoritesId = favorites?.nfts.map((nft) => nft.id)
-
-  const handlePageChange = useCallback(
-    (page: number) => {
-      setPage(page)
-    },
-    [setPage],
-  )
+  const favoritesId = favorites?.map((nft) => nft.id)
 
   const handleSortChange = useCallback(
     (sort: string) => {
@@ -48,7 +50,10 @@ const ExploreContent = ({ nfts, amountPages = 0, setPage, sortDefaultValue, setS
   return (
     <div className="w-[80%] min-w-[500px] grow flex flex-col">
       <div className="flex justify-between items-center h-16 mb-2 px-8">
-        <Paginator amountPages={amountPages} handlePageChange={handlePageChange} />
+        {/* <Paginator amountPages={amountPages} handlePageChange={handlePageChange} /> */}
+        {links !== undefined && (
+          <Paginator links={links} updateUrl={updateUrl} amountPages={amountPages} />
+        )}
         <SortDropdown
           sortDefaultValue={sortDefaultValue}
           options={sortOptions}

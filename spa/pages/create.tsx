@@ -89,6 +89,7 @@ export default function Create() {
   }
 
   useEffect(() => {
+    if (router === undefined) return
     if (accessToken === null) {
       router.replace({
         pathname: "/login",
@@ -97,7 +98,7 @@ export default function Create() {
         },
       })
     }
-  }, [accessToken])
+  }, [router, accessToken])
 
   return (
     <Layout>

@@ -1,6 +1,6 @@
 import useSWR from "swr"
 import { fetcherWithAuth } from "./endpoints"
-import { NftApi } from "../types/Nft"
+import Nft from "../types/Nft"
 
 export const useFavoritedNfts = (
   userId: string | number | null,
@@ -12,7 +12,7 @@ export const useFavoritedNfts = (
     data: favorites,
     error,
     mutate,
-  } = useSWR<NftApi>(userId ? `/users/${userId}/favorites?${nftIdToString}` : null, (url) =>
+  } = useSWR<Nft[]>(userId ? `/users/${userId}/favorites?${nftIdToString}` : null, (url) =>
     fetcherWithAuth(url, accessToken ?? ""),
   )
   const loading = !error && !favorites
@@ -28,7 +28,7 @@ export const useFavoritedNft = (
     data: favorite,
     error,
     mutate,
-  } = useSWR<NftApi>(userId && nftId ? `/users/${userId}/favorites?nftId=${nftId}` : null, (url) =>
+  } = useSWR<Nft[]>(userId && nftId ? `/users/${userId}/favorites?nftId=${nftId}` : null, (url) =>
     fetcherWithAuth(url, accessToken ?? ""),
   )
   const loading = !error && !favorite

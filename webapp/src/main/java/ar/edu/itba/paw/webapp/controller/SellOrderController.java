@@ -4,9 +4,8 @@ import ar.edu.itba.paw.exceptions.SellOrderNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNoPermissionException;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrderDto;
+import ar.edu.itba.paw.webapp.dto.BuyOrderDto;
 import ar.edu.itba.paw.webapp.dto.SellOrderDto;
-import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrdersDto;
 import ar.edu.itba.paw.webapp.dto.txHashDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateSellOrderForm;
@@ -14,7 +13,6 @@ import ar.edu.itba.paw.webapp.form.PriceForm;
 import ar.edu.itba.paw.webapp.form.SellNftForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -165,19 +163,18 @@ public class SellOrderController {
 
         List<BuyOrderDto> buyOrdersList = buyOrderService.getOrdersBySellOrderId(offerPage, maybeSellOrder.get().getId(), status).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
 
-        BuyOrdersDto buyOrders = BuyOrdersDto.fromBuyOrdersList(buyOrdersList, amountOfferPages);
-
-        if(buyOrders.getBuyorders().isEmpty()){
+        if(buyOrdersList.isEmpty()){
             return Response.noContent().build();
         }
 
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<BuyOrdersDto>(buyOrders) {});
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<BuyOrderDto>>(buyOrdersList) {}).header("X-Total-Pages", amountOfferPages);
         if (offerPage > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", offerPage - 1).build(), "prev");
         if (offerPage < amountOfferPages)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", offerPage + 1).build(), "next");
         return responseBuilder
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", offerPage).build(), "self")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", amountOfferPages).build(), "last")
                 .build();
     }

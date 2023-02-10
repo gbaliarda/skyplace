@@ -1,9 +1,10 @@
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "next-export-i18n"
 import ProfileNftTab from "../ProfileNftTab"
 import ErrorBox from "../../../atoms/ErrorBox"
 import Loader from "../../../atoms/Loader"
-import { useFavorites } from "../../../../services/users"
+import { FavoritesURL, useFavorites } from "../../../../services/users"
+import { api } from "../../../../services/endpoints"
 
 interface Props {
   userId: number
@@ -11,12 +12,48 @@ interface Props {
 
 export default function FavoritedTab({ userId }: Props) {
   const { t } = useTranslation()
-  const [page, setPage] = useState(1)
+  const defaultURL = {
+    baseUrl: `${api}/users/${userId}/favorites?page=1`,
+    sort: "",
+  } as FavoritesURL
+  const [url, setUrl] = useState<FavoritesURL>(defaultURL)
   const [sort, setSort] = useState("")
-  const { nfts, loading, error, mutate } = useFavorites(userId, page, sort)
+  const { favorites, links, totalPages, loading, error, refetchData } = useFavorites(url)
 
-  if (error) return <ErrorBox errorMessage={t("errors.errorLoadingTab")} retryAction={mutate} />
-  if (loading) return <Loader className="grow flex items-center justify-center mb-32" />
+  const updateUrl = useCallback(
+    (_url: string) => {
+      setUrl({
+        ...url,
+        baseUrl: _url,
+      })
+    },
+    [url],
+  )
 
-  return <ProfileNftTab setPage={setPage} sort={sort} setSort={setSort} nfts={nfts!!} />
+  useEffect(() => {
+    setUrl({
+      ...url,
+      baseUrl: `${api}/users/${userId}/favorites?page=1`,
+      sort,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sort])
+
+  if (error)
+    return (
+      <ErrorBox errorMessage={t("errors.errorLoadingTab")} retryAction={() => refetchData(url)} />
+    )
+  if (loading || favorites === undefined)
+    return <Loader className="grow flex items-center justify-center mb-32" />
+
+  return (
+    <ProfileNftTab
+      updateUrl={updateUrl}
+      sort={sort}
+      setSort={setSort}
+      nfts={favorites}
+      totalPages={totalPages}
+      links={links ?? undefined}
+    />
+  )
 }

@@ -10,7 +10,7 @@ import BuyordersTab from "../../components/molecules/profile/tabs/BuyordersTab"
 import ReviewsTab from "../../components/molecules/profile/tabs/ReviewsTab"
 import HistoryTab from "../../components/molecules/profile/tabs/HistoryTab"
 import useSession from "../../hooks/useSession"
-import { getResourceUrl } from '../../services/endpoints';
+import { getResourceUrl } from "../../services/endpoints"
 
 const TABS = [
   { key: "inventory", isPublic: true },
@@ -71,7 +71,11 @@ export default function Profile() {
                   >
                     <a>
                       <div className="flex flex-row cursor-pointer">
-                        <img className="h-6 w-6 mr-2" src={getResourceUrl(tabImage)} alt="tab_icon" />
+                        <img
+                          className="h-6 w-6 mr-2"
+                          src={getResourceUrl(tabImage)}
+                          alt="tab_icon"
+                        />
                         {t(`profile.${value.key}`)}
                       </div>
                     </a>

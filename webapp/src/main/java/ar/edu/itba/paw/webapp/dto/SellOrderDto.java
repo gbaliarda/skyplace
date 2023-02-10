@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.Category;
 import ar.edu.itba.paw.model.SellOrder;
-import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;

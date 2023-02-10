@@ -2,11 +2,10 @@ import { useTranslation } from "next-export-i18n"
 import Skeleton from "react-loading-skeleton"
 import { TagIcon, FaceFrownIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
-import { KeyedMutator } from "swr"
 import Swal from "sweetalert2"
-import Buyorder, { BuyOrderApi } from "../../types/Buyorder"
-import { useUserUrl } from "../../services/users"
-import { fetcher, getResourceUrl } from '../../services/endpoints';
+import Buyorder from "../../types/Buyorder"
+import { BuyordersURL, useUserUrl } from "../../services/users"
+import { fetcher, getResourceUrl } from "../../services/endpoints"
 import { useSellorderUrl, usePendingBuyOrder } from "../../services/sellorders"
 import useSession from "../../hooks/useSession"
 import User from "../../types/User"
@@ -14,11 +13,12 @@ import User from "../../types/User"
 interface Props {
   buyorder: Buyorder
   index: number
-  mutate: KeyedMutator<BuyOrderApi>
-  owner: User
+  url: BuyordersURL
+  refetchData: (url: BuyordersURL) => void
+  owner?: User
 }
 
-const BuyorderCard = ({ buyorder, owner, index, mutate }: Props) => {
+const BuyorderCard = ({ buyorder, owner, index, url, refetchData }: Props) => {
   const { t } = useTranslation()
   const { user: offerer, loading, error } = useUserUrl(buyorder.offeredBy.toString())
   const {
@@ -69,7 +69,7 @@ const BuyorderCard = ({ buyorder, owner, index, mutate }: Props) => {
 
   const offererUrl = `/profile/${offerer.id}`
   const isUserOfferer = userId === offerer.id
-  const isUserOwner = userId === owner.id
+  const isUserOwner = userId === owner?.id
 
   const handleRemoveOffer = async () => {
     try {
@@ -77,7 +77,7 @@ const BuyorderCard = ({ buyorder, owner, index, mutate }: Props) => {
         method: "DELETE",
         headers: { Authorization: `Bearer ${accessToken}` },
       })
-      mutate()
+      refetchData(url)
     } catch (e: any) {
       console.log(e.name, e.message)
       Swal.fire({ title: t("errors.removeOffer"), text: e.message, icon: "error" })
@@ -90,7 +90,7 @@ const BuyorderCard = ({ buyorder, owner, index, mutate }: Props) => {
         method: "PUT",
         headers: { Authorization: `Bearer ${accessToken}` },
       })
-      mutate()
+      refetchData(url)
       mutatePendingBuyOrder()
     } catch (e: any) {
       console.log(e.name, e.message)

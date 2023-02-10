@@ -27,7 +27,7 @@ const jsonOptions = (data: Object, accessToken: string = "") => ({
   body: JSON.stringify(data),
 })
 
-const checkStatus = async (res: Response) => {
+export const checkStatus = async (res: Response) => {
   if (!res.ok) {
     const { errors } = await res.json()
     // @ts-ignore

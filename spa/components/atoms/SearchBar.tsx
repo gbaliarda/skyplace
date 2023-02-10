@@ -17,6 +17,7 @@ const SearchBar = () => {
       ...searchFilter,
       search: Array.isArray(querySearch) ? querySearch[0] : querySearch ?? "",
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady])
 
   const handleSubmit = (e: BaseSyntheticEvent) => {

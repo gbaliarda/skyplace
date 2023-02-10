@@ -3,7 +3,7 @@ import { useTranslation } from "next-export-i18n"
 
 import SearchBar from "../atoms/SearchBar"
 import NavbarDropdown from "../atoms/NavbarDropdown"
-import { getResourceUrl } from '../../services/endpoints';
+import { getResourceUrl } from "../../services/endpoints"
 
 const Navbar = () => {
   const { t } = useTranslation()

@@ -10,7 +10,7 @@ import FormType from "../components/atoms/forms/FormType"
 import useForm from "../hooks/useForm"
 import FormSelect from "../components/atoms/forms/FormSelect"
 import { createUser, loginUser } from "../services/users"
-import { getResourceUrl } from '../services/endpoints';
+import { getResourceUrl } from "../services/endpoints"
 
 interface FormData {
   email: string

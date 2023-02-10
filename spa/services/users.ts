@@ -1,8 +1,20 @@
+import { useEffect } from "react"
 import useSWR from "swr"
 import { fetcher, genericFetcher, sendJson } from "./endpoints"
 import User from "../types/User"
-import { NftApi } from "../types/Nft"
-import { BuyOrderApi } from "../types/Buyorder"
+import Nft from "../types/Nft"
+import Buyorder from "../types/Buyorder"
+import usePagination from "../hooks/usePagination"
+
+export type BuyordersURL = {
+  baseUrl: string
+  status: string
+}
+
+export type FavoritesURL = {
+  baseUrl: string
+  sort: string
+}
 
 export const useUser = (id: number | undefined) => {
   const { data: user, error, mutate } = useSWR<User, number>(id ? `/users/${id}` : null, fetcher)
@@ -16,52 +28,48 @@ export const useUserUrl = (url: string | undefined) => {
   return { user, loading, error, mutate }
 }
 
-export const useFavorites = (
-  userId: string | number,
-  page: number | undefined,
-  sort: string | undefined,
-) => {
-  let accessToken = localStorage.getItem("access-token")
-  if (accessToken === null) accessToken = sessionStorage.getItem("access-token")
+export const useFavorites = (url: FavoritesURL) => {
   const {
-    data: nfts,
+    elem: favorites,
+    loading,
+    links,
+    totalPages,
     error,
-    mutate,
-  } = useSWR<NftApi>(
-    [
-      `/users/${userId}/favorites?page=${page === undefined ? "1" : page}${
-        sort === undefined ? "" : `&sort=${sort}`
-      }`,
-      { headers: { Authorization: `Bearer ${accessToken}` } },
-    ],
-    ([resource, options]) => fetcher(resource, options),
-  )
-  const loading = !error && !nfts
-  return { nfts, loading, error, mutate }
+    fetchData,
+  } = usePagination<Nft[]>(true)
+
+  const refetchData = (_url: FavoritesURL) => {
+    fetchData(`${_url.baseUrl}&sort=${_url.sort}`)
+  }
+
+  useEffect(() => {
+    refetchData(url)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(url)])
+
+  return { favorites, totalPages, links, loading, error, refetchData }
 }
 
-export const useUserBuyorders = (
-  userId: number | undefined,
-  page: number | undefined,
-  status: string | undefined,
-) => {
-  let accessToken = localStorage.getItem("access-token")
-  if (accessToken === null) accessToken = sessionStorage.getItem("access-token")
+export const useUserBuyorders = (url: BuyordersURL) => {
   const {
-    data: buyorders,
+    elem: buyorders,
+    loading,
+    links,
+    totalPages,
     error,
-    mutate,
-  } = useSWR<BuyOrderApi>(
-    [
-      `/users/${userId}/buyorders?page=${page === undefined ? "1" : page}${
-        status === undefined ? "" : `&status=${status}`
-      }`,
-      { headers: { Authorization: `Bearer ${accessToken}` } },
-    ],
-    ([resource, options]) => fetcher(resource, options),
-  )
-  const loading = !error && !buyorders
-  return { buyorders, loading, error, mutate }
+    fetchData,
+  } = usePagination<Buyorder[]>(true)
+
+  const refetchData = (_url: BuyordersURL) => {
+    fetchData(`${_url.baseUrl}&status=${_url.status}`)
+  }
+
+  useEffect(() => {
+    refetchData(url)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(url)])
+
+  return { buyorders, totalPages, links, loading, error, refetchData }
 }
 
 export const createUser = ({

@@ -4,21 +4,16 @@ import ar.edu.itba.paw.model.Nft;
 import ar.edu.itba.paw.service.FavoriteService;
 import ar.edu.itba.paw.service.NftService;
 import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
-import ar.edu.itba.paw.webapp.dto.nfts.NftsDto;
+import ar.edu.itba.paw.webapp.dto.NftDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateNftForm;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
@@ -67,9 +62,8 @@ public class NftController {
 
         int amountPublications = nftService.getAmountPublicationsByUser(status, category, chain, minPrice, maxPrice, sort, search, searchFor, ownerId);
         int amountPages = amountPublications == 0 ? 1 : (amountPublications + nftService.getPageSize() - 1) / nftService.getPageSize();
-        NftsDto nfts = NftsDto.fromNftList(nftList, amountPublications, amountPages);
 
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<NftsDto>(nfts) {});
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(nftList) {}).header("X-Total-Count", amountPublications).header("X-Total-Pages", amountPages);
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
         int lastPage = (int) Math.ceil(nftService.getAmountPublications(status, null, chain, null, null, sort, search, searchFor) / (double) nftService.getPageSize());
@@ -79,6 +73,7 @@ public class NftController {
         return responseBuilder
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", lastPage).build(), "last")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", page).build(), "self")
                 .build();
     }
 
@@ -134,7 +129,7 @@ public class NftController {
         }
         */
         List<NftDto> recommended = nftService.getRecommended(id).stream().map(p -> NftDto.fromNft(uriInfo, p.getNft(), favoriteService.getNftFavorites(p.getNft().getId()))).collect(Collectors.toList());
-        return Response.ok(NftsDto.fromNftList(recommended, recommended.size())).build();
+        return Response.ok(new GenericEntity<List<NftDto>>(recommended){ }).header("X-Total-Count", recommended.size()).build();
     }
 
 }

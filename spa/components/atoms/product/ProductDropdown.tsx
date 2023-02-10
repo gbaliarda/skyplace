@@ -1,14 +1,14 @@
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline"
 import { useTranslation } from "next-export-i18n"
 import Link from "next/link"
-import { useRouter } from "next/router";
+import { useRouter } from "next/router"
+import Swal from "sweetalert2"
 import Nft from "../../../types/Nft"
-import { useSellorderUrl } from '../../../services/sellorders';
-import Swal from "sweetalert2";
-import { fetcher } from "../../../services/endpoints";
-import useSession from '../../../hooks/useSession';
-import { useNft } from '../../../services/nfts';
-import { useUserUrl } from '../../../services/users';
+import { useSellorderUrl } from "../../../services/sellorders"
+import { fetcher } from "../../../services/endpoints"
+import useSession from "../../../hooks/useSession"
+import { useNft } from "../../../services/nfts"
+import { useUserUrl } from "../../../services/users"
 
 interface Props {
   nft: Nft
@@ -32,7 +32,7 @@ const ProductDropdown = ({ nft }: Props) => {
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: t("product.removeOffer"),
-        cancelButtonText: t("product.cancel")
+        cancelButtonText: t("product.cancel"),
       })
       if (isConfirmed) {
         await fetcher(`/sellorders/${sellorder!!.id}`, {
@@ -44,7 +44,7 @@ const ProductDropdown = ({ nft }: Props) => {
         Swal.fire({ title: t("product.deleteSellOrderSuccess"), icon: "success" })
         mutate()
       }
-    } catch(e: any) {
+    } catch (e: any) {
       console.log(e.name, e.message)
       Swal.fire({ title: t("product.deleteSellOrderError"), text: e.message, icon: "error" })
     }
@@ -58,7 +58,7 @@ const ProductDropdown = ({ nft }: Props) => {
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: t("product.removeOffer"),
-        cancelButtonText: t("product.cancel")
+        cancelButtonText: t("product.cancel"),
       })
       if (isConfirmed) {
         await fetcher(`/nfts/${nft.id}`, {
@@ -70,7 +70,7 @@ const ProductDropdown = ({ nft }: Props) => {
         await Swal.fire({ title: t("product.deleteNftSuccess"), icon: "success" })
         router.replace(`/profile/${user!!.id}`)
       }
-    } catch(e: any) {
+    } catch (e: any) {
       console.log(e.name, e.message)
       Swal.fire({ title: t("product.deleteNftError"), text: e.message, icon: "error" })
     }
@@ -90,7 +90,9 @@ const ProductDropdown = ({ nft }: Props) => {
           className="dropdown-content menu mt-2 border border-gray-300 text-sm shadow bg-base-100 rounded-md"
         >
           <li>
-            <Link href={`/sell/${nft.id}?update=${sellorder?.id}&category=${sellorder?.category}&price=${sellorder?.price}`}>
+            <Link
+              href={`/sell/${nft.id}?update=${sellorder?.id}&category=${sellorder?.category}&price=${sellorder?.price}`}
+            >
               <span
                 suppressHydrationWarning
                 className="text-xs whitespace-nowrap hover:bg-gray-600 rounded-t-md hover:text-white transition-none py-2"

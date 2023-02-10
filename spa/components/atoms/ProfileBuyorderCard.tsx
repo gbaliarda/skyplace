@@ -6,7 +6,7 @@ import { useNftUrl } from "../../services/nfts"
 import { useImageUrl } from "../../services/images"
 import { useUserUrl } from "../../services/users"
 import useSession from "../../hooks/useSession"
-import { getResourceUrl } from '../../services/endpoints';
+import { getResourceUrl } from "../../services/endpoints"
 
 interface Props {
   buyorder: Buyorder

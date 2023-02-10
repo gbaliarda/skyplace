@@ -1,7 +1,10 @@
+import { useEffect } from "react"
 import useSWR from "swr"
 import Sellorder from "../types/Sellorder"
 import { fetcher, genericFetcher } from "./endpoints"
 import Buyorder, { BuyOrderApi } from "../types/Buyorder"
+import { BuyordersURL } from "./users"
+import usePagination from "../hooks/usePagination"
 
 export const useSellorder = (id: number | undefined) => {
   // second generic is error type, which will be the statusCode
@@ -25,15 +28,37 @@ export const useSellorderUrl = (url: string | undefined) => {
   return { sellorder, loading, error, mutate }
 }
 
-export const useBuyOrders = (url: string | undefined, page: number = 1) => {
+export const useBuyOrders = (url: BuyordersURL) => {
   const {
-    data: buyorders,
+    elem: buyorders,
+    loading,
+    links,
+    totalPages,
     error,
-    isLoading,
-    mutate,
-  } = useSWR<BuyOrderApi>(url ? [`${url}?page=${page}`, ""] : null, genericFetcher)
-  return { buyorders, loading: isLoading, error, mutate }
+    fetchData,
+  } = usePagination<Buyorder[]>()
+
+  const refetchData = (_url: BuyordersURL) => {
+    fetchData(`${_url.baseUrl}`)
+  }
+
+  useEffect(() => {
+    refetchData(url)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(url)])
+
+  return { buyorders, totalPages, links, loading, error, refetchData }
 }
+
+// export const useBuyOrders = (url: string | undefined, page: number = 1) => {
+//   const {
+//     data: buyorders,
+//     error,
+//     isLoading,
+//     mutate,
+//   } = useSWR<BuyOrderApi>(url ? [`${url}?page=${page}`, ""] : null, genericFetcher)
+//   return { buyorders, loading: isLoading, error, mutate }
+// }
 
 export const usePendingBuyOrder = (sellOrderId: number | undefined) => {
   const { data, error, isLoading, mutate } = useSWR<BuyOrderApi>(

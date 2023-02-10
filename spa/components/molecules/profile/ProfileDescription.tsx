@@ -5,8 +5,8 @@ import Skeleton from "react-loading-skeleton"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { useUser } from "../../../services/users"
 import ErrorBox from "../../atoms/ErrorBox"
-import { useReviews } from "../../../services/reviews"
-import { getResourceUrl } from '../../../services/endpoints';
+import { ReviewsURL, useReviews } from "../../../services/reviews"
+import { api, getResourceUrl } from "../../../services/endpoints"
 
 interface Props {
   userId: number
@@ -15,16 +15,20 @@ interface Props {
 export default function ProfileDescription({ userId }: Props) {
   const { t } = useTranslation()
   const { user, loading: loadingUser, error: errorUser, mutate: mutateUser } = useUser(userId)
+  const defaultURL = {
+    baseUrl: `${api}/users/${userId}/reviews?page=1`,
+  } as ReviewsURL
   const {
     reviewsInfo,
+    total,
     loading: loadingReviews,
     error: errorReviews,
-    mutate: mutateReviews,
-  } = useReviews(userId)
+    refetchData,
+  } = useReviews(defaultURL)
 
   const reloadContent = () => {
     mutateUser()
-    mutateReviews()
+    refetchData(defaultURL)
   }
 
   const walletCopyMessage = t("profile.copy")
@@ -107,7 +111,11 @@ export default function ProfileDescription({ userId }: Props) {
           {user?.email}
         </span>
         <div className="flex flex-row items-center">
-          <img className="h-9 w-9" src={getResourceUrl("/profile/filled_star.svg")} alt={t("profile.starIcon")} />
+          <img
+            className="h-9 w-9"
+            src={getResourceUrl("/profile/filled_star.svg")}
+            alt={t("profile.starIcon")}
+          />
           <p className="text-lg font-bold text-gray-900 ml-1">{reviewsInfo?.score}</p>
           <span className="w-1.5 h-1.5 mx-2 bg-gray-500 rounded-full dark:bg-gray-400" />
           <Link href={reviewsPath}>
@@ -115,7 +123,7 @@ export default function ProfileDescription({ userId }: Props) {
               suppressHydrationWarning
               className="text-lg text-cyan-600 hover:text-cyan-800 hover:underline cursor-pointer font-bold"
             >
-              {t("profile.reviewAmount", { amount: reviewsInfo?.total })}
+              {t("profile.reviewAmount", { amount: total })}
             </a>
           </Link>
         </div>

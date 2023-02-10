@@ -2,12 +2,13 @@ import { useCallback, useState } from "react"
 import Link from "next/link"
 import { useTranslation } from "next-export-i18n"
 import ReviewItem from "../../../atoms/ReviewItem"
-import { useReviews } from "../../../../services/reviews"
+import { ReviewsURL, useReviews } from "../../../../services/reviews"
 import Paginator from "../../Paginator"
 import ErrorBox from "../../../atoms/ErrorBox"
 import Loader from "../../../atoms/Loader"
 import { usePurchases } from "../../../../services/purchases"
 import useSession from "../../../../hooks/useSession"
+import { api } from "../../../../services/endpoints"
 
 interface Props {
   userId: number
@@ -15,41 +16,49 @@ interface Props {
 
 export default function ReviewsTab({ userId }: Props) {
   const { t } = useTranslation()
-  const [page, setPage] = useState(1)
 
-  const handlePageChange = useCallback(
-    (newPage: number) => {
-      setPage(newPage)
+  const { userId: loggedInUser } = useSession()
+  const defaultURL = {
+    baseUrl: `${api}/users/${userId}/reviews?page=1`,
+  } as ReviewsURL
+  const [reviewsUrl, setReviewsUrl] = useState<ReviewsURL>(defaultURL)
+  const { reviewsInfo, links, loading, total, totalPages, error, refetchData } =
+    useReviews(reviewsUrl)
+  const updateUrl = useCallback(
+    (_url: string) => {
+      setReviewsUrl({
+        ...reviewsUrl,
+        baseUrl: _url,
+      })
     },
-    [setPage],
+    [reviewsUrl],
   )
 
-  const { userId: loggedInUser, accessToken } = useSession()
-  const { reviewsInfo, loading, error, mutate: mutateReviews } = useReviews(userId, page)
-
-  /* Both are used to check if a review can be made */
-
   const {
-    reviewsInfo: reviewsBetweenUsers,
+    total: totalReviewsBetweenUsers,
     loading: loadingReviewsBetweenUsers,
     error: errorReviewsBetweenUsers,
-    mutate: mutateReviewsBetweenUsers,
-  } = useReviews(userId, 1, loggedInUser === null ? undefined : loggedInUser)
+    refetchData: refetchDataBetweenUsers,
+  } = useReviews({
+    baseUrl: `${api}/users/${userId}/reviews?page=1`,
+    reviewer: loggedInUser ?? undefined,
+  })
 
   const {
-    purchases: purchasesBetweenUsers,
+    totalPages: totalPurchasesPagesBetweenUsers,
     loading: loadingPurchasesBetweenUsers,
     error: errorPurchasesBetweenUsers,
-  } = usePurchases(
-    loggedInUser === null ? undefined : loggedInUser,
-    1,
-    accessToken === null ? undefined : accessToken,
-    userId,
-  )
+  } = usePurchases({
+    baseUrl: `${api}/users/${userId}/purchases?page=1`,
+    purchaser: loggedInUser ?? undefined,
+  })
 
   const reloadReviews = () => {
-    mutateReviews()
-    mutateReviewsBetweenUsers()
+    refetchData(defaultURL)
+    refetchDataBetweenUsers({
+      baseUrl: `${api}/users/${userId}/reviews?page=1`,
+      reviewer: loggedInUser ?? undefined,
+    })
   }
 
   const auxEmpty = ["e", "e", "e", "e"]
@@ -69,10 +78,7 @@ export default function ReviewsTab({ userId }: Props) {
 
   return (
     <>
-      <Paginator
-        amountPages={reviewsInfo?.totalPages === undefined ? 0 : reviewsInfo.totalPages}
-        handlePageChange={handlePageChange}
-      />
+      {links && <Paginator links={links} updateUrl={updateUrl} amountPages={totalPages} />}
       <div className="flex flex-row gap-6">
         {/* Mean score */}
         <div className="border rounded-md h-fit p-5">
@@ -80,12 +86,11 @@ export default function ReviewsTab({ userId }: Props) {
             {t("profile.ratings")}
           </h2>
           <h3 suppressHydrationWarning className="mb-6 text-gray-400">
-            {t("profile.totalReviews", { amount: reviewsInfo?.total })}
+            {t("profile.totalReviews", { amount: total })}
           </h3>
           <div className="flex flex-col">
             <div className="flex flex-row items-center w-64 xl:w-80 2xl:w-96">
               <div className="flex flex-col gap-3">
-                {/* TODO: CHANGE MAGIC NUMBER */}
                 {auxEmpty.map((_, i) => (
                   <span
                     suppressHydrationWarning
@@ -129,7 +134,8 @@ export default function ReviewsTab({ userId }: Props) {
               {t("profile.reviews")}
             </h2>
 
-            {purchasesBetweenUsers?.totalPages !== 0 && reviewsBetweenUsers?.total === 0 && (
+            {/* TODO: check if totalPurchasesPagesBetweenUsers is 0 if no purchases */}
+            {totalPurchasesPagesBetweenUsers !== 0 && totalReviewsBetweenUsers === 0 && (
               <Link href={newReviewPath}>
                 <a>
                   <button
@@ -153,7 +159,7 @@ export default function ReviewsTab({ userId }: Props) {
                       </c:if> */}
           </div>
 
-          {reviewsInfo?.total === 0 ? (
+          {total === 0 ? (
             <span suppressHydrationWarning className="pt-5 text-center text-xl">
               {t("profile.noReviews")}
             </span>

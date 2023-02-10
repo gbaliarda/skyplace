@@ -7,7 +7,7 @@ import Swal from "sweetalert2"
 import Layout from "../components/Layout"
 import useForm from "../hooks/useForm"
 import { loginUser } from "../services/users"
-import { getResourceUrl } from '../services/endpoints';
+import { getResourceUrl } from "../services/endpoints"
 import Spinner from "../components/atoms/Spinner"
 
 interface FormData {

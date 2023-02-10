@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto.nfts;
+package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.Nft;
 

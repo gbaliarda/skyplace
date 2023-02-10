@@ -38,7 +38,11 @@ const INITIAL_DATA: FormData = {
 
 export default function Sell() {
   const router = useRouter()
-  const { update, category, price } = router.query as { update?: string, category?: string, price?: number }
+  const { update, category, price } = router.query as {
+    update?: string
+    category?: string
+    price?: number
+  }
   const { t } = useTranslation()
   const { id } = router.query as { id: string }
   const { nft, error } = useNft(id)
@@ -49,6 +53,7 @@ export default function Sell() {
   useEffect(() => {
     if (category) updateFields({ category })
     if (price) updateFields({ price })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, price])
 
   if (error)
@@ -71,7 +76,7 @@ export default function Sell() {
       router.push(`/product/${id}`)
     } catch (err: any) {
       console.log(err.name, err.message)
-      const errorTitle = update? t("errors.updateSellorder") : t("errors.sellNft")
+      const errorTitle = update ? t("errors.updateSellorder") : t("errors.sellNft")
       Swal.fire({ title: errorTitle, text: err.message, icon: "error" })
     }
     setLoading(false)
@@ -80,18 +85,24 @@ export default function Sell() {
   return (
     <Layout>
       <div className="w-full max-w-5xl mx-auto p-4 grow flex flex-col justify-center py-12">
-        <h1 suppressHydrationWarning className="text-3xl text-center">{t("sell.sellNft")}</h1>
+        <h1 suppressHydrationWarning className="text-3xl text-center">
+          {t("sell.sellNft")}
+        </h1>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-2 items-end gap-8 pt-16">
           <div className="flex flex-col gap-1">
             <p className="text-slate-600">
-              <span suppressHydrationWarning className="font-bold">{t("sell.nftId")}: </span>
+              <span suppressHydrationWarning className="font-bold">
+                {t("sell.nftId")}:{" "}
+              </span>
               {nft?.nftId}
             </p>
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-slate-600">
-              <span suppressHydrationWarning className="font-bold">{t("sell.nftContract")}: </span>
+              <span suppressHydrationWarning className="font-bold">
+                {t("sell.nftContract")}:{" "}
+              </span>
               {nft?.contractAddr}
             </p>
           </div>

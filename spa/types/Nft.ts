@@ -14,12 +14,6 @@ export default interface Nft {
   isDeleted: boolean
 }
 
-export interface NftApi {
-  nfts: Nft[]
-  total: number
-  totalPages: number
-}
-
 export enum Category {
   Collectible = "Collectible",
   Utility = "Utility",

@@ -110,71 +110,69 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
 
   return (
     <Link href={productLink()}>
-      <a>
-        <div
-          className={`border-jacarta-100 rounded-2.5xl relative flex items-center border bg-white p-4 transition-shadow hover:shadow-lg ${linkClasses()}`}
-        >
-          <figure className="mr-5 self-start">
-            <img
-              src={imageSrc}
-              className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
-              alt="avatar 2"
-              loading="lazy"
-            />
-          </figure>
-          <div className="max-w-[34rem]">
-            <h3 className="font-display text-jacarta-700 mb-1 text-base flex items-center font-semibold truncate">
-              {purchase.nft.nftName} #{purchase.nft.nftId}
-              {purchase.nft.id === undefined && (
-                <span suppressHydrationWarning className="font-normal text-sm text-red-700 ml-4">
-                  {t("profile.historyRemoved")}
-                </span>
-              )}
-            </h3>
-            <div
-              suppressHydrationWarning
-              className="flex flex-row gap-1 text-jacarta-500 mb-3 text-sm"
-            >
-              {purchase.status === "SUCCESS" && sold && (
-                <>
-                  {t("profile.soldTo")}
-                  <Link href={`/profile/${buyer?.id}`}>
-                    <a className={usernameClasses}>{buyer?.username}</a>
-                  </Link>
-                </>
-              )}
-              {purchase.status === "SUCCESS" && !sold && (
-                <>
-                  {t("profile.boughtFrom")}
-                  <Link href={`/profile/${seller?.id}`}>
-                    <a className={usernameClasses}>{seller?.username}</a>
-                  </Link>
-                </>
-              )}
-              {purchase.status === "CANCELLED" && !sold && (
-                <>
-                  {t("profile.historyErrorBoughtFrom")}
-                  <Link href={`/profile/${seller?.id}`}>
-                    <a className={usernameClasses}>{seller?.username}</a>
-                  </Link>
-                </>
-              )}
-              {purchase.status === "CANCELLED" && sold && (
-                <>
-                  {t("profiel:historyErrorSoldTo")}
-                  <Link href={`/profile/${seller?.id}`}>
-                    <a className={usernameClasses}>{seller?.username}</a>
-                  </Link>
-                </>
-              )}
-              {t("profile.historyFor", { price: purchase.price })}
-            </div>
-            <span className="text-jacarta-300 block text-xs">{purchase.buyDate.toString()}</span>
+      <div
+        className={`border-jacarta-100 rounded-2.5xl relative flex items-center border bg-white p-4 transition-shadow hover:shadow-lg ${linkClasses()}`}
+      >
+        <figure className="mr-5 self-start">
+          <img
+            src={imageSrc}
+            className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
+            alt="avatar 2"
+            loading="lazy"
+          />
+        </figure>
+        <div className="max-w-[34rem]">
+          <h3 className="font-display text-jacarta-700 mb-1 text-base flex items-center font-semibold truncate">
+            {purchase.nft.nftName} #{purchase.nft.nftId}
+            {purchase.nft.id === undefined && (
+              <span suppressHydrationWarning className="font-normal text-sm text-red-700 ml-4">
+                {t("profile.historyRemoved")}
+              </span>
+            )}
+          </h3>
+          <div
+            suppressHydrationWarning
+            className="flex flex-row gap-1 text-jacarta-500 mb-3 text-sm"
+          >
+            {purchase.status === "SUCCESS" && sold && (
+              <>
+                {t("profile.soldTo")}
+                <Link href={`/profile/${buyer?.id}`}>
+                  <a className={usernameClasses}>{buyer?.username}</a>
+                </Link>
+              </>
+            )}
+            {purchase.status === "SUCCESS" && !sold && (
+              <>
+                {t("profile.boughtFrom")}
+                <Link href={`/profile/${seller?.id}`}>
+                  <a className={usernameClasses}>{seller?.username}</a>
+                </Link>
+              </>
+            )}
+            {purchase.status === "CANCELLED" && !sold && (
+              <>
+                {t("profile.historyErrorBoughtFrom")}
+                <Link href={`/profile/${seller?.id}`}>
+                  <a className={usernameClasses}>{seller?.username}</a>
+                </Link>
+              </>
+            )}
+            {purchase.status === "CANCELLED" && sold && (
+              <>
+                {t("profile:historyErrorSoldTo")}
+                <Link href={`/profile/${seller?.id}`}>
+                  <a className={usernameClasses}>{seller?.username}</a>
+                </Link>
+              </>
+            )}
+            {t("profile.historyFor", { price: purchase.price })}
           </div>
-
-          <div className="border-jacarta-100 ml-auto rounded-full border p-3">{renderIncons()}</div>
+          <span className="text-jacarta-300 block text-xs">{purchase.buyDate.toString()}</span>
         </div>
-      </a>
+
+        <div className="border-jacarta-100 ml-auto rounded-full border p-3">{renderIncons()}</div>
+      </div>
     </Link>
   )
 }

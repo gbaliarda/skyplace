@@ -1,25 +1,29 @@
 import { useCallback } from "react"
 import { useTranslation } from "next-export-i18n"
+import parse from "parse-link-header"
 import Card from "../../atoms/Card"
-import { NftApi } from "../../../types/Nft"
 import Paginator from "../Paginator"
 import SortDropdown, { SortOption } from "../../atoms/SortDropdown"
+import Nft from "../../../types/Nft"
 
 interface Props {
-  setPage: (page: number) => void
+  links?: parse.Links
+  updateUrl: (_url: string) => void
   sort: string
   setSort: (sort: string) => void
-  nfts: NftApi
+  nfts: Nft[]
+  totalPages: number
 }
 
-export default function ProfileNftTab({ setPage, sort, setSort, nfts }: Props) {
+export default function ProfileNftTab({
+  links,
+  updateUrl,
+  sort,
+  setSort,
+  nfts,
+  totalPages,
+}: Props) {
   const { t } = useTranslation()
-  const handlePageChange = useCallback(
-    (page: number) => {
-      setPage(page)
-    },
-    [setPage],
-  )
 
   const handleSortChange = useCallback(
     (newSort: string) => {
@@ -38,7 +42,9 @@ export default function ProfileNftTab({ setPage, sort, setSort, nfts }: Props) {
     <>
       <div className="flex flex-row items-center justify-between">
         {/* Paginator */}
-        <Paginator amountPages={nfts.totalPages} handlePageChange={handlePageChange} />
+        {links !== undefined && (
+          <Paginator links={links} updateUrl={updateUrl} amountPages={totalPages} />
+        )}
 
         {/* Dropdown menu */}
         <SortDropdown
@@ -49,9 +55,9 @@ export default function ProfileNftTab({ setPage, sort, setSort, nfts }: Props) {
       </div>
 
       {/* Page items */}
-      {nfts.total > 0 ? (
+      {nfts.length > 0 ? (
         <div className="flex flex-wrap justify-center gap-8 items-start">
-          {nfts?.nfts.map((nft) => {
+          {nfts.map((nft) => {
             return <Card nft={nft} key={nft.id} />
           })}
         </div>

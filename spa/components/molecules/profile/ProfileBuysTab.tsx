@@ -1,25 +1,29 @@
 import { useCallback } from "react"
 import { useTranslation } from "next-export-i18n"
+import parse from "parse-link-header"
 import BuyorderStatusFilter from "../../atoms/BuyorderStatusFilter"
 import ProfileBuyorderCard from "../../atoms/ProfileBuyorderCard"
-import { BuyOrderApi } from "../../../types/Buyorder"
+import Buyorder from "../../../types/Buyorder"
 import Paginator from "../Paginator"
 
 interface Props {
-  setPage: (page: number) => void
+  links?: parse.Links
+  updateUrl: (url: string) => void
   status: string
   setStatus: (status: string) => void
-  buyorders: BuyOrderApi // TODO: Add history items type
+  buyorders: Buyorder[] // TODO: Add history items type
+  amountPages: number
 }
 
-export default function ProfileBuysTab({ setPage, status, setStatus, buyorders }: Props) {
+export default function ProfileBuysTab({
+  links,
+  updateUrl,
+  status,
+  setStatus,
+  buyorders,
+  amountPages,
+}: Props) {
   const { t } = useTranslation()
-  const handlePageChange = useCallback(
-    (page: number) => {
-      setPage(page)
-    },
-    [setPage],
-  )
 
   const handleStatusChange = useCallback(
     (newStatus: string) => {
@@ -31,14 +35,15 @@ export default function ProfileBuysTab({ setPage, status, setStatus, buyorders }
   return (
     <>
       <div className="flex flex-row items-center justify-between">
-        <Paginator amountPages={buyorders.totalPages} handlePageChange={handlePageChange} />
-
+        {links !== undefined && (
+          <Paginator amountPages={amountPages} links={links} updateUrl={updateUrl} />
+        )}
         <BuyorderStatusFilter status={status} handleStatusChange={handleStatusChange} />
       </div>
 
-      {buyorders.buyorders.length > 0 ? (
+      {buyorders.length > 0 ? (
         <div className="flex flex-col gap-2 w-3/4 max-w-4xl self-center">
-          {buyorders?.buyorders.map((value) => {
+          {buyorders.map((value) => {
             return (
               <ProfileBuyorderCard buyorder={value} status={status} key={value.self.toString()} />
             )

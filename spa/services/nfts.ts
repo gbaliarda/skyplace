@@ -1,10 +1,19 @@
 import useSWR from "swr"
+import { useEffect } from "react"
 import { genericFetcher, fetcher } from "./endpoints"
-import Nft, { NftApi } from "../types/Nft"
-import { NftsFilter, SearchFilter } from "../types/Filters"
+import Nft from "../types/Nft"
 import { FetchError } from "../types/FetchError"
+import { NftsFilter, SearchFilter } from "../types/Filters"
+import usePagination from "../hooks/usePagination"
 
-const encodeQueryParam = (filter?: Object) => {
+export type NftsURL = {
+  baseUrl: string
+  filters: NftsFilter
+  sort: string
+  search: SearchFilter
+}
+
+export const encodeQueryParam = (filter?: Object) => {
   if (filter === undefined) return ""
   return Object.entries(filter)
     .map((entry) => {
@@ -14,21 +23,21 @@ const encodeQueryParam = (filter?: Object) => {
     .join("&")
 }
 
-export const useNfts = (
-  page: number = 0,
-  filter?: NftsFilter,
-  sort?: string,
-  search?: SearchFilter,
-) => {
-  const filterParams = encodeQueryParam(filter)
-  const searchParams = encodeQueryParam(search)
-  const {
-    data: nfts,
-    error,
-    mutate,
-  } = useSWR<NftApi>(`/nfts?page=${page}&${filterParams}&sort=${sort}&${searchParams}`, fetcher)
-  const loading = !error && !nfts
-  return { nfts, loading, error, mutate }
+export const useNfts = (url: NftsURL) => {
+  const { elem: nfts, loading, links, total, totalPages, error, fetchData } = usePagination<Nft[]>()
+
+  const refetchData = (_url: NftsURL) => {
+    const filterParams = encodeQueryParam(_url.filters)
+    const searchParams = encodeQueryParam(_url.search)
+    fetchData(`${_url.baseUrl}&${filterParams}&${searchParams}&sort=${_url.sort}`)
+  }
+
+  useEffect(() => {
+    refetchData(url)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(url)])
+
+  return { nfts, total, totalPages, links, loading, error, refetchData }
 }
 
 export const useRecommendedNfts = (nftId: string | number) => {
@@ -36,7 +45,7 @@ export const useRecommendedNfts = (nftId: string | number) => {
     data: recommendations,
     error,
     mutate,
-  } = useSWR<NftApi>(nftId ? `/nfts/${nftId}/recommendations` : null, fetcher)
+  } = useSWR<Nft[]>(nftId ? `/nfts/${nftId}/recommendations` : null, fetcher)
   const loading = !error && !recommendations
   return { recommendations, loading, error, mutate }
 }

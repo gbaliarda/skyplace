@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { useTranslation } from "next-export-i18n"
 import Layout from "../components/Layout"
-import { getResourceUrl } from '../services/endpoints';
+import { getResourceUrl } from "../services/endpoints"
 
 const Home = () => {
   const { t } = useTranslation()

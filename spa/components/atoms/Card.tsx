@@ -8,7 +8,7 @@ import { useImageUrl } from "../../services/images"
 import { useSellorderUrl } from "../../services/sellorders"
 import { useUserUrl } from "../../services/users"
 import useSession from "../../hooks/useSession"
-import { fetcher, getResourceUrl } from '../../services/endpoints';
+import { fetcher, getResourceUrl } from "../../services/endpoints"
 import ErrorBox from "./ErrorBox"
 
 interface Props {

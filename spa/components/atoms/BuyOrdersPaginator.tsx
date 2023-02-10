@@ -1,12 +1,14 @@
 import { useTranslation } from "next-export-i18n"
+import parse from "parse-link-header"
 
 interface Props {
   amountPages: number
   page: number
-  setPage: (page: number) => void
+  updateUrl: (url: string) => void
+  links: parse.Links
 }
 
-const BuyOrdersPaginator = ({ amountPages, page, setPage }: Props) => {
+const BuyOrdersPaginator = ({ amountPages, page, updateUrl, links }: Props) => {
   const { t } = useTranslation()
 
   return (
@@ -16,13 +18,13 @@ const BuyOrdersPaginator = ({ amountPages, page, setPage }: Props) => {
           <button
             suppressHydrationWarning
             className="text-cyan-700 text-lg hover:underline hover:text-cyan-800"
-            onClick={() => setPage(page - 1)}
+            onClick={() => links.prev !== undefined && updateUrl(links.prev.url)}
           >
             {t("product.previous")}
           </button>
           <button
             className="text-cyan-700 text-lg px-2 hover:underline hover:text-cyan-800"
-            onClick={() => setPage(1)}
+            onClick={() => links.first !== undefined && updateUrl(links.first.url)}
           >
             1
           </button>
@@ -35,7 +37,7 @@ const BuyOrdersPaginator = ({ amountPages, page, setPage }: Props) => {
       {page - 1 > 1 && (
         <button
           className="text-cyan-700 text-lg px-2 hover:underline hover:text-cyan-800"
-          onClick={() => setPage(page - 1)}
+          onClick={() => links.prev !== undefined && updateUrl(links.prev.url)}
         >
           ... {page - 1}
         </button>
@@ -44,7 +46,7 @@ const BuyOrdersPaginator = ({ amountPages, page, setPage }: Props) => {
       {page + 1 < amountPages && (
         <button
           className="text-cyan-700 text-lg px-2 hover:underline hover:text-cyan-800"
-          onClick={() => setPage(page + 1)}
+          onClick={() => links.next !== undefined && updateUrl(links.next.url)}
         >
           {page + 1} ...
         </button>
@@ -53,14 +55,14 @@ const BuyOrdersPaginator = ({ amountPages, page, setPage }: Props) => {
         <>
           <button
             className="text-cyan-700 text-lg px-2 hover:underline hover:text-cyan-800"
-            onClick={() => setPage(amountPages)}
+            onClick={() => links.last !== undefined && updateUrl(links.last.url)}
           >
             {amountPages}
           </button>
           <button
             suppressHydrationWarning
             className="text-cyan-700 text-lg hover:underline hover:text-cyan-800"
-            onClick={() => setPage(page + 1)}
+            onClick={() => links.next !== undefined && updateUrl(links.next.url)}
           >
             {t("product.next")}
           </button>

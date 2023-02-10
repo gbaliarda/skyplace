@@ -1,8 +1,7 @@
-package ar.edu.itba.paw.webapp.dto.purchases;
+package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.Purchase;
 import ar.edu.itba.paw.model.StatusPurchase;
-import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;

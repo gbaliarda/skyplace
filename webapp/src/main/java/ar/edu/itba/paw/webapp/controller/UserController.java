@@ -6,12 +6,9 @@ import ar.edu.itba.paw.model.Review;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
-import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrderDto;
-import ar.edu.itba.paw.webapp.dto.buyorders.BuyOrdersDto;
-import ar.edu.itba.paw.webapp.dto.nfts.NftDto;
-import ar.edu.itba.paw.webapp.dto.nfts.NftsDto;
-import ar.edu.itba.paw.webapp.dto.purchases.PurchaseDto;
-import ar.edu.itba.paw.webapp.dto.purchases.PurchasesDto;
+import ar.edu.itba.paw.webapp.dto.BuyOrderDto;
+import ar.edu.itba.paw.webapp.dto.NftDto;
+import ar.edu.itba.paw.webapp.dto.PurchaseDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewStarScoreDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewsDto;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,15 +99,15 @@ public class UserController {
         }
 
         List<BuyOrderDto> buyOffers = buyOrderService.getBuyOrdersForUser(maybeUser.get(), page, status).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
-        BuyOrdersDto buyOrdersResponse = BuyOrdersDto.fromBuyOrdersList(buyOffers, amountOfferPages);
 
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<BuyOrdersDto>(buyOrdersResponse) {});
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<BuyOrderDto>>(buyOffers) {}).header("X-Total-Pages", amountOfferPages);
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
         if (page < amountOfferPages)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
         return responseBuilder
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", page).build(), "self")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", amountOfferPages).build(), "last")
                 .build();
     }
@@ -134,11 +130,10 @@ public class UserController {
 //        List<NftDto> userFavorites = nftService.getAllPublicationsByUser(page, currentUser, "favorited", sort)
 //                .stream().map(Publication::getNft).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
         List<NftDto> userFavorites = favoriteService.getFavedNftsFromUser(page, currentUser, sort, nftId).stream().map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
+        int amountFavorites = favoriteService.getUserFavoritesAmount(userId);
+        int amountPages = amountFavorites == 0 ? 1 : (amountFavorites + nftService.getPageSize() - 1) / nftService.getPageSize();
 
-        NftsDto nftsDto = NftsDto.fromNftList(userFavorites,
-                favoriteService.getUserFavoritesAmount(userId));
-
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<NftsDto>(nftsDto) {});
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(userFavorites) {}).header("X-Total-Count", amountFavorites).header("X-Total-Pages", amountPages);
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
         int lastPage = nftService.getAmountPublicationPagesByUser(currentUser, currentUser, "favorited");
@@ -147,6 +142,7 @@ public class UserController {
 
         return responseBuilder
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", page).build(), "self")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", lastPage).build(), "last")
                 .build();
     }
@@ -221,7 +217,7 @@ public class UserController {
             return Response.noContent().build();
         }
         */
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<PurchasesDto>(PurchasesDto.fromPurchaseList(historyPurchases, amountPurchasesPages)) {});
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<PurchaseDto>>(historyPurchases) {}).header("X-Total-Pages", amountPurchasesPages);
 
         //TODO REUSE THIS CODE
         if (page > 1)
@@ -230,6 +226,7 @@ public class UserController {
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
         return responseBuilder
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", page).build(), "self")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", amountPurchasesPages).build(), "last")
                 .build();
     }
@@ -273,14 +270,13 @@ public class UserController {
             reviewRatings.add(ReviewStarScoreDto.fromReviewStarScore(i, userRatingsDesc.get(j)));
         }
 
-        reviewsInfo = ReviewsDto.fromReviewList(reviewList, reviewService.getUserReviewsAmount(revieweeId),
-                reviewService.getUserReviewsPageAmount(revieweeId),
-                reviewService.getUserScore(revieweeId), reviewRatings);
-
+        reviewsInfo = ReviewsDto.fromReviewList(reviewList, reviewService.getUserScore(revieweeId), reviewRatings);
+        int reviewsPageAmount = reviewService.getUserReviewsPageAmount(revieweeId);
+        long reviewsAmount = reviewService.getUserReviewsAmount(revieweeId);
         /* if(reviewList.isEmpty())
             return Response.noContent().build(); */
 
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<ReviewsDto>(reviewsInfo) {});
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<ReviewsDto>(reviewsInfo) {}).header("X-Total-Pages", reviewsPageAmount).header("X-Total-Count", reviewsAmount);
         if (page > 1)
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
         int lastPage = (int) Math.ceil(reviewService.getUserReviewsAmount(revieweeId) / (double) reviewService.getPageSize());
@@ -289,6 +285,7 @@ public class UserController {
 
         return responseBuilder
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", page).build(), "self")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page", lastPage).build(), "last")
                 .build();
     }

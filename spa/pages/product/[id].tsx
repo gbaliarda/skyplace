@@ -19,7 +19,7 @@ import ErrorBox from "../../components/atoms/ErrorBox"
 import useSession from "../../hooks/useSession"
 import { useCryptoPrice } from "../../hooks/useCryptoPrice"
 import ConfirmTransactionModal from "../../components/atoms/product/ConfirmTransactionModal"
-import { sendJson, getResourceUrl } from '../../services/endpoints';
+import { sendJson, getResourceUrl } from "../../services/endpoints"
 import { useFavoritedNft } from "../../services/favorites"
 
 const Product = () => {
@@ -118,9 +118,11 @@ const Product = () => {
                       <img src={imageSrc} alt="nft" className="rounded-2xl max-h-[550px]" />
                     </figure>
                   )}
-                  {owner && (
-                    <OffersContent owner={owner} buyOrdersUrl={sellorder?.buyorders.toString()} />
-                  )}
+                  <OffersContent
+                    loadingData={loadingOwner || loadingSellorder}
+                    owner={owner}
+                    buyOrdersUrl={sellorder?.buyorders.toString()}
+                  />
                 </div>
 
                 {errorNft || errorOwner || errorSellorder ? (
@@ -154,7 +156,7 @@ const Product = () => {
                             {currentUserId !== null && !errorFavorites && (
                               <ProductFavNft
                                 amountFavourites={nft!!.favorites}
-                                isFaved={favorite === undefined ? false : favorite.nfts.length > 0}
+                                isFaved={favorite === undefined ? false : favorite.length > 0}
                                 mutateFavs={mutateFavorites}
                                 nftId={nft!!.id}
                               />
@@ -201,7 +203,11 @@ const Product = () => {
                         </>
                       ) : nft?.sellorder !== undefined ? (
                         <>
-                          <img className="h-8 -ml-1" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
+                          <img
+                            className="h-8 -ml-1"
+                            src={getResourceUrl("/product/eth.svg")}
+                            alt="Eth icon"
+                          />
                           <div>
                             <span className="font-bold tracking-tight">{sellorder?.price}</span>
                             <span className="ml-4 text-slate-500 text-base">
@@ -211,7 +217,11 @@ const Product = () => {
                         </>
                       ) : (
                         <>
-                          <img className="h-8 -ml-1" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
+                          <img
+                            className="h-8 -ml-1"
+                            src={getResourceUrl("/product/eth.svg")}
+                            alt="Eth icon"
+                          />
                           <span
                             suppressHydrationWarning
                             className="text-[1.1rem] font-bold tracking-tight"
@@ -276,7 +286,7 @@ const Product = () => {
                     {t("product.recommended")}
                   </span>
                   <div className="flex flex-wrap justify-center gap-8 items-start">
-                    {recommendations?.nfts.map((value) => {
+                    {recommendations?.map((value) => {
                       return <Card nft={value} key={value.id} />
                     })}
                   </div>

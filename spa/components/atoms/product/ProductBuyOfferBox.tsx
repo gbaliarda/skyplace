@@ -2,11 +2,12 @@ import { BaseSyntheticEvent, useState, useRef } from "react"
 import { useTranslation } from "next-export-i18n"
 import { TagIcon } from "@heroicons/react/24/outline"
 import Swal from "sweetalert2"
-import { sendJson, getResourceUrl } from '../../../services/endpoints';
+import { sendJson, getResourceUrl } from "../../../services/endpoints"
 import useSession from "../../../hooks/useSession"
 import Sellorder from "../../../types/Sellorder"
 import { useBuyOrders } from "../../../services/sellorders"
 import { useCryptoPrice } from "../../../hooks/useCryptoPrice"
+import { BuyordersURL } from "../../../services/users"
 
 const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
   const { t } = useTranslation()
@@ -14,7 +15,8 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
   const priceRef = useRef<HTMLInputElement>(null)
   const [offer, setOffer] = useState(0)
   const [loading, setLoading] = useState(false)
-  const { mutate } = useBuyOrders(sellOrder.buyorders.toString())
+  const url = { baseUrl: sellOrder.buyorders.toString() } as BuyordersURL
+  const { refetchData } = useBuyOrders(url)
 
   const { price: ethPriceUsd } = useCryptoPrice("ethereum")
 
@@ -26,7 +28,7 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
       await sendJson("POST", `/sellorders/${sellOrder.id}/buyorders`, { price: offer }, accessToken)
       priceRef.current!!.value = "0"
       setOffer(0)
-      mutate() // FIXME: this will only work if the user is on the first page of offers
+      refetchData(url) // FIXME: this will only work if the user is on the first page of offers
     } catch (e: any) {
       console.log(e.name, e.message)
       Swal.fire({ title: t("product.makeOfferError"), text: e.message, icon: "error" })
