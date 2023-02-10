@@ -14,8 +14,8 @@ const Explore = () => {
   const router = useRouter()
 
   const [search, setSearch] = useState<SearchFilter>({
-    search: "",
-    searchFor: SearchType.Nft,
+    searchFor: (router.query.searchFor as SearchType) ?? SearchType.Nft,
+    search: Array.isArray(router.query.search) ? router.query.search[0] : router.query.search ?? "",
   })
   useEffect(() => {
     const querySearch = router.query.search
@@ -54,9 +54,10 @@ const Explore = () => {
       baseUrl: `${api}/nfts?page=1`,
       filters,
       sort,
+      search,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, sort])
+  }, [filters, sort, search])
 
   return (
     <Layout>
