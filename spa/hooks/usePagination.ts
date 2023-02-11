@@ -19,7 +19,10 @@ const usePagination = <T>(requiresSession: boolean = false) => {
     setLoading(true)
     genericFetcher([_url, ""], headers, true)
       .then((res: Response) => {
-        if (res.status === 204) return
+        if (res.status === 204) {
+          setElem(undefined)
+          return
+        }
         setLinks(parse(res.headers.get("Link")))
         setTotal(parseInt(res.headers.get("X-Total-Count") ?? "0"))
         setTotalPages(parseInt(res.headers.get("X-Total-Pages") ?? "0"))

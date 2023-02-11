@@ -199,6 +199,8 @@
     "deleteNftSuccess": "Successfully deleted NFT",
     "makeOffer": "Make offer",
     "makeOfferError": "Error making offer",
+    "makeOfferSuccess": "Successfully made an offer",
+    "makeOfferSuccessInfo": "You can see it by hitting the refresh button in the offers section.",
     "pendingOffer": "Pending offer",
     "transactionDetails": "Transaction details",
     "transactionFrom": "From",

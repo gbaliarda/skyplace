@@ -199,6 +199,8 @@
     "deleteNftSuccess": "NFT borrado exitosamente",
     "makeOffer": "Ofertar",
     "makeOfferError": "Error al ofertar",
+    "makeOfferSuccess": "Oferta enviada satisfactoriamente",
+    "makeOfferSuccessInfo": "Puedes verla apretando el botón de refrezco en la sección de ofertas.",
     "collection": "Colección: {{collectionName}}",
     "pendingOffer": "Oferta pendiente",
     "transactionDetails": "Detalles de la transacción",

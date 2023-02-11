@@ -7,22 +7,7 @@ import { BuyordersURL } from "./users"
 import usePagination from "../hooks/usePagination"
 import {FetchError} from "../types/FetchError";
 
-/*
-export const useSellorder = (id: number | undefined) => {
-  // second generic is error type, which will be the statusCode
-  const {
-    data: sellorder,
-    error: errors,
-    mutate,
-  } = useSWR<Sellorder, number>(id ? `/sellorders/${id}` : null, fetcher)
-  const loading = !errors && !sellorder
-  return { sellorder, loading, errors, mutate }
-}
-
- */
-
 export const useSellorderUrl = (url: string | undefined) => {
-  // second generic is error type, which will be the statusCode
   const {
     data: sellorder,
     error: errors,
@@ -53,16 +38,6 @@ export const useBuyOrders = (url: BuyordersURL) => {
 
   return { buyorders, totalPages, links, loading, error, refetchData }
 }
-
-// export const useBuyOrders = (url: string | undefined, page: number = 1) => {
-//   const {
-//     data: buyorders,
-//     error,
-//     isLoading,
-//     mutate,
-//   } = useSWR<BuyOrderApi>(url ? [`${url}?page=${page}`, ""] : null, genericFetcher)
-//   return { buyorders, loading: isLoading, error, mutate }
-// }
 
 export const usePendingBuyOrder = (sellOrderId: number | undefined) => {
   const { data, error: errors, isLoading, mutate } = useSWR<BuyOrderApi, FetchError[]>(

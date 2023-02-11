@@ -5,9 +5,7 @@ import Swal from "sweetalert2"
 import { sendJson, getResourceUrl } from "../../../services/endpoints"
 import useSession from "../../../hooks/useSession"
 import Sellorder from "../../../types/Sellorder"
-import { useBuyOrders } from "../../../services/sellorders"
 import { useCryptoPrice } from "../../../hooks/useCryptoPrice"
-import { BuyordersURL } from "../../../services/users"
 
 const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
   const { t } = useTranslation()
@@ -15,8 +13,6 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
   const priceRef = useRef<HTMLInputElement>(null)
   const [offer, setOffer] = useState(0)
   const [loading, setLoading] = useState(false)
-  const url = { baseUrl: sellOrder.buyorders.toString() } as BuyordersURL
-  const { refetchData } = useBuyOrders(url)
 
   const { price: ethPriceUsd } = useCryptoPrice("ethereum")
 
@@ -28,7 +24,7 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
       await sendJson("POST", `/sellorders/${sellOrder.id}/buyorders`, { price: offer }, accessToken)
       priceRef.current!!.value = "0"
       setOffer(0)
-      refetchData(url) // FIXME: this will only work if the user is on the first page of offers
+      Swal.fire({ title: t("product.makeOfferSuccess"), text: t("product.makeOfferSuccessInfo"), icon: "success" })
     } catch (errs: any) {
       console.log(errs)
       Swal.fire({ title: t("product.makeOfferError"), text: errs[0].message, icon: "error" })
