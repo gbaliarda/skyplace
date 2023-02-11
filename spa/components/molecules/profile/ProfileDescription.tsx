@@ -7,6 +7,7 @@ import { useUser } from "../../../services/users"
 import ErrorBox from "../../atoms/ErrorBox"
 import { ReviewsURL, useReviews } from "../../../services/reviews"
 import { api, getResourceUrl } from "../../../services/endpoints"
+import ErrorPage from "../ErrorPage"
 
 interface Props {
   userId: number
@@ -42,6 +43,10 @@ export default function ProfileDescription({ userId }: Props) {
         walletTooltipRef.current.setAttribute("data-tip", walletCopyMessage)
       }, 1000)
     }
+  }
+
+  if (errorsUser?.cause?.statusCode === 404 || errorsReviews?.cause?.statusCode === 404) {
+    return <ErrorPage errorCode={404} errorTitle={t("404.pageNotFound")} errorDetail={t("404.check")} />
   }
 
   if (errorsUser || errorsReviews)

@@ -5,7 +5,7 @@ import User from "../types/User"
 import Nft from "../types/Nft"
 import Buyorder from "../types/Buyorder"
 import usePagination from "../hooks/usePagination"
-import {FetchError} from "../types/FetchError";
+import { FetchError } from "../types/FetchError"
 
 export type BuyordersURL = {
   baseUrl: string

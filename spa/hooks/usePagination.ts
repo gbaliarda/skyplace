@@ -1,6 +1,7 @@
 import { useState } from "react"
 import parse from "parse-link-header"
 import { checkStatus } from "../services/endpoints"
+import { FetchError } from "../types/FetchError"
 
 const usePagination = <T>(requiresSession: boolean = false) => {
   const [elem, setElem] = useState<T>()
@@ -8,7 +9,7 @@ const usePagination = <T>(requiresSession: boolean = false) => {
   const [links, setLinks] = useState<parse.Links | null>()
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
-  const [error, setError] = useState()
+  const [error, setError] = useState<FetchError>()
 
   const fetchData = (_url: string) => {
     if (!_url || _url === "") return
