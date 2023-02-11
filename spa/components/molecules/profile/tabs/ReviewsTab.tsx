@@ -135,7 +135,7 @@ export default function ReviewsTab({ userId }: Props) {
             </h2>
 
             {/* TODO: check if totalPurchasesPagesBetweenUsers is 0 if no purchases */}
-            {totalPurchasesPagesBetweenUsers !== 0 && totalReviewsBetweenUsers === 0 && (
+            {totalPurchasesPagesBetweenUsers !== 0 && totalReviewsBetweenUsers === 0 && loggedInUser !== userId && (
               <Link href={newReviewPath}>
                 <a>
                   <button
