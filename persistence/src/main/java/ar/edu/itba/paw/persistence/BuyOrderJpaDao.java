@@ -90,9 +90,15 @@ public class BuyOrderJpaDao implements BuyOrderDao {
      * @return The amount of buy orders that a certain user has despite the status.
      */
     @Override
-    public int getAmountBuyOrdersForUser(User user) {
-        final Query query = em.createNativeQuery("SELECT count(*) FROM buyorders WHERE id_buyer = :buyerId");
+    public int getAmountBuyOrdersForUser(User user, String status) {
+        StringBuilder queryString = new StringBuilder("SELECT count(*) FROM buyorders WHERE id_buyer = :buyerId");
+        boolean addStatusFilter = StatusBuyOrder.hasStatus(status);
+        if (addStatusFilter)
+            queryString.append(" AND status = :status");
+        final Query query = em.createNativeQuery(queryString.toString());
         query.setParameter("buyerId",user.getId());
+        if (addStatusFilter)
+            query.setParameter("status", status);
         return ((BigInteger)query.getSingleResult()).intValue();
     }
 

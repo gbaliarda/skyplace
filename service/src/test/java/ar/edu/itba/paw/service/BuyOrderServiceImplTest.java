@@ -186,9 +186,9 @@ public class BuyOrderServiceImplTest {
     public void testGetAmountPagesForUserOnUserWithoutSellOrders() {
         User user = new User(USERNAME_USER1, WALLET_USER1, MAIL_USER1, PASSWORD_USER1, WALLETCHAIN_USER1, ROLE_USER1, LOCALE_USER1);
 
-        Mockito.when(buyOrderDao.getAmountBuyOrdersForUser(user)).thenReturn(0);
+        Mockito.when(buyOrderDao.getAmountBuyOrdersForUser(user, "ALL")).thenReturn(0);
 
-        int pageAmount = buyOrderService.getAmountPagesForUser(user);
+        int pageAmount = buyOrderService.getAmountPagesForUser(user, "ALL");
 
         assertEquals(1, pageAmount);
     }

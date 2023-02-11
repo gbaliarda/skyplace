@@ -36,9 +36,8 @@ public class ImageController {
     @Produces({ MediaType.APPLICATION_JSON, })
     public Response getImage(@PathParam("id") int id) {
         Optional<Image> maybeImage = imageService.getImage(id);
-        if(!maybeImage.isPresent()) {
+        if(!maybeImage.isPresent())
             throw new NotFoundException("Image not found");
-        }
         return Response.ok(ImageDto.fromImage(uriInfo, maybeImage.get())).build();
     }
 

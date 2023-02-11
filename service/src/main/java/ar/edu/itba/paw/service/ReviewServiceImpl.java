@@ -96,7 +96,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public long getUserReviewsAmount(int userId) {
+    public int getUserReviewsAmount(int userId) {
         if(!userDao.getUserById(userId).isPresent())
             throw new UserNotFoundException();
         return reviewDao.getUserReviewsAmount(userId);

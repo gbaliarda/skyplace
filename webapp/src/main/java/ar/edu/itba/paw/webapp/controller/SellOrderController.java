@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.exceptions.SellOrderNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNoPermissionException;
+import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.BuyOrderDto;
@@ -11,26 +12,23 @@ import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateSellOrderForm;
 import ar.edu.itba.paw.webapp.form.PriceForm;
 import ar.edu.itba.paw.webapp.form.SellNftForm;
+import ar.edu.itba.paw.webapp.helpers.ResponseHelpers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.math.BigDecimal;
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Path("sellorders")
 @Component
 public class SellOrderController {
 
     private final SellOrderService sellOrderService;
-    private final NftService nftService;
     private final BuyOrderService buyOrderService;
     private final UserService userService;
 
@@ -38,56 +36,15 @@ public class SellOrderController {
     private UriInfo uriInfo;
 
     @Autowired
-    public SellOrderController(SellOrderService sellOrderService, NftService nftService, BuyOrderService buyOrderService, UserService userService) {
+    public SellOrderController(SellOrderService sellOrderService, BuyOrderService buyOrderService, UserService userService) {
         this.sellOrderService = sellOrderService;
-        this.nftService = nftService;
         this.buyOrderService = buyOrderService;
         this.userService = userService;
-    }
-
-    @GET
-    @Produces({ MediaType.APPLICATION_JSON, })
-    public Response listSellOrders(
-            @QueryParam("page") @DefaultValue("1") final int page,
-            @QueryParam("minPrice") @DefaultValue("0") final BigDecimal minPrice,
-            @QueryParam("maxPrice") @DefaultValue("-1") final BigDecimal maxPrice,
-            @QueryParam("category") final List<String> category,
-            @QueryParam("chain") final List<String> chain,
-            @QueryParam("sort") final String sort,
-            @QueryParam("search") final String search,
-            @QueryParam("searchFor") final String searchFor,
-            @QueryParam("seller") final Integer sellerId
-    ) {
-        Stream<Nft> stream = nftService.getAll(page, Collections.singletonList("onSale"), category, chain, minPrice, maxPrice, sort, search, searchFor, null)
-                .stream();
-
-        // TODO: Get only user nfts instead of all and then filter
-        // Current problem: getAllPublicationsByUser used does not support all filtering query params
-        if(sellerId != null) {
-            stream = stream.filter(n -> n.getOwner().getId() == sellerId);
-        }
-        List<SellOrderDto> sellOrderList = stream.map(Nft::getSellOrder).map(s -> SellOrderDto.fromSellOrder(uriInfo, s)).collect(Collectors.toList());
-
-        if(sellOrderList.isEmpty())
-            return Response.noContent().build();
-
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<SellOrderDto>>(sellOrderList) {});
-        if (page > 1)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
-        int lastPage = (int) Math.ceil(nftService.getAmountPublications(Collections.singletonList("onSale"), category, chain, minPrice, maxPrice, sort, search, "") / (double) nftService.getPageSize());
-        if (page < lastPage)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
-
-        return responseBuilder
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", lastPage).build(), "last")
-                .build();
     }
 
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, })
     public Response createSellOrder(@Valid CreateSellOrderForm form) {
-        // TODO: Return other response in case of exception thrown
         if(form == null)
             throw new NoBodyException();
         final SellOrder newSellOrder = sellOrderService.create(form.getPrice(), form.getNftId(), form.getCategory());
@@ -101,11 +58,11 @@ public class SellOrderController {
     @Produces({ MediaType.APPLICATION_JSON, })
     public Response getSellOrder(@PathParam("id") int id) {
         Optional<SellOrder> maybeSellOrder = sellOrderService.getOrderById(id);
-        if(maybeSellOrder.isPresent()){
-            SellOrderDto dto = SellOrderDto.fromSellOrder(uriInfo, maybeSellOrder.get());
-            return Response.ok(dto).build();
-        }
-        throw new SellOrderNotFoundException();
+        if (!maybeSellOrder.isPresent())
+            throw new SellOrderNotFoundException();
+
+        SellOrderDto dto = SellOrderDto.fromSellOrder(uriInfo, maybeSellOrder.get());
+        return Response.ok(dto).build();
     }
 
     @PUT
@@ -133,11 +90,13 @@ public class SellOrderController {
     public Response createBuyOrder(@PathParam("id") int id, @Valid final PriceForm priceForm) {
         if(priceForm == null)
             throw new NoBodyException();
-        int currentUserId = userService.getCurrentUser().get().getId();
+        Optional<User> maybeUser = userService.getCurrentUser();
+        if(!maybeUser.isPresent())
+            throw new UserNotFoundException();
+        int currentUserId = maybeUser.get().getId();
         Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
-        if (!maybeSellOrder.isPresent()) {
+        if (!maybeSellOrder.isPresent())
             throw new SellOrderNotFoundException();
-        }
 
         buyOrderService.create(id, priceForm.getPrice(), currentUserId);
         final URI location = uriInfo.getAbsolutePathBuilder()
@@ -154,29 +113,16 @@ public class SellOrderController {
             @QueryParam("status") @DefaultValue("ALL") String status
     ){
         Optional<SellOrder> maybeSellOrder = this.sellOrderService.getOrderById(id);
-        if (!maybeSellOrder.isPresent()) {
-            throw new NotFoundException();
-        }
+        if (!maybeSellOrder.isPresent())
+            throw new SellOrderNotFoundException();
 
-        long amountOfferPages;
-        amountOfferPages = buyOrderService.getAmountPagesBySellOrderId(maybeSellOrder.get(), status);
+        int amountOfferPages = buyOrderService.getAmountPagesBySellOrderId(maybeSellOrder.get(), status);
 
         List<BuyOrderDto> buyOrdersList = buyOrderService.getOrdersBySellOrderId(offerPage, maybeSellOrder.get().getId(), status).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
 
-        if(buyOrdersList.isEmpty()){
-            return Response.noContent().build();
-        }
-
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<BuyOrderDto>>(buyOrdersList) {}).header("X-Total-Pages", amountOfferPages);
-        if (offerPage > 1)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", offerPage - 1).build(), "prev");
-        if (offerPage < amountOfferPages)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", offerPage + 1).build(), "next");
-        return responseBuilder
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", offerPage).build(), "self")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", amountOfferPages).build(), "last")
-                .build();
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<BuyOrderDto>>(buyOrdersList) {});
+        ResponseHelpers.addTotalPagesHeader(responseBuilder, amountOfferPages);
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, offerPage, amountOfferPages).build();
     }
 
     @DELETE
@@ -198,11 +144,11 @@ public class SellOrderController {
     @Produces({ MediaType.APPLICATION_JSON, })
     public Response getBuyOrderFromUserId(@PathParam("id") int id, @PathParam("userId") int userId) {
         Optional<BuyOrder> buyorder = buyOrderService.getBuyOrder(id, userId);
-        if(buyorder.isPresent()) {
-            BuyOrderDto dto = BuyOrderDto.fromBuyOrder(buyorder.get(), uriInfo);
-            return Response.ok(dto).build();
-        }
-        throw new NotFoundException();
+        if (!buyorder.isPresent())
+            throw new NotFoundException();
+
+        BuyOrderDto dto = BuyOrderDto.fromBuyOrder(buyorder.get(), uriInfo);
+        return Response.ok(dto).build();
     }
 
     @POST
@@ -210,10 +156,9 @@ public class SellOrderController {
     @Path("/{id}/buyorders/{userId}")
     public Response confirmBuyOrderFromBuyerId(@PathParam("id") int sellOrderId, @PathParam("userId") int buyerId, final @Valid txHashDto txHashDto) {
         Optional<Integer> response = buyOrderService.validateTransaction(txHashDto.getTxHash(), sellOrderId, buyerId);
-        if (!response.isPresent()) {
+        if (!response.isPresent())
             throw new UserNoPermissionException();
-        }
-        // Add URI to response
+
         final URI purchaseUri = uriInfo.getAbsolutePathBuilder()
                 .replacePath("/purchases/").path(response.get().toString()).build();
         return Response.created(purchaseUri).build();

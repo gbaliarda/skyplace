@@ -20,5 +20,7 @@ public interface FavoriteService {
 
     int getUserFavoritesAmount(int userId);
 
+    int getUserFavoritesPages(int favoritesAmount);
+
     List<Nft> getFavedNftsFromUser(int page, User user, String sort, List<Integer> nftId);
 }

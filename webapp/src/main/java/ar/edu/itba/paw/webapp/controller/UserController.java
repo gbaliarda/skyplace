@@ -15,6 +15,7 @@ import ar.edu.itba.paw.webapp.dto.reviews.ReviewsDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.ReviewForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
+import ar.edu.itba.paw.webapp.helpers.ResponseHelpers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -58,20 +59,19 @@ public class UserController {
         if(userForm == null)
             throw new NoBodyException();
         final User newUser = userService.create(userForm.getEmail(), userForm.getUsername(), userForm.getWalletAddress(), userForm.getWalletChain(), userForm.getPassword());
-        // appends the new ID to the path of this route (/users)
+
         final URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(newUser.getId())).build();
         return Response.created(location).build();
     }
 
-    // GET /users/{id}
     @GET
     @Path("/{id}")
     public Response getUser(@PathParam("id") int id) {
         Optional<User> maybeUser = userService.getUserById(id);
-        if (!maybeUser.isPresent()) {
+        if (!maybeUser.isPresent())
             throw new UserNotFoundException();
-        }
+
         return Response.ok(UserDto.fromUser(this.uriInfo, maybeUser.get())).build();
     }
 
@@ -84,29 +84,16 @@ public class UserController {
             @QueryParam("status") @DefaultValue("ALL") final String status
     ) {
         Optional<User> maybeUser = userService.getUserById(userId);
-        if (!maybeUser.isPresent()) {
+        if (!maybeUser.isPresent())
             throw new UserNotFoundException();
-        }
 
-        /* TODO: Add filter to get amount of pages */
-        long amountOfferPages = buyOrderService.getAmountPagesForUser(maybeUser.get());
-
-        if(page > amountOfferPages || page < 0 ) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        int amountOfferPages = buyOrderService.getAmountPagesForUser(maybeUser.get(), status);
 
         List<BuyOrderDto> buyOffers = buyOrderService.getBuyOrdersForUser(maybeUser.get(), page, status).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
 
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<BuyOrderDto>>(buyOffers) {}).header("X-Total-Pages", amountOfferPages);
-        if (page > 1)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
-        if (page < amountOfferPages)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
-        return responseBuilder
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", page).build(), "self")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", amountOfferPages).build(), "last")
-                .build();
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<BuyOrderDto>>(buyOffers) {});
+        ResponseHelpers.addTotalPagesHeader(responseBuilder, amountOfferPages);
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, amountOfferPages).build();
     }
 
     @GET
@@ -124,24 +111,15 @@ public class UserController {
 
         User currentUser = optCurrentUser.get();
 
-//        List<NftDto> userFavorites = nftService.getAllPublicationsByUser(page, currentUser, "favorited", sort)
-//                .stream().map(Publication::getNft).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
         List<NftDto> userFavorites = favoriteService.getFavedNftsFromUser(page, currentUser, sort, nftId).stream().map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId()))).collect(Collectors.toList());
         int amountFavorites = favoriteService.getUserFavoritesAmount(userId);
-        int amountPages = amountFavorites == 0 ? 1 : (amountFavorites + nftService.getPageSize() - 1) / nftService.getPageSize();
-
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(userFavorites) {}).header("X-Total-Count", amountFavorites).header("X-Total-Pages", amountPages);
-        if (page > 1)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
+        int amountPages = favoriteService.getUserFavoritesPages(amountFavorites);
         int lastPage = nftService.getAmountPublicationPagesByUser(currentUser, currentUser, "favorited");
-        if (page < lastPage)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
 
-        return responseBuilder
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", page).build(), "self")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", lastPage).build(), "last")
-                .build();
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(userFavorites) {});
+        ResponseHelpers.addTotalCountHeader(responseBuilder, amountFavorites);
+        ResponseHelpers.addTotalPagesHeader(responseBuilder, amountPages);
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, lastPage).build();
     }
 
     @PUT
@@ -151,15 +129,17 @@ public class UserController {
             @PathParam("id") final int userId,
             @PathParam("nftId") final int nftId
     ) {
-        User currentUser = userService.getCurrentUser().get();
+        Optional<User> maybeUser = userService.getCurrentUser();
+        if (!maybeUser.isPresent())
+            throw new UserNotFoundException();
+        User currentUser = maybeUser.get();
 
         if(currentUser.getId() != userId)
             throw new UserNoPermissionException();
 
         Optional<NftDto> maybeNft = nftService.getNFTById(nftId).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId())));
-        if (!maybeNft.isPresent()) {
+        if (!maybeNft.isPresent())
             throw new NotFoundException("Nft not found");
-        }
 
         favoriteService.addNftFavorite(nftId, currentUser);
         return Response.noContent().build();
@@ -172,15 +152,17 @@ public class UserController {
             @PathParam("id") int userId,
             @PathParam("nftId") final int nftId
     ) {
-        User currentUser = userService.getCurrentUser().get();
+        Optional<User> maybeUser = userService.getCurrentUser();
+        if (!maybeUser.isPresent())
+            throw new UserNotFoundException();
+        User currentUser = maybeUser.get();
 
         if(currentUser.getId() != userId)
             throw new UserNoPermissionException();
 
         Optional<NftDto> maybeNft = nftService.getNFTById(nftId).map(n -> NftDto.fromNft(uriInfo, n, favoriteService.getNftFavorites(n.getId())));
-        if (!maybeNft.isPresent()) {
+        if (!maybeNft.isPresent())
             throw new NotFoundException("Nft not found");
-        }
 
         favoriteService.removeNftFavorite(nftId, currentUser);
         return Response.noContent().build();
@@ -209,23 +191,9 @@ public class UserController {
             historyPurchases = purchaseService.getAllTransactions(userId, page).stream().map(n -> PurchaseDto.fromPurchase(uriInfo, n)).collect(Collectors.toList());
         }
 
-        /*
-        if(historyPurchases.isEmpty()){
-            return Response.noContent().build();
-        }
-        */
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<PurchaseDto>>(historyPurchases) {}).header("X-Total-Pages", amountPurchasesPages);
-
-        //TODO REUSE THIS CODE
-        if (page > 1)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
-        if (page < amountPurchasesPages)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
-        return responseBuilder
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", page).build(), "self")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", amountPurchasesPages).build(), "last")
-                .build();
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<PurchaseDto>>(historyPurchases) {});
+        ResponseHelpers.addTotalPagesHeader(responseBuilder, amountPurchasesPages);
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, amountPurchasesPages).build();
     }
 
     @GET
@@ -233,15 +201,14 @@ public class UserController {
     @Produces({ MediaType.APPLICATION_JSON})
     public Response getHistoryTransactionById(@PathParam("id") int userId, @PathParam("purchaseId") int purchaseId){
         Optional<User> currentUser = userService.getCurrentUser();
-
+        if (!currentUser.isPresent())
+            throw new UserNotFoundException();
         Optional<PurchaseDto> maybePurchase = purchaseService.getPurchaseById(currentUser.get().getId(), purchaseId).map(n -> PurchaseDto.fromPurchase(uriInfo, n));
-        if (!maybePurchase.isPresent()) {
+        if (!maybePurchase.isPresent())
             throw new UserNoPermissionException();
-        }
         return Response.ok(maybePurchase.get()).build();
     }
 
-    // TODO: Move method to reviews controller (if possible)
     @GET()
     @Path("/{id}/reviews")
     @Produces({ MediaType.APPLICATION_JSON, })
@@ -269,22 +236,13 @@ public class UserController {
 
         reviewsInfo = ReviewsDto.fromReviewList(reviewList, reviewService.getUserScore(revieweeId), reviewRatings);
         int reviewsPageAmount = reviewService.getUserReviewsPageAmount(revieweeId);
-        long reviewsAmount = reviewService.getUserReviewsAmount(revieweeId);
-        /* if(reviewList.isEmpty())
-            return Response.noContent().build(); */
+        int reviewsAmount = reviewService.getUserReviewsAmount(revieweeId);
+        int lastPage = (int) Math.ceil(reviewService.getUserReviewsAmount(revieweeId) / (double) reviewService.getPageSize());
 
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<ReviewsDto>(reviewsInfo) {}).header("X-Total-Pages", reviewsPageAmount).header("X-Total-Count", reviewsAmount);
-        if (page > 1)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
-        int lastPage = (int) Math.ceil(reviewService.getUserReviewsAmount(revieweeId) / (double) reviewService.getPageSize());
-        if (page < lastPage)
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
-
-        return responseBuilder
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", page).build(), "self")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", lastPage).build(), "last")
-                .build();
+        ResponseHelpers.addTotalPagesHeader(responseBuilder, reviewsPageAmount);
+        ResponseHelpers.addTotalCountHeader(responseBuilder, reviewsAmount);
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, lastPage).build();
     }
 
     @POST
@@ -293,8 +251,11 @@ public class UserController {
     public Response createUserReview(@PathParam("id") final int userId, @Valid final ReviewForm form){
         if(form == null)
             throw new NoBodyException();
+        Optional<User> maybeUser = userService.getCurrentUser();
+        if (!maybeUser.isPresent())
+            throw new UserNotFoundException();
 
-        int reviewerId = userService.getCurrentUser().get().getId();
+        int reviewerId = maybeUser.get().getId();
         int score = Integer.parseInt(form.getScore());
         Review newReview = reviewService.addReview(reviewerId, userId, score, form.getTitle(), form.getComments());
         final URI location = uriInfo.getAbsolutePathBuilder()

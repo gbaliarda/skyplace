@@ -172,7 +172,7 @@ public class ReviewServiceImplTest {
         User user = new User(ID_USER2, USERNAME_USER2, WALLET_USER2, MAIL_USER2, PASSWORD_USER2, WALLETCHAIN_USER2, ROLE_USER2, LOCALE_USER2);
 
         Mockito.when(userDao.getUserById(ID_USER1)).thenReturn(Optional.of(user));
-        Mockito.when(reviewDao.getUserReviewsAmount(ID_USER1)).thenReturn(0L);
+        Mockito.when(reviewDao.getUserReviewsAmount(ID_USER1)).thenReturn(0);
 
         int pageAmount = reviewService.getUserReviewsPageAmount(ID_USER1);
 

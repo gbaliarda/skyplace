@@ -15,7 +15,7 @@ public interface ReviewDao {
 
     boolean hasReviewByUser(int idReviewer, int idReviewee);
 
-    long getUserReviewsAmount(int userId);
+    int getUserReviewsAmount(int userId);
 
     double getUserScore(int userId);
 

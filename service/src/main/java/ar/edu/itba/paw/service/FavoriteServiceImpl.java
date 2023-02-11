@@ -59,6 +59,12 @@ public class FavoriteServiceImpl implements FavoriteService{
     }
 
     @Override
+    public int getUserFavoritesPages(int favoritesAmount) {
+        int pageSize = nftService.getPageSize();
+        return favoritesAmount == 0 ? 1 : (favoritesAmount + pageSize - 1) / pageSize;
+    }
+
+    @Override
     public List<Nft> getFavedNftsFromUser(int page, User user, String sort, List<Integer> nftId) {
         if (nftId.isEmpty())
             return nftService.getAllPublicationsByUser(page, user, "favorited", sort).stream().map(Publication::getNft).collect(Collectors.toList());

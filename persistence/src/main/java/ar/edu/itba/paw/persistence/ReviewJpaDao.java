@@ -56,10 +56,10 @@ public class ReviewJpaDao implements ReviewDao{
     }
 
     @Override
-    public long getUserReviewsAmount(int userId){
+    public int getUserReviewsAmount(int userId){
         final Query query = em.createNativeQuery("SELECT count(*) FROM reviews WHERE id_reviewee = :id_reviewee");
         query.setParameter("id_reviewee", userId);
-        return ((BigInteger)query.getSingleResult()).longValue();
+        return ((BigInteger)query.getSingleResult()).intValue();
     }
 
     @Override

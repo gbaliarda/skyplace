@@ -15,6 +15,8 @@ public interface NftService {
 
     int getPageSize();
 
+    int getAmountPages(int amountPublications);
+
     List<Nft> getAll(int page, List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor, Integer ownerId);
 
     List<Publication> getAllPublications(int page, List<String> status, List<String> category, List<String> chain, BigDecimal minPrice, BigDecimal maxPrice, String sort, String search, String searchFor);

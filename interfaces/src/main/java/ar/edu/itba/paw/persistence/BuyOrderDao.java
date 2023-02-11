@@ -33,7 +33,7 @@ public interface BuyOrderDao {
 
     int getAmountBuyOrders(SellOrder sellOrder, String status);
 
-    int getAmountBuyOrdersForUser(User user);
+    int getAmountBuyOrdersForUser(User user, String status);
 
     void deleteBuyOrder(int sellOrderId, int buyerId);
 }

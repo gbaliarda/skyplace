@@ -86,8 +86,8 @@ public class BuyOrderServiceImpl implements BuyOrderService {
     }
 
     @Override
-    public int getAmountPagesForUser(User user) {
-        int size = buyOrderDao.getAmountBuyOrdersForUser(user);
+    public int getAmountPagesForUser(User user, String status) {
+        int size = buyOrderDao.getAmountBuyOrdersForUser(user, status);
         return (size - 1) / getPageSize() + 1;
     }
 

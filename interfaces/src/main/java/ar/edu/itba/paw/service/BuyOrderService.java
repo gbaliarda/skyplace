@@ -18,7 +18,7 @@ public interface BuyOrderService {
 
     List<BuyOrder> getBuyOrdersForUser(User user, int page, String status);
 
-    int getAmountPagesForUser(User user);
+    int getAmountPagesForUser(User user, String status);
 
     void acceptBuyOrder(int sellOrderId, int buyerId);
 

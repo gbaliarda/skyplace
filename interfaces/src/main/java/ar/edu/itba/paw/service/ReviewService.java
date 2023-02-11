@@ -18,7 +18,7 @@ public interface ReviewService {
 
     int getUserReviewsPageAmount(int userId);
 
-    long getUserReviewsAmount(int userId);
+    int getUserReviewsAmount(int userId);
 
     double getUserScore(int userId);
 

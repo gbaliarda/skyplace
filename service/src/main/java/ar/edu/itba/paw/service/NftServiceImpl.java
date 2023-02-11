@@ -58,6 +58,11 @@ public class NftServiceImpl implements NftService {
     }
 
     @Override
+    public int getAmountPages(int amountPublications) {
+        return amountPublications == 0 ? 1 : (amountPublications + getPageSize() - 1) / getPageSize();
+    }
+
+    @Override
     public Optional<Nft> getNFTById(int nftId) {
         return nftDao.getNFTById(nftId);
     }
