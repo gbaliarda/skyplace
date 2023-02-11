@@ -1,6 +1,6 @@
 import { useState } from "react"
 import parse from "parse-link-header"
-import { checkStatus } from "../services/endpoints"
+import { genericFetcher } from '../services/endpoints';
 import { FetchError } from "../types/FetchError"
 
 const usePagination = <T>(requiresSession: boolean = false) => {
@@ -17,9 +17,8 @@ const usePagination = <T>(requiresSession: boolean = false) => {
     if (accessToken === null) accessToken = sessionStorage.getItem("access-token")
     const headers = requiresSession ? { headers: { Authorization: `Bearer ${accessToken}` } } : {}
     setLoading(true)
-    fetch(_url, headers)
-      .then(checkStatus)
-      .then((res) => {
+    genericFetcher([_url, ""], headers, true)
+      .then((res: Response) => {
         if (res.status === 204) return
         setLinks(parse(res.headers.get("Link")))
         setTotal(parseInt(res.headers.get("X-Total-Count") ?? "0"))
