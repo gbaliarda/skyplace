@@ -26,9 +26,9 @@ export const useSellorderUrl = (url: string | undefined) => {
   const {
     data: sellorder,
     error: errors,
+    isLoading: loading,
     mutate,
   } = useSWR<Sellorder, FetchError[]>(url ? [url, ""] : null, genericFetcher)
-  const loading = !errors && !sellorder
   return { sellorder, loading, errors, mutate }
 }
 
