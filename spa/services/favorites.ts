@@ -1,6 +1,7 @@
 import useSWR from "swr"
 import { fetcherWithAuth } from "./endpoints"
 import Nft from "../types/Nft"
+import {FetchError} from "../types/FetchError";
 
 export const useFavoritedNfts = (
   userId: string | number | null,
@@ -10,13 +11,13 @@ export const useFavoritedNfts = (
   const nftIdToString = nftId.map((id) => `nftId=${id}`).join("&")
   const {
     data: favorites,
-    error,
+    error: errors,
     mutate,
-  } = useSWR<Nft[]>(userId ? `/users/${userId}/favorites?${nftIdToString}` : null, (url) =>
+  } = useSWR<Nft[], FetchError[]>(userId ? `/users/${userId}/favorites?${nftIdToString}` : null, (url) =>
     fetcherWithAuth(url, accessToken ?? ""),
   )
-  const loading = !error && !favorites
-  return { favorites, loading, error, mutate }
+  const loading = !errors && !favorites
+  return { favorites, loading, errors, mutate }
 }
 
 export const useFavoritedNft = (
@@ -26,11 +27,11 @@ export const useFavoritedNft = (
 ) => {
   const {
     data: favorite,
-    error,
+    error: errors,
     mutate,
-  } = useSWR<Nft[]>(userId && nftId ? `/users/${userId}/favorites?nftId=${nftId}` : null, (url) =>
+  } = useSWR<Nft[], FetchError[]>(userId && nftId ? `/users/${userId}/favorites?nftId=${nftId}` : null, (url) =>
     fetcherWithAuth(url, accessToken ?? ""),
   )
-  const loading = !error && !favorite
-  return { favorite, loading, error, mutate }
+  const loading = !errors && !favorite
+  return { favorite, loading, errors, mutate }
 }

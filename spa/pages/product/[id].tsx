@@ -26,35 +26,35 @@ const Product = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const { id } = router.query as { id: string }
-  const { nft, loading: loadingNft, error: errorNft, mutate: mutateNft } = useNft(id)
+  const { nft, loading: loadingNft, errors: errorsNft, mutate: mutateNft } = useNft(id)
   const {
     user: owner,
     loading: loadingOwner,
-    error: errorOwner,
+    errors: errorsOwner,
     mutate: mutateOwner,
   } = useUserUrl(nft?.owner.toString())
   const {
     sellorder,
     loading: loadingSellorder,
-    error: errorSellorder,
+    errors: errorsSellorder,
     mutate: mutateSellorder,
   } = useSellorderUrl(nft?.sellorder?.toString())
   const {
     img,
     loading: loadingImage,
-    error: errorImage,
+    errors: errorsImage,
     mutate: mutateImage,
   } = useImageUrl(nft?.image?.toString())
   const {
     recommendations,
     loading: loadingRecommendations,
-    error: errorRecommendations,
+    errors: errorsRecommendations,
   } = useRecommendedNfts(id)
   const { userId: currentUserId, roles, accessToken } = useSession()
   const {
     favorite,
     loading: loadingFavorites,
-    error: errorFavorites,
+    errors: errorsFavorites,
     mutate: mutateFavorites,
   } = useFavoritedNft(currentUserId, nft?.id, accessToken)
 
@@ -100,9 +100,9 @@ const Product = () => {
             <div className="container flex flex-col">
               <div className="flex flex-row ">
                 <div className="flex-col w-1/2">
-                  {loadingImage || errorImage || errorNft ? (
+                  {loadingImage || errorsImage || errorsNft ? (
                     <div className="w-[95%] h-1/2 m-auto mb-8">
-                      {errorImage || errorNft ? (
+                      {errorsImage || errorsNft ? (
                         <div className="flex items-center justify-center h-full">
                           <ErrorBox
                             errorMessage={t("errors.errorLoadingImage")}
@@ -125,7 +125,7 @@ const Product = () => {
                   />
                 </div>
 
-                {errorNft || errorOwner || errorSellorder ? (
+                {errorsNft || errorsOwner || errorsSellorder ? (
                   <div className="flex justify-center md:w-3/5">
                     <ErrorBox
                       errorMessage={t("errors.errorLoadingNft")}
@@ -153,7 +153,7 @@ const Product = () => {
                             </a>
                           </Link>
                           <div className="flex">
-                            {currentUserId !== null && !errorFavorites && (
+                            {currentUserId !== null && !errorsFavorites && (
                               <ProductFavNft
                                 amountFavourites={nft!!.favorites}
                                 isFaved={favorite === undefined ? false : favorite.length > 0}
@@ -280,7 +280,7 @@ const Product = () => {
                   </div>
                 )}
               </div>
-              {!loadingRecommendations && !errorRecommendations && (
+              {!loadingRecommendations && !errorsRecommendations && (
                 <>
                   <span suppressHydrationWarning className="font-medium text-2xl mb-6">
                     {t("product.recommended")}

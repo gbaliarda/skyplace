@@ -23,19 +23,19 @@ const Card = ({ nft, mutateFavs, isFaved }: Props) => {
   const {
     img: image,
     loading: loadingImage,
-    error: errorImage,
+    errors: errorsImage,
     mutate: mutateImage,
   } = useImageUrl(nft?.image?.toString())
   const {
     sellorder,
     loading: loadingSellorder,
-    error: errorSellorder,
+    errors: errorsSellorder,
     mutate: mutateSellorder,
   } = useSellorderUrl(nft?.sellorder?.toString())
   const {
     user: owner,
     loading: loadingOwner,
-    error: errorOwner,
+    errors: errorsOwner,
     mutate: mutateOwner,
   } = useUserUrl(nft?.owner?.toString())
   const handleFavNft = async (ev: BaseSyntheticEvent) => {
@@ -55,7 +55,7 @@ const Card = ({ nft, mutateFavs, isFaved }: Props) => {
     mutateOwner()
   }
 
-  return errorImage || errorSellorder || errorOwner ? (
+  return errorsImage || errorsSellorder || errorsOwner ? (
     <div className="flex items-center justify-center w-80 h-80 rounded-lg group shadow-sm hover:shadow-xl max-w-xs border-slate-300 border">
       <ErrorBox errorMessage={t("errors.errorLoadingCard")} retryAction={reloadCard} />
     </div>

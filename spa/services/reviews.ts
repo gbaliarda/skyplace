@@ -15,7 +15,7 @@ export const useReviews = (url: ReviewsURL) => {
     links,
     total,
     totalPages,
-    error,
+    error: errors,
     fetchData,
   } = usePagination<ReviewsInfo>(false)
 
@@ -29,7 +29,7 @@ export const useReviews = (url: ReviewsURL) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(url)])
 
-  return { reviewsInfo, total, totalPages, links, loading, error, refetchData }
+  return { reviewsInfo, total, totalPages, links, loading, errors, refetchData }
 }
 
 // export const useReviews = (

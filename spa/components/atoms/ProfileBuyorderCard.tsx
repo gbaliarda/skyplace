@@ -20,26 +20,26 @@ export default function ProfileBuyorderCard({ buyorder, status }: Props) {
   const {
     user: bidder,
     loading: loadingBidder,
-    error: errorBidder,
+    errors: errorsBidder,
   } = useUserUrl(buyorder.offeredBy.toString())
   const {
     sellorder,
     loading: loadingSellorder,
-    error: errorSellorder,
+    errors: errorsSellorder,
   } = useSellorderUrl(buyorder.sellorder.toString())
-  const { nft, loading: loadingNft, error: errorNft } = useNftUrl(sellorder?.nft.toString())
-  const { img, loading: loadingImage, error: errorImage } = useImageUrl(nft?.image.toString())
+  const { nft, loading: loadingNft, errors: errorsNft } = useNftUrl(sellorder?.nft.toString())
+  const { img, loading: loadingImage, errors: errorsImage } = useImageUrl(nft?.image.toString())
 
-  if (errorBidder) return <h1>Error loading Owner of nft</h1>
+  if (errorsBidder) return <h1>Error loading Owner of nft</h1>
   if (loadingBidder) return <h1>Loading Owner of nftr...</h1>
 
-  if (errorSellorder) return <h1>Error loading Sellorder of buyorder</h1>
+  if (errorsSellorder) return <h1>Error loading Sellorder of buyorder</h1>
   if (loadingSellorder) return <h1>Loading sellorder of buyorder...</h1>
 
-  if (errorNft) return <h1>Error loading Nft of buyorder</h1>
+  if (errorsNft) return <h1>Error loading Nft of buyorder</h1>
   if (loadingNft) return <h1>Loading Nft of buyorder...</h1>
 
-  if (errorImage) return <h1>Error loading Image of nft</h1>
+  if (errorsImage) return <h1>Error loading Image of nft</h1>
   if (loadingImage) return <h1>Loading Image of nftr...</h1>
 
   const imageSrc = getResourceUrl(`data:image/jpg;base64,${img?.image.toString()}`)

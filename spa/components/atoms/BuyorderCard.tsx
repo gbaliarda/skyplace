@@ -20,17 +20,17 @@ interface Props {
 
 const BuyorderCard = ({ buyorder, owner, index, url, refetchData }: Props) => {
   const { t } = useTranslation()
-  const { user: offerer, loading, error } = useUserUrl(buyorder.offeredBy.toString())
+  const { user: offerer, loading, errors } = useUserUrl(buyorder.offeredBy.toString())
   const {
     sellorder,
     loading: sellOrderLoading,
-    error: sellOrderError,
+    errors: sellOrderError,
   } = useSellorderUrl(buyorder.sellorder.toString())
   const { accessToken, userId } = useSession()
   const { pendingBuyOrder, mutate: mutatePendingBuyOrder } = usePendingBuyOrder(sellorder?.id)
   const { user: userPendingBuyOrder } = useUserUrl(pendingBuyOrder?.offeredBy?.toString())
 
-  if (error || sellOrderError) {
+  if (errors || sellOrderError) {
     return (
       <div suppressHydrationWarning className="flex gap-1 items-center my-2">
         <FaceFrownIcon className="w-6 h-6" />
@@ -78,9 +78,8 @@ const BuyorderCard = ({ buyorder, owner, index, url, refetchData }: Props) => {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       refetchData(url)
-    } catch (e: any) {
-      console.log(e.name, e.message)
-      Swal.fire({ title: t("errors.removeOffer"), text: e.message, icon: "error" })
+    } catch (errs: any) {
+      Swal.fire({ title: t("errors.removeOffer"), text: errs[0].message, icon: "error" })
     }
   }
 
@@ -92,9 +91,8 @@ const BuyorderCard = ({ buyorder, owner, index, url, refetchData }: Props) => {
       })
       refetchData(url)
       mutatePendingBuyOrder()
-    } catch (e: any) {
-      console.log(e.name, e.message)
-      Swal.fire({ title: t("errors.acceptOffer"), text: e.message, icon: "error" })
+    } catch (errs: any) {
+      Swal.fire({ title: t("errors.acceptOffer"), text: errs[0].message, icon: "error" })
     }
   }
 

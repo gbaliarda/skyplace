@@ -68,7 +68,9 @@
     "sellNft": "Error al poner a la venta el NFT",
     "updateSellorder": "Error al actualizar la orden de venta",
     "createNft": "Error al crear NFT",
-    "createReview": "Error al crear la reseña"
+    "createReview": "Error al crear la reseña",
+    "invalidField": "El campo {{ field }} es inválido",
+    "invalidFields": "Los campos {{ fields }} son inválidos"
   },
   "buyorders": {
     "ALL": "Todas",
@@ -258,7 +260,6 @@
     "createAccount": "Crea tu cuenta",
     "createTo": "Crea una cuenta para comprar y vender nfts",
     "error": "Error al crear usuario",
-    "invalidFieldError": "El campo {{ field }} es inválido",
     "email": "Correo electrónico",
     "walletAddress": "Dirección de la billetera",
     "walletChain": "Chain de la billetera",

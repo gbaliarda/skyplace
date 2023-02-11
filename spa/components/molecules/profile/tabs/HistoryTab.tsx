@@ -17,7 +17,7 @@ export default function HistoryTab({ userId }: Props) {
     baseUrl: `${api}/users/${userId}/purchases?page=1`,
   } as PurchasesURL
   const [url, setUrl] = useState<PurchasesURL>(defaultURL)
-  const { purchases, links, totalPages, loading, error, refetchData } = usePurchases(url)
+  const { purchases, links, totalPages, loading, errors, refetchData } = usePurchases(url)
   const updateUrl = useCallback(
     (_url: string) => {
       setUrl({
@@ -28,7 +28,7 @@ export default function HistoryTab({ userId }: Props) {
     [url],
   )
 
-  if (error)
+  if (errors)
     return (
       <ErrorBox errorMessage={t("errors.errorLoadingTab")} retryAction={() => refetchData(url)} />
     )

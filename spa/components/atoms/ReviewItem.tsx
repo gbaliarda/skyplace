@@ -20,9 +20,9 @@ export default function ReviewItem({
   const reviewerId = parseInt(review.reviewer.toString().split("/").slice(-1)[0])
   const reviewerProfileUrl: string = `/profile/${reviewerId}`
 
-  const { user: reviewer, loading: loadingReviewer, error: errorReviewer } = useUser(reviewerId)
+  const { user: reviewer, loading: loadingReviewer, errors: errorsReviewer } = useUser(reviewerId)
 
-  if (errorReviewer) return <h1>Error loading reviewer of review with id {review.id}</h1>
+  if (errorsReviewer) return <h1>Error loading reviewer of review with id {review.id}</h1>
   if (loadingReviewer) return <h1>Loading reviewer...</h1>
 
   const auxFilled = []

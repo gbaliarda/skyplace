@@ -13,7 +13,7 @@ export const usePurchases = (url: PurchasesURL) => {
     loading,
     links,
     totalPages,
-    error,
+    error: errors,
     fetchData,
   } = usePagination<Purchase[]>(true)
 
@@ -27,7 +27,7 @@ export const usePurchases = (url: PurchasesURL) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(url)])
 
-  return { purchases, totalPages, links, loading, error, refetchData }
+  return { purchases, totalPages, links, loading, errors, refetchData }
 }
 
 // export const usePurchases = (

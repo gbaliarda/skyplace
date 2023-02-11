@@ -29,9 +29,9 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
       priceRef.current!!.value = "0"
       setOffer(0)
       refetchData(url) // FIXME: this will only work if the user is on the first page of offers
-    } catch (e: any) {
-      console.log(e.name, e.message)
-      Swal.fire({ title: t("product.makeOfferError"), text: e.message, icon: "error" })
+    } catch (errs: any) {
+      console.log(errs)
+      Swal.fire({ title: t("product.makeOfferError"), text: errs[0].message, icon: "error" })
     }
     setLoading(false)
   }

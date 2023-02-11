@@ -22,7 +22,7 @@ export default function ReviewsTab({ userId }: Props) {
     baseUrl: `${api}/users/${userId}/reviews?page=1`,
   } as ReviewsURL
   const [reviewsUrl, setReviewsUrl] = useState<ReviewsURL>(defaultURL)
-  const { reviewsInfo, links, loading, total, totalPages, error, refetchData } =
+  const { reviewsInfo, links, loading, total, totalPages, errors, refetchData } =
     useReviews(reviewsUrl)
   const updateUrl = useCallback(
     (_url: string) => {
@@ -37,7 +37,7 @@ export default function ReviewsTab({ userId }: Props) {
   const {
     total: totalReviewsBetweenUsers,
     loading: loadingReviewsBetweenUsers,
-    error: errorReviewsBetweenUsers,
+    errors: errorsReviewsBetweenUsers,
     refetchData: refetchDataBetweenUsers,
   } = useReviews({
     baseUrl: `${api}/users/${userId}/reviews?page=1`,
@@ -47,7 +47,7 @@ export default function ReviewsTab({ userId }: Props) {
   const {
     totalPages: totalPurchasesPagesBetweenUsers,
     loading: loadingPurchasesBetweenUsers,
-    error: errorPurchasesBetweenUsers,
+    errors: errorsPurchasesBetweenUsers,
   } = usePurchases({
     baseUrl: `${api}/users/${userId}/purchases?page=1`,
     purchaser: loggedInUser ?? undefined,
@@ -64,17 +64,17 @@ export default function ReviewsTab({ userId }: Props) {
   const auxEmpty = ["e", "e", "e", "e"]
   const newReviewPath = `/review/${userId}/create`
 
-  if (error)
+  if (errors)
     return <ErrorBox errorMessage={t("errors.errorLoadingTab")} retryAction={reloadReviews} />
   if (loading) return <Loader className="grow flex items-center justify-center mb-32" />
 
   /* TODO: Add error and reload on checking */
 
   if (loadingReviewsBetweenUsers) return <span>CARGANDO REVIEWS</span>
-  if (errorReviewsBetweenUsers) return <span>ERROR REVIEWS</span>
+  if (errorsReviewsBetweenUsers) return <span>ERROR REVIEWS</span>
 
   if (loadingPurchasesBetweenUsers) return <span>CARGANDO PURCHASES</span>
-  if (errorPurchasesBetweenUsers) return <span>ERROR PURCHASES</span>
+  if (errorsPurchasesBetweenUsers) return <span>ERROR PURCHASES</span>
 
   return (
     <>

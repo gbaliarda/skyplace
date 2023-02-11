@@ -1,6 +1,8 @@
 import { FetchError } from "../types/FetchError"
 import USErrorCodes from "../i18n/translations.en.json"
 import ESErrorCodes from "../i18n/translations.es.json"
+import Error from "next/error";
+import ApiError from "../types/ApiError";
 
 const errorTranslations = {
   en: { ...USErrorCodes.errorCodes },
@@ -34,7 +36,23 @@ export const checkStatus = async (res: Response) => {
     const userLang = errorTranslations[navigator.language.substring(0, 2)]
       ? navigator.language.substring(0, 2)
       : "en"
-    const error = new Error() as FetchError
+    // const error = new Error() as FetchError
+    let parsedErrors: FetchError[] = []
+    errors.forEach((apiError: ApiError) => {
+      // @ts-ignore
+      const auxError = new Error() as FetchError
+      auxError.name = res.statusText
+      // @ts-ignore
+      auxError.message = errorTranslations[userLang][apiError.code] ?? (errorTranslations[userLang][res.status] ?? "Error :(")
+      auxError.cause = {
+        statusCode: res.status,
+        errorCode: apiError.code,
+        description: apiError.title,
+        field: apiError.source?.pointer
+      }
+      parsedErrors.push(auxError)
+    })
+    /*
     error.name = res.statusText
     // @ts-ignore
     error.message = errorTranslations[userLang][errors[0].code] ?? (errorTranslations[userLang][res.status] ?? "Error :(")
@@ -44,7 +62,9 @@ export const checkStatus = async (res: Response) => {
       description: errors[0].title,
       field: errors[0].source.pointer
     }
-    throw error
+     */
+    throw parsedErrors
+    // throw error
   }
   return res
 }
@@ -60,9 +80,9 @@ export const genericFetcher: any = (
     .then(checkStatus)
     // Do not throw if the response's status is 204 (no content, body empty)
     .then((res) => (withHeaders ? res : res.json().catch(() => {})))
-    .catch((e: FetchError) => {
+    .catch((errs: FetchError[]) => {
       // JWT expired
-      if (e.cause?.errorCode === "14") {
+      if (errs.length === 1 && errs[0].cause?.errorCode == "14") {
         // Access token expired, try to refresh it
         if (retryWithRefreshToken) {
           const refreshToken =
@@ -84,7 +104,7 @@ export const genericFetcher: any = (
         sessionStorage.removeItem("refresh-token")
         window.location.replace("/login")
       } else {
-        throw e
+        throw errs
       }
     })
 

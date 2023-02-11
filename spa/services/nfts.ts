@@ -43,23 +43,23 @@ export const useNfts = (url: NftsURL) => {
 export const useRecommendedNfts = (nftId: string | number) => {
   const {
     data: recommendations,
-    error,
+    error: errors,
     mutate,
-  } = useSWR<Nft[]>(nftId ? `/nfts/${nftId}/recommendations` : null, fetcher)
-  const loading = !error && !recommendations
-  return { recommendations, loading, error, mutate }
+  } = useSWR<Nft[], FetchError[]>(nftId ? `/nfts/${nftId}/recommendations` : null, fetcher)
+  const loading = !errors && !recommendations
+  return { recommendations, loading, errors, mutate }
 }
 
 export const useNft = (id: string | number) => {
   // second generic is error type
-  const { data: nft, error, mutate } = useSWR<Nft, FetchError>(id ? `/nfts/${id}` : null, fetcher)
-  const loading = !error && !nft
-  return { nft, loading, error, mutate }
+  const { data: nft, error: errors, mutate } = useSWR<Nft, FetchError[]>(id ? `/nfts/${id}` : null, fetcher)
+  const loading = !errors && !nft
+  return { nft, loading, errors, mutate }
 }
 
 export const useNftUrl = (url: string | undefined) => {
   // second generic is error type, which will be the statusCode
-  const { data: nft, error, mutate } = useSWR<Nft>([url, ""], genericFetcher)
-  const loading = !error && !nft
-  return { nft, loading, error, mutate }
+  const { data: nft, error: errors, mutate } = useSWR<Nft, FetchError[]>([url, ""], genericFetcher)
+  const loading = !errors && !nft
+  return { nft, loading, errors, mutate }
 }

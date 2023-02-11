@@ -33,10 +33,10 @@ export default function CreateReview() {
   const parsedId = parseInt(id)
   const { userId, accessToken } = useSession()
 
-  const { user: reviewee, loading: loadingReviewee, error: errorReviewee } = useUser(parsedId)
+  const { user: reviewee, loading: loadingReviewee, errors: errorsReviewee } = useUser(parsedId)
 
   if (loadingReviewee) return <span>LOADING REVIEWEE</span>
-  if (errorReviewee) return <span>ERROR REVIEWEE</span>
+  if (errorsReviewee) return <span>ERROR REVIEWEE</span>
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -46,8 +46,12 @@ export default function CreateReview() {
       await sendJson("POST", `/users/${parsedId}/reviews`, { ...data }, accessToken)
       await Swal.fire({ title: t("reviews.createSuccess"), icon: "success" })
       router.replace(`/profile/${parsedId}?tab=reviews`)
-    } catch (err: any) {
-      await Swal.fire({ title: t("errors.createReview"), text: err.message, icon: "error" })
+    } catch (errs: any) {
+      await Swal.fire({
+        title: t("errors.createReview"),
+        text: t("errors.invalidField", { field: errs[0].cause.field }),
+        icon: "error",
+      })
     }
   }
 

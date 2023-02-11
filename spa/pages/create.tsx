@@ -67,7 +67,7 @@ export default function Create() {
     fd.append("model", JSON.stringify(body))
 
     try {
-      fetcher(
+      await fetcher(
         "/nfts",
         {
           method: "POST",
@@ -83,8 +83,12 @@ export default function Create() {
           router.push(`/product/${url.split("/").slice(-1)}`)
         })
       })
-    } catch (err: any) {
-      await Swal.fire({ title: t("errors.createNft"), text: err.message, icon: "error" })
+    } catch (errs: any) {
+      await Swal.fire({
+        title: t("errors.createNft"),
+        text: t("errors.invalidField", { field: errs[0].cause.field }),
+        icon: "error",
+      })
     }
   }
 

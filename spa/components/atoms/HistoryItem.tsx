@@ -10,27 +10,27 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
   const {
     img: image,
     loading: loadingImage,
-    error: errorImage,
+    errors: errorsImage,
   } = useImageUrl(purchase?.nft.image.toString())
 
   const {
     user: seller,
     loading: loadingSeller,
-    error: errorSeller,
+    errors: errorsSeller,
   } = useUserUrl(purchase.seller.toString())
   const {
     user: buyer,
     loading: loadingBuyer,
-    error: errorBuyer,
+    errors: errorsBuyer,
   } = useUserUrl(purchase.buyer.toString())
 
-  if (errorImage) return <h1>Error loading Image of Nft with id {purchase.nft.id}</h1>
+  if (errorsImage) return <h1>Error loading Image of Nft with id {purchase.nft.id}</h1>
   if (loadingImage) return <h1>Loading Image...</h1>
 
-  if (errorSeller) return <h1>Error loading seller user with {seller?.id}</h1>
+  if (errorsSeller) return <h1>Error loading seller user with {seller?.id}</h1>
   if (loadingSeller && seller !== undefined) return <h1>Loading sellerUser...</h1>
 
-  if (errorBuyer) return <h1>Error loading buyer user with {buyer?.id}</h1>
+  if (errorsBuyer) return <h1>Error loading buyer user with {buyer?.id}</h1>
   if (loadingBuyer && buyer !== undefined) return <h1>Loading Buyer User...</h1>
 
   const sold = userId === seller?.id

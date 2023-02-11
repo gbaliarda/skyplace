@@ -11,6 +11,7 @@ import useForm from "../hooks/useForm"
 import FormSelect from "../components/atoms/forms/FormSelect"
 import { createUser, loginUser } from "../services/users"
 import { getResourceUrl } from "../services/endpoints"
+import { FetchError } from "../types/FetchError"
 
 interface FormData {
   email: string
@@ -39,8 +40,8 @@ export default function Register() {
     try {
       loginUser(data.email, data.password)
       router.push("/")
-    } catch (err: any) {
-      Swal.fire({ title: t("login.signInError"), text: err.message, icon: "error" })
+    } catch (errs: any) {
+      Swal.fire({ title: t("login.signInError"), text: errs[0].message, icon: "error" })
     }
   }
 
@@ -49,10 +50,18 @@ export default function Register() {
     try {
       await createUser(data)
       homeRedirect()
-    } catch (err: any) {
+    } catch (errs: any) {
+      const errorMessage: string =
+        errs.length === 1
+          ? t("errors.invalidField", { field: errs[0].cause.field })
+          : t("errors.invalidFields", {
+              fields: errs.map((err: FetchError) => {
+                return err.cause.field
+              }),
+            })
       Swal.fire({
         title: t("register.error"),
-        text: t("register.invalidFieldError", { field: err.cause.field }),
+        text: errorMessage,
         icon: "error",
       })
     }

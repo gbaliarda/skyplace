@@ -5,6 +5,7 @@ import User from "../types/User"
 import Nft from "../types/Nft"
 import Buyorder from "../types/Buyorder"
 import usePagination from "../hooks/usePagination"
+import {FetchError} from "../types/FetchError";
 
 export type BuyordersURL = {
   baseUrl: string
@@ -17,15 +18,15 @@ export type FavoritesURL = {
 }
 
 export const useUser = (id: number | undefined) => {
-  const { data: user, error, mutate } = useSWR<User, number>(id ? `/users/${id}` : null, fetcher)
-  const loading = !error && !user
-  return { user, loading, error, mutate }
+  const { data: user, error: errors, mutate } = useSWR<User, FetchError[]>(id ? `/users/${id}` : null, fetcher)
+  const loading = !errors && !user
+  return { user, loading, errors, mutate }
 }
 
 export const useUserUrl = (url: string | undefined) => {
-  const { data: user, error, mutate } = useSWR<User>(url ? [url, ""] : null, genericFetcher)
-  const loading = !error && !user
-  return { user, loading, error, mutate }
+  const { data: user, error: errors, mutate } = useSWR<User, FetchError[]>(url ? [url, ""] : null, genericFetcher)
+  const loading = !errors && !user
+  return { user, loading, errors, mutate }
 }
 
 export const useFavorites = (url: FavoritesURL) => {

@@ -14,7 +14,7 @@ interface Props {
 
 export default function ProfileDescription({ userId }: Props) {
   const { t } = useTranslation()
-  const { user, loading: loadingUser, error: errorUser, mutate: mutateUser } = useUser(userId)
+  const { user, loading: loadingUser, errors: errorsUser, mutate: mutateUser } = useUser(userId)
   const defaultURL = {
     baseUrl: `${api}/users/${userId}/reviews?page=1`,
   } as ReviewsURL
@@ -22,7 +22,7 @@ export default function ProfileDescription({ userId }: Props) {
     reviewsInfo,
     total,
     loading: loadingReviews,
-    error: errorReviews,
+    errors: errorsReviews,
     refetchData,
   } = useReviews(defaultURL)
 
@@ -44,7 +44,7 @@ export default function ProfileDescription({ userId }: Props) {
     }
   }
 
-  if (errorUser || errorReviews)
+  if (errorsUser || errorsReviews)
     return (
       <div className="mt-10">
         <ErrorBox

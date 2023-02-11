@@ -45,7 +45,7 @@ export default function Sell() {
   }
   const { t } = useTranslation()
   const { id } = router.query as { id: string }
-  const { nft, error } = useNft(id)
+  const { nft, errors } = useNft(id)
   const [data, updateFields] = useForm<FormData>(INITIAL_DATA)
   const { accessToken } = useSession()
   const [loading, setLoading] = useState(false)
@@ -56,11 +56,11 @@ export default function Sell() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, price])
 
-  if (error)
+  if (errors !== undefined && errors.length > 1)
     return (
       <>
         <Navbar />
-        <Error statusCode={error.cause.statusCode} />
+        <Error statusCode={errors[0].cause.statusCode} />
       </>
     )
 
@@ -74,10 +74,13 @@ export default function Sell() {
       const endpoint = update ? `/sellorders/${update}` : "/sellorders"
       await sendJson(method, endpoint, { ...data, nftId: id }, accessToken)
       router.push(`/product/${id}`)
-    } catch (err: any) {
-      console.log(err.name, err.message)
+    } catch (errs: any) {
       const errorTitle = update ? t("errors.updateSellorder") : t("errors.sellNft")
-      Swal.fire({ title: errorTitle, text: err.message, icon: "error" })
+      Swal.fire({
+        title: errorTitle,
+        text: t("errors.invalidField", { field: errs[0].cause.field }),
+        icon: "error",
+      })
     }
     setLoading(false)
   }

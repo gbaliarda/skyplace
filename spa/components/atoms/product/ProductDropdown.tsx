@@ -44,9 +44,9 @@ const ProductDropdown = ({ nft }: Props) => {
         Swal.fire({ title: t("product.deleteSellOrderSuccess"), icon: "success" })
         mutate()
       }
-    } catch (e: any) {
-      console.log(e.name, e.message)
-      Swal.fire({ title: t("product.deleteSellOrderError"), text: e.message, icon: "error" })
+    } catch (errs: any) {
+      console.log(errs)
+      Swal.fire({ title: t("product.deleteSellOrderError"), text: errs[0].message, icon: "error" })
     }
   }
 
