@@ -248,7 +248,7 @@
     "noReviews": "El usuario todavía no tiene reseñas",
     "addReview": "Añadir reseña",
     "historyRemoved": "(eliminado de skyplace)",
-    "historyerrorBoughtFrom": "no se pudo comprar a",
+    "historyErrorBoughtFrom": "no se pudo comprar a",
     "historyErrorSoldTo": "no se pudo vender a",
     "historyFor": "por {{price}} ETH",
     "deleteReview": "Borrar reseña",

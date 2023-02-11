@@ -3,9 +3,12 @@ import Link from "next/link"
 import Purchase from "../../types/Purchase"
 import { useImageUrl } from "../../services/images"
 import { useUserUrl } from "../../services/users"
+import { epochToIntlDate } from '../../utils/epochToIntlDate';
 
 export default function HistoryItem({ purchase, userId }: { purchase: Purchase; userId: number }) {
   const { t } = useTranslation()
+
+  const purchaseDate = epochToIntlDate(new Date(purchase.buyDate).getTime() / 1000)
 
   const {
     img: image,
@@ -160,7 +163,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
             )}
             {purchase.status === "CANCELLED" && sold && (
               <>
-                {t("profile:historyErrorSoldTo")}
+                {t("profile.historyErrorSoldTo")}
                 <Link href={`/profile/${seller?.id}`}>
                   <a className={usernameClasses}>{seller?.username}</a>
                 </Link>
@@ -168,7 +171,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
             )}
             {t("profile.historyFor", { price: purchase.price })}
           </div>
-          <span className="text-jacarta-300 block text-xs">{purchase.buyDate.toString()}</span>
+          <span className="text-jacarta-300 block text-xs">{purchaseDate}</span>
         </div>
 
         <div className="border-jacarta-100 ml-auto rounded-full border p-3">{renderIncons()}</div>
