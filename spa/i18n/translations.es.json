@@ -12,7 +12,8 @@
     "search": "Buscar nfts o colecciones",
     "collection": "Colección",
     "username": "Usuario",
-    "searchAlt": "buscar"
+    "searchAlt": "buscar",
+    "currentUser": "Sesión iniciada como"
   },
   "sell": {
     "publish": "Publicar",

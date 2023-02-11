@@ -12,7 +12,8 @@
     "search": "Search nfts or collections",
     "collection": "Collection",
     "username": "Username",
-    "searchAlt": "search"
+    "searchAlt": "search",
+    "currentUser": "Logged in as"
   },
   "sell": {
     "publish": "Publish",

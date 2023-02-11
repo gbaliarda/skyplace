@@ -12,7 +12,7 @@ import useSession from "../../hooks/useSession"
 
 const NavbarDropdown = () => {
   const router = useRouter()
-  const { userId } = useSession()
+  const { userId, user } = useSession()
   const { t } = useTranslation()
   const isAuthenticated: boolean = userId !== null
 
@@ -43,10 +43,13 @@ const NavbarDropdown = () => {
       </label>
       <ul
         tabIndex={0}
-        className="dropdown-content w-40 menu mt-3 border border-gray-300 text-sm divide-y divide-gray-300 shadow bg-base-100 rounded-sm"
+        className="dropdown-content w-48 menu mt-3 border border-gray-300 text-sm divide-y divide-gray-300 shadow bg-base-100 rounded-sm"
       >
         {isAuthenticated ? (
           <>
+            <p suppressHydrationWarning className="py-2 px-4 text-center">
+              {t("navbar.currentUser")} <b className="text-cyan-700">{user}</b>
+            </p>
             <li>
               <Link href={userProfileUrl} className="py-2 px-4">
                 <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none">
