@@ -22,7 +22,7 @@ const SearchBar = () => {
 
   const handleSubmit = (e: BaseSyntheticEvent) => {
     e.preventDefault()
-    router.push(`explore?searchFor=${searchFilter.searchFor}&search=${searchFilter.search}`)
+    router.push(`/explore?searchFor=${searchFilter.searchFor}&search=${searchFilter.search}`)
   }
 
   return (
