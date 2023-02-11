@@ -52,34 +52,34 @@ export const checkStatus = async (res: Response) => {
       }
       parsedErrors.push(auxError)
     })
-    /*
-    error.name = res.statusText
-    // @ts-ignore
-    error.message = errorTranslations[userLang][errors[0].code] ?? (errorTranslations[userLang][res.status] ?? "Error :(")
-    error.cause = {
-      statusCode: res.status,
-      errorCode: errors[0].code,
-      description: errors[0].title,
-      field: errors[0].source.pointer
-    }
-     */
+
     throw parsedErrors
-    // throw error
   }
   return res
 }
 
 // Docs: https://swr.vercel.app/docs/error-handling
-export const genericFetcher: any = (
+export const genericFetcher = (
   [baseUrl, resource]: [string, string],
   options?: RequestInit,
   withHeaders: boolean = false,
   retryWithRefreshToken: boolean = true,
-) =>
+): any =>
   fetch(baseUrl + resource, options)
     .then(checkStatus)
     // Do not throw if the response's status is 204 (no content, body empty)
-    .then((res) => (withHeaders ? res : res.json().catch(() => {})))
+    .then((res) => {
+      // update accessToken if a refresh was requested
+      const accessToken = res.headers.get("X-Access-Token")
+      if (accessToken) {
+        if (localStorage.getItem("access-token")) {
+          localStorage.setItem("access-token", accessToken)
+        } else {
+          sessionStorage.setItem("access-token", accessToken)
+        }
+      }
+      return withHeaders ? res : res.json().catch(() => {})
+    })
     .catch((errs: FetchError[]) => {
       // JWT expired
       if (errs.length === 1 && errs[0].cause?.errorCode == "14") {

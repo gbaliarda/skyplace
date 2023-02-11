@@ -7,11 +7,13 @@ import {
 import { UserIcon, HeartIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { useTranslation } from "next-export-i18n"
 import useSession from "../../hooks/useSession"
 
 const NavbarDropdown = () => {
   const router = useRouter()
-  const { userId } = useSession()
+  const { userId, user } = useSession()
+  const { t } = useTranslation()
   const isAuthenticated: boolean = userId !== null
 
   let userProfileUrl = ""
@@ -41,49 +43,53 @@ const NavbarDropdown = () => {
       </label>
       <ul
         tabIndex={0}
-        className="dropdown-content menu mt-3 border border-gray-300 text-sm divide-y divide-gray-300 shadow bg-base-100 rounded-sm"
+        className="dropdown-content w-48 menu mt-3 border border-gray-300 text-sm divide-y divide-gray-300 shadow bg-base-100 rounded-sm"
       >
         {isAuthenticated ? (
           <>
+            <p suppressHydrationWarning className="py-2 px-4 text-center">
+              {t("navbar.currentUser")} <b className="text-cyan-700">{user}</b>
+            </p>
             <li>
               <Link href={userProfileUrl} className="py-2 px-4">
-                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none">
                   <UserIcon className="h-4 w-4" />
-                  Profile
+                  {t("navbar.profile")}
                 </a>
               </Link>
             </li>
             <li>
               <Link href={userBuyordersUrl} className="py-2 px-4">
-                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none">
                   <BanknotesIcon className="h-4 w-4" />
-                  Bidding
+                  {t("navbar.bidding")}
                 </a>
               </Link>
             </li>
             <li>
               <Link href={userSellordersUrl} className="py-2 px-4">
-                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none">
                   <ShoppingCartIcon className="h-4 w-4" />
-                  Selling
+                  {t("navbar.selling")}
                 </a>
               </Link>
             </li>
             <li>
               <Link href={userFavoritesUrl} className="py-2 px-4">
-                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none">
                   <HeartIcon className="h-4 w-4" />
-                  Favorited
+                  {t("navbar.favorites")}
                 </a>
               </Link>
             </li>
             <li>
               <button
+                suppressHydrationWarning
                 onClick={logout}
                 className="text-sm hover:bg-gray-600 hover:text-white transition-none"
               >
                 <ArrowRightOnRectangleIcon className="h-4 w-4" />
-                Logout
+                {t("navbar.logout")}
               </button>
             </li>
           </>
@@ -91,15 +97,15 @@ const NavbarDropdown = () => {
           <>
             <li>
               <Link href="/login" className="py-2 px-4">
-                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	">
-                  Log in
+                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	">
+                  {t("navbar.login")}
                 </a>
               </Link>
             </li>
             <li>
               <Link href="/register" className="py-2 px-4">
-                <a className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	">
-                  Sign up
+                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	">
+                  {t("navbar.signUp")}
                 </a>
               </Link>
             </li>

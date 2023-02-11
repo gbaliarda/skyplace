@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.BuyOrder;
+import ar.edu.itba.paw.model.StatusBuyOrder;
 
 import javax.ws.rs.core.UriInfo;
 import java.math.BigDecimal;
@@ -13,7 +14,7 @@ public class BuyOrderDto {
     private URI sellorder;
     private URI offeredBy;
     private URI self;
-
+    private StatusBuyOrder status;
     private final static String USERS_URI_PREFIX = "users";
     private final static String SELLORDERS_URI_PREFIX = "sellorders";
     private final static String BUYORDERS_URI_PREFIX = "buyorders";
@@ -32,6 +33,8 @@ public class BuyOrderDto {
                 .path(String.valueOf(buyOrder.getOfferedBy().getId())).build();
 
         buyOrderDto.amount = buyOrder.getAmount();
+
+        buyOrderDto.status = buyOrder.getStatus();
 
         return buyOrderDto;
     }
@@ -66,5 +69,13 @@ public class BuyOrderDto {
 
     public void setSelf(URI self) {
         this.self = self;
+    }
+
+    public StatusBuyOrder getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusBuyOrder status) {
+        this.status = status;
     }
 }

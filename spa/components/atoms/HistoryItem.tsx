@@ -165,7 +165,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
               <>
                 {t("profile.historyErrorSoldTo")}
                 <Link href={`/profile/${seller?.id}`}>
-                  <a className={usernameClasses}>{seller?.username}</a>
+                  <a className={usernameClasses}>{buyer?.username}</a>
                 </Link>
               </>
             )}
