@@ -45,7 +45,7 @@ export default function ProfileDescription({ userId }: Props) {
     }
   }
 
-  if (errorsUser?.cause?.statusCode === 404 || errorsReviews?.cause?.statusCode === 404) {
+  if ((errorsUser && errorsUser[0].cause?.statusCode === 404) || (errorsReviews && errorsReviews[0].cause?.statusCode === 404)) {
     return <ErrorPage errorCode={404} errorTitle={t("404.pageNotFound")} errorDetail={t("404.check")} />
   }
 

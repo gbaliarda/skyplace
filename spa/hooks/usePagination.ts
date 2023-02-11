@@ -9,7 +9,7 @@ const usePagination = <T>(requiresSession: boolean = false) => {
   const [links, setLinks] = useState<parse.Links | null>()
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
-  const [error, setError] = useState<FetchError>()
+  const [error, setError] = useState<FetchError[]>()
 
   const fetchData = (_url: string) => {
     if (!_url || _url === "") return

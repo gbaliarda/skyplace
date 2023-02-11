@@ -52,19 +52,8 @@ export const checkStatus = async (res: Response) => {
       }
       parsedErrors.push(auxError)
     })
-    /*
-    error.name = res.statusText
-    // @ts-ignore
-    error.message = errorTranslations[userLang][errors[0].code] ?? (errorTranslations[userLang][res.status] ?? "Error :(")
-    error.cause = {
-      statusCode: res.status,
-      errorCode: errors[0].code,
-      description: errors[0].title,
-      field: errors[0].source.pointer
-    }
-     */
+
     throw parsedErrors
-    // throw error
   }
   return res
 }

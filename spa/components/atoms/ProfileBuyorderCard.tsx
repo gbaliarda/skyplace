@@ -70,11 +70,6 @@ export default function ProfileBuyorderCard({ buyorder, status }: Props) {
                   : t("buyorders.bidded", { amount: buyorder.amount })}
               </div>
               <div suppressHydrationWarning className="text-sm pt-3">
-                {/*
-                  <c:when test="${param.isMySale == true}">
-                    <spring:message code="buyoffer.pendingDate" arguments="${param.offerDate}" />
-                  </c:when>
-                  */}
                 {status === "NEW" ? t("buyorders.pending") : t("buyorders.accepted")}
               </div>
             </div>
