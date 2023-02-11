@@ -4,6 +4,7 @@ export interface FetchError {
   cause: {
     statusCode: number
     errorCode?: string
+    field?: string
     description: string
   }
 }

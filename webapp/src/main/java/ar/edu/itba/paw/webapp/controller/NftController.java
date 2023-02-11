@@ -4,9 +4,11 @@ import ar.edu.itba.paw.model.Nft;
 import ar.edu.itba.paw.service.FavoriteService;
 import ar.edu.itba.paw.service.NftService;
 import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.webapp.exceptions.InvalidNftFormException;
 import ar.edu.itba.paw.webapp.dto.NftDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateNftForm;
+import ar.edu.itba.paw.webapp.helpers.NftFormValidator;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.ws.rs.*;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -80,7 +83,7 @@ public class NftController {
     @Consumes({ MediaType.MULTIPART_FORM_DATA, })
     @POST
     public Response createNft(@ModelAttribute @FormDataParam("model") FormDataBodyPart model,
-                              @FormDataParam("image") InputStream imageInput) {
+                              @FormDataParam("image") InputStream imageInput) throws InvalidNftFormException {
         if(model == null)
             throw new NoBodyException();
         if(!userService.getCurrentUser().isPresent())
@@ -89,6 +92,7 @@ public class NftController {
         try {
             model.setMediaType(MediaType.APPLICATION_JSON_TYPE);
             CreateNftForm nftForm = model.getValueAs(CreateNftForm.class);
+            NftFormValidator.validateForm(nftForm);
             byte[] image = IOUtils.toByteArray(imageInput);
             final Nft newNft = nftService.create(nftForm.getNftId(), nftForm.getContractAddr(), nftForm.getName(), nftForm.getChain(), image, ownerId, nftForm.getCollection(), nftForm.getDescription());
             // appends the new ID to the path of this route (/nfts)

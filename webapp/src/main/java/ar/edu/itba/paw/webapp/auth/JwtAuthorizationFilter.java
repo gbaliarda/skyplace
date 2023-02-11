@@ -62,14 +62,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken token;
         Instant now = Instant.now();
 
-        String accessToken;
-        String refreshToken;
         String prefix = "";
         String credentials = "";
-
-        Optional<User> maybeUser;
-
-        Map<String, Object> claimsMap;
 
         String headerContent = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -80,6 +74,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 credentials = contentInfo[1];
             }
         }
+
         switch (prefix) {
             case USERAUTH_PREFIX:
                 // validate user credentails and, if valid, return new jwt auth and refresh tokens
@@ -88,78 +83,69 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 try {
                     token = userDetailsService.restLogin(userPass[0], userPass[1]);
                 } catch (UsernameNotFoundException e) {
-                    final Gson gson = new Gson();
-                    final ErrorDto dto = ErrorDto.fromGenericException(e, HttpServletResponse.SC_BAD_REQUEST, "21");
-                    final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));
-                    response.setContentType(MediaType.APPLICATION_JSON);
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    response.getWriter().print(gson.toJson(errorList));
-                    response.getWriter().flush();
+                    setErrorResponse(response, e, HttpServletResponse.SC_BAD_REQUEST, "21");
                     return;
                 }
 
                 if (token.isAuthenticated())
                     SecurityContextHolder.getContext().setAuthentication(token);
 
-                claimsMap = new HashMap<>();
-                maybeUser = userService.getUserByEmail(userPass[0]);
-                maybeUser.ifPresent(user -> {
-                    claimsMap.put("user", user.getId());
-                    claimsMap.put("roles", Collections.singletonList(user.getRole()));
-                });
-
-                accessToken = JwtUtils.generateAccessToken(claimsMap, JWT_ISSUER, userPass[0],
-                        Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
-                refreshToken = JwtUtils.generateRefreshToken(claimsMap, JWT_ISSUER, userPass[0],
-                        Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
-
-                response.addHeader(ACCESS_TOKEN_HEADER, accessToken);
-                response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
+                setResponseTokens(response, userPass[0]);
                 break;
             case JWTAUTH_PREFIX:
                 String email;
                 try {
                     Pair<String, String> tokenSubjectPair = JwtUtils.validateAccessToken(credentials, jwtKey, Date.from(now));
-                    switch (tokenSubjectPair.getLeftValue()) {
-                        case "access":
-                            email = tokenSubjectPair.getRightValue();
-                            token = userDetailsService.jwtLogin(email);
-                            if (token.isAuthenticated())
-                                SecurityContextHolder.getContext().setAuthentication(token);
-                            break;
-                        case "refresh":
-                            email = tokenSubjectPair.getRightValue();
-                            claimsMap = new HashMap<>();
-                            maybeUser = userService.getUserByEmail(email);
-                            maybeUser.ifPresent(user -> {
-                                claimsMap.put("user", user.getId());
-                                claimsMap.put("roles", Collections.singletonList(user.getRole()));
-                            });
+                    email = tokenSubjectPair.getRightValue();
+                    token = userDetailsService.jwtLogin(email);
 
-                            accessToken = JwtUtils.generateAccessToken(claimsMap, JWT_ISSUER, email,
-                                    Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
-                            refreshToken = JwtUtils.generateRefreshToken(claimsMap, JWT_ISSUER, email,
-                                    Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
+                    if (token.isAuthenticated())
+                        SecurityContextHolder.getContext().setAuthentication(token);
 
-                            response.addHeader(ACCESS_TOKEN_HEADER, accessToken);
-                            response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
-                            break;
-                    }
+                    if (tokenSubjectPair.getLeftValue().equals("refresh"))           // Can also be "access", but currently not used for anything
+                        setResponseTokens(response, email);
+
                 } catch (ExpiredJwtException e) {
-                    final Gson gson = new Gson();
-                    final ErrorDto dto = ErrorDto.fromGenericException(e, HttpServletResponse.SC_UNAUTHORIZED, "14");
-                    final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));
-                    response.setContentType(MediaType.APPLICATION_JSON);
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().print(gson.toJson(errorList));
-                    response.getWriter().flush();
+                    setErrorResponse(response, e, HttpServletResponse.SC_UNAUTHORIZED, "14");
+                    return;
+                } catch (UsernameNotFoundException e) {
+                    setErrorResponse(response, e, HttpServletResponse.SC_BAD_REQUEST, "21");
                     return;
                 }
+                break;
             default:
                 break;
         }
         // go to the next filter in the filter chain
         chain.doFilter(request, response);
+    }
+
+    private void setResponseTokens(HttpServletResponse r, String email) {
+        Map<String, Object> claimsMap = new HashMap<>();
+        Optional<User> maybeUser = userService.getUserByEmail(email);
+        maybeUser.ifPresent(user -> {
+            claimsMap.put("user", user.getId());
+            claimsMap.put("roles", Collections.singletonList(user.getRole()));
+        });
+
+        Instant now = Instant.now();
+        String accessToken = JwtUtils.generateAccessToken(claimsMap, JWT_ISSUER, email,
+                Date.from(now.plus(accessTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
+        String refreshToken = JwtUtils.generateRefreshToken(claimsMap, JWT_ISSUER, email,
+                Date.from(now.plus(refreshTokenValidMinutes, ChronoUnit.MINUTES)), Date.from(now), Date.from(now), jwtKey);
+
+        r.addHeader(ACCESS_TOKEN_HEADER, accessToken);
+        r.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
+    }
+
+    private void setErrorResponse(HttpServletResponse r, RuntimeException e, int statusCode, String internalCode) throws IOException {
+        final Gson gson = new Gson();
+        final ErrorDto dto = ErrorDto.fromGenericException(e, statusCode, internalCode);
+        final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));
+        r.setContentType(MediaType.APPLICATION_JSON);
+        r.setStatus(statusCode);
+        r.getWriter().print(gson.toJson(errorList));
+        r.getWriter().flush();
     }
 
 }

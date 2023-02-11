@@ -4,13 +4,16 @@ import ar.edu.itba.paw.service.NftService;
 import ar.edu.itba.paw.webapp.validators.interfaces.UniqueNftConstraint;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+@Component
 public class UniqueNftConstraintValidator implements ConstraintValidator<UniqueNftConstraint, Object> {
+
     @Autowired
-    private NftService nftService;
+    private NftService nftServiceImpl;
 
     private String nftId;
     private String contractAddr;
@@ -29,6 +32,8 @@ public class UniqueNftConstraintValidator implements ConstraintValidator<UniqueN
         int nftIdObj = (int)wrapper.getPropertyValue(nftId);
         String contractAddrObj = (String)wrapper.getPropertyValue(contractAddr);
         String chainObj = (String)wrapper.getPropertyValue(chain);
-        return !nftService.isNftCreated(nftIdObj, contractAddrObj, chainObj);
+        // TODO: Fix service autowire injection (is null on runtime)
+        // return !nftServiceImpl.isNftCreated(nftIdObj, contractAddrObj, chainObj);
+        return true;
     }
 }

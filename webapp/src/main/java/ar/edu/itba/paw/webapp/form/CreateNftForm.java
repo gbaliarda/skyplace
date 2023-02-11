@@ -80,4 +80,5 @@ public class CreateNftForm {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

@@ -42,6 +42,7 @@ export const checkStatus = async (res: Response) => {
       statusCode: res.status,
       errorCode: errors[0].code,
       description: errors[0].title,
+      field: errors[0].source.pointer
     }
     throw error
   }

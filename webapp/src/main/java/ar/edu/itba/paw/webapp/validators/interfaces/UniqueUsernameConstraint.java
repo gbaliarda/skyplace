@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.validators.interfaces;
 
 import ar.edu.itba.paw.webapp.validators.UniqueEmailConstraintValidator;
 import ar.edu.itba.paw.webapp.validators.UniqueUsernameConstraintValidator;
+import org.springframework.stereotype.Component;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

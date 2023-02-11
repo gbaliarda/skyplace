@@ -6,7 +6,7 @@ import Layout from "../../../components/Layout"
 import useSession from "../../../hooks/useSession"
 import { useUser } from "../../../services/users"
 import useForm from "../../../hooks/useForm"
-import { fetcher, getResourceUrl } from "../../../services/endpoints"
+import { sendJson, getResourceUrl } from "../../../services/endpoints"
 import FormSubmit from "../../../components/atoms/forms/FormSubmit"
 import FormType from "../../../components/atoms/forms/FormType"
 import FormTextArea from "../../../components/atoms/forms/FormTextArea"
@@ -40,26 +40,12 @@ export default function CreateReview() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-
-    const fd = new FormData()
-    // @ts-ignore
-    const body = {
-      score: data.score,
-      title: data.title,
-      comments: data.comments,
-    }
-    fd.append("model", JSON.stringify(body))
+    if (!accessToken) return Swal.fire({ title: t("errors.notLoggedIn"), icon: "error" })
 
     try {
-      await fetcher(`/users/${parsedId}/reviews`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: fd,
-      })
+      await sendJson("POST", `/users/${parsedId}/reviews`, { ...data }, accessToken)
       await Swal.fire({ title: t("reviews.createSuccess"), icon: "success" })
-      await router.push(`/profile/${parsedId}?tab=reviews`)
+      router.replace(`/profile/${parsedId}?tab=reviews`)
     } catch (err: any) {
       await Swal.fire({ title: t("errors.createReview"), text: err.message, icon: "error" })
     }

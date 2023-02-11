@@ -258,6 +258,7 @@
     "createAccount": "Crea tu cuenta",
     "createTo": "Crea una cuenta para comprar y vender nfts",
     "error": "Error al crear usuario",
+    "invalidFieldError": "El campo {{ field }} es inválido",
     "email": "Correo electrónico",
     "walletAddress": "Dirección de la billetera",
     "walletChain": "Chain de la billetera",

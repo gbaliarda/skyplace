@@ -35,22 +35,26 @@ export default function Register() {
   const [data, updateFields] = useForm<FormData>(INITIAL_DATA)
   const { t } = useTranslation()
 
+  const homeRedirect = () => {
+    try {
+      loginUser(data.email, data.password)
+      router.push("/")
+    } catch (err: any) {
+      Swal.fire({ title: t("login.signInError"), text: err.message, icon: "error" })
+    }
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     try {
       await createUser(data)
+      homeRedirect()
     } catch (err: any) {
-      console.log(err.name, err.message)
-      Swal.fire({ title: t("register.error"), text: err.message, icon: "error" })
-    }
-
-    // auto login and redirect to home
-    try {
-      await loginUser(data.email, data.password)
-      router.push("/")
-    } catch (err: any) {
-      console.log(err.name, err.message)
-      Swal.fire({ title: t("login.signInError"), text: err.message, icon: "error" })
+      Swal.fire({
+        title: t("register.error"),
+        text: t("register.invalidFieldError", { field: err.cause.field }),
+        icon: "error",
+      })
     }
   }
 

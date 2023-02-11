@@ -15,11 +15,8 @@ import ar.edu.itba.paw.webapp.dto.reviews.ReviewsDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.ReviewForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -292,16 +289,14 @@ public class UserController {
 
     @POST
     @Path("/{id}/reviews")
-    @Consumes({ MediaType.MULTIPART_FORM_DATA, })
-    public Response createUserReview(@PathParam("id") final int userId, @ModelAttribute @FormDataParam("model") final FormDataBodyPart reviewModel){
-        if(reviewModel == null)
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED, })
+    public Response createUserReview(@PathParam("id") final int userId, @Valid final ReviewForm form){
+        if(form == null)
             throw new NoBodyException();
 
         int reviewerId = userService.getCurrentUser().get().getId();
-        reviewModel.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-        ReviewForm reviewForm = reviewModel.getValueAs(ReviewForm.class);
-        int score = Integer.parseInt(reviewForm.getScore());
-        Review newReview = reviewService.addReview(reviewerId, userId, score, reviewForm.getTitle(), reviewForm.getComments());
+        int score = Integer.parseInt(form.getScore());
+        Review newReview = reviewService.addReview(reviewerId, userId, score, form.getTitle(), form.getComments());
         final URI location = uriInfo.getAbsolutePathBuilder()
                 .replacePath("/users").path(String.valueOf(userId))
                 .path("/reviews").path(String.valueOf(newReview.getId())).build();
