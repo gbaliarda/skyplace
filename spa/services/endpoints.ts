@@ -114,7 +114,12 @@ export const fetcher = (resource: string, options?: RequestInit, withHeaders: bo
 export const fetcherWithAuth = (resource: string, accessToken: string = "") =>
   fetcher(resource, { ...jsonHeader(accessToken) })
 
-export const sendJson = (method: "PUT" | "POST", resource: string, data: Object, accessToken?: string | null) =>
+export const sendJson = (
+  method: "PUT" | "POST",
+  resource: string,
+  data: Object,
+  accessToken?: string | null,
+) =>
   fetcher(resource, {
     method,
     ...jsonOptions(data, accessToken || ""),

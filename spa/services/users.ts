@@ -18,13 +18,21 @@ export type FavoritesURL = {
 }
 
 export const useUser = (id: number | undefined) => {
-  const { data: user, error: errors, mutate } = useSWR<User, FetchError[]>(id ? `/users/${id}` : null, fetcher)
+  const {
+    data: user,
+    error: errors,
+    mutate,
+  } = useSWR<User, FetchError[]>(id ? `/users/${id}` : null, fetcher)
   const loading = !errors && !user
   return { user, loading, errors, mutate }
 }
 
 export const useUserUrl = (url: string | undefined) => {
-  const { data: user, error: errors, mutate } = useSWR<User, FetchError[]>(url ? [url, ""] : null, genericFetcher)
+  const {
+    data: user,
+    error: errors,
+    mutate,
+  } = useSWR<User, FetchError[]>(url ? [url, ""] : null, genericFetcher)
   const loading = !errors && !user
   return { user, loading, errors, mutate }
 }

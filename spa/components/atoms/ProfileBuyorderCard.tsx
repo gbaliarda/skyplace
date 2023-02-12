@@ -1,4 +1,5 @@
 import { useTranslation } from "next-export-i18n"
+import Skeleton from "react-loading-skeleton"
 import Link from "next/link"
 import Buyorder from "../../types/Buyorder"
 import { useSellorderUrl } from "../../services/sellorders"
@@ -7,6 +8,7 @@ import { useImageUrl } from "../../services/images"
 import { useUserUrl } from "../../services/users"
 import useSession from "../../hooks/useSession"
 import { getResourceUrl } from "../../services/endpoints"
+import ErrorBox from "./ErrorBox"
 
 interface Props {
   buyorder: Buyorder
@@ -30,17 +32,8 @@ export default function ProfileBuyorderCard({ buyorder, status }: Props) {
   const { nft, loading: loadingNft, errors: errorsNft } = useNftUrl(sellorder?.nft.toString())
   const { img, loading: loadingImage, errors: errorsImage } = useImageUrl(nft?.image.toString())
 
-  if (errorsBidder) return <h1>Error loading Owner of nft</h1>
-  if (loadingBidder) return <h1>Loading Owner of nftr...</h1>
-
-  if (errorsSellorder) return <h1>Error loading Sellorder of buyorder</h1>
-  if (loadingSellorder) return <h1>Loading sellorder of buyorder...</h1>
-
-  if (errorsNft) return <h1>Error loading Nft of buyorder</h1>
-  if (loadingNft) return <h1>Loading Nft of buyorder...</h1>
-
-  if (errorsImage) return <h1>Error loading Image of nft</h1>
-  if (loadingImage) return <h1>Loading Image of nftr...</h1>
+  // TODO: add error box
+  if (errorsBidder || errorsSellorder || errorsNft) return <h1>Error loading buyordercard</h1>
 
   const imageSrc = getResourceUrl(`data:image/jpg;base64,${img?.image.toString()}`)
   const nftName = `${nft?.nftName} #${nft?.nftId}`
@@ -52,23 +45,39 @@ export default function ProfileBuyorderCard({ buyorder, status }: Props) {
         <div className="border-jacarta-100 rounded-2.5xl h-32 relative flex items-center border bg-white p-4 transition-shadow hover:shadow-lg z-0 cursor-pointer">
           <div className="flex flex-row items-center ml-4">
             <figure className="mr-5">
-              <img
-                src={imageSrc}
-                className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
-                alt="avatar 2"
-                loading="lazy"
-              />
+              {loadingImage ? (
+                <Skeleton className="w-[6rem] h-[6rem] rounded-lg" />
+              ) : errorsImage ? (
+                <div className="w-[6rem] h-[6rem] flex justify-center items-center rounded-lg border border-gray-300">
+                  <ErrorBox errorMessage={""} />
+                </div>
+              ) : (
+                <img
+                  src={imageSrc}
+                  className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
+                  alt="avatar 2"
+                  loading="lazy"
+                />
+              )}
             </figure>
 
             <div className="max-w-[34rem]">
-              <h3 className="font-display text-jacarta-700 mb-1 text-base font-semibold truncate">
-                {nftName}
-              </h3>
-              <div suppressHydrationWarning className="text-jacarta-500 block text-sm">
-                {!userIsBidder
-                  ? t("buyorders.forSale", { bidder: bidder?.username, amount: buyorder.amount })
-                  : t("buyorders.bidded", { amount: buyorder.amount })}
-              </div>
+              {loadingSellorder || loadingNft ? (
+                <Skeleton className="w-36 h-5 mb-1" />
+              ) : (
+                <h3 className="font-display text-jacarta-700 mb-1 text-base font-semibold truncate">
+                  {nftName}
+                </h3>
+              )}
+              {loadingBidder ? (
+                <Skeleton className="w-48" />
+              ) : (
+                <div suppressHydrationWarning className="text-jacarta-500 block text-sm">
+                  {!userIsBidder
+                    ? t("buyorders.forSale", { bidder: bidder?.username, amount: buyorder.amount })
+                    : t("buyorders.bidded", { amount: buyorder.amount })}
+                </div>
+              )}
               <div suppressHydrationWarning className="text-sm pt-3">
                 {status === "NEW" ? t("buyorders.pending") : t("buyorders.accepted")}
               </div>

@@ -52,7 +52,11 @@ export const useRecommendedNfts = (nftId: string | number) => {
 
 export const useNft = (id: string | number) => {
   // second generic is error type
-  const { data: nft, error: errors, mutate } = useSWR<Nft, FetchError[]>(id ? `/nfts/${id}` : null, fetcher)
+  const {
+    data: nft,
+    error: errors,
+    mutate,
+  } = useSWR<Nft, FetchError[]>(id ? `/nfts/${id}` : null, fetcher)
   const loading = !errors && !nft
   return { nft, loading, errors, mutate }
 }

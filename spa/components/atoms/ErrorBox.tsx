@@ -4,7 +4,7 @@ import { BaseSyntheticEvent } from "react"
 
 interface Props {
   errorMessage: string
-  retryAction: () => void
+  retryAction?: () => void
 }
 
 const ErrorBox = ({ errorMessage, retryAction }: Props) => {
@@ -12,7 +12,7 @@ const ErrorBox = ({ errorMessage, retryAction }: Props) => {
 
   const handleRetry = (ev: BaseSyntheticEvent) => {
     ev.preventDefault()
-    retryAction()
+    if (retryAction !== undefined) retryAction()
   }
 
   return (
@@ -21,13 +21,15 @@ const ErrorBox = ({ errorMessage, retryAction }: Props) => {
       <span suppressHydrationWarning className="text-md text-center px-4">
         {errorMessage}
       </span>
-      <button
-        suppressHydrationWarning
-        className="btn normal-case font-light w-32 bg-cyan-600 hover:bg-cyan-800 text-white px-6 rounded-md border-0"
-        onClick={handleRetry}
-      >
-        {t("common.retry")}
-      </button>
+      {retryAction !== undefined && (
+        <button
+          suppressHydrationWarning
+          className="btn normal-case font-light w-32 bg-cyan-600 hover:bg-cyan-800 text-white px-6 rounded-md border-0"
+          onClick={handleRetry}
+        >
+          {t("common.retry")}
+        </button>
+      )}
     </div>
   )
 }

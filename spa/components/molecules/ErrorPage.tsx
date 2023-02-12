@@ -1,6 +1,6 @@
 import { useTranslation } from "next-export-i18n"
 import Link from "next/link"
-import Navbar from "./Navbar"
+import Layout from "../Layout"
 
 interface Props {
   errorCode: number
@@ -12,8 +12,8 @@ const ErrorPage = ({ errorCode, errorTitle, errorDetail }: Props) => {
   const { t } = useTranslation()
 
   return (
-    <div className="mx-5">
-      <div className="h-screen flex flex-col">
+    <Layout>
+      <div className="flex flex-col h-full">
         <div className="flex flex-col sm:flex-row justify-center items-center flex-grow sm:divide-x h-">
           <h1 className="text-8xl text-cyan-500 pr-5 text-bold">{errorCode}</h1>
           <div className="flex flex-col justify-start pl-5 gap-y-1">
@@ -37,7 +37,7 @@ const ErrorPage = ({ errorCode, errorTitle, errorDetail }: Props) => {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }
 
