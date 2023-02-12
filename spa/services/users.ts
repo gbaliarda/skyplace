@@ -20,20 +20,20 @@ export type FavoritesURL = {
 export const useUser = (id: number | undefined) => {
   const {
     data: user,
+    isLoading,
     error: errors,
     mutate,
-  } = useSWR<User, FetchError[]>(id ? `/users/${id}` : null, fetcher)
-  const loading = !errors && !user
-  return { user, loading, errors, mutate }
+  } = useSWR<User, FetchError[]>(id && !Number.isNaN(id) ? `/users/${id}` : null, fetcher)
+  return { user, loading: isLoading, errors, mutate }
 }
 
 export const useUserUrl = (url: string | undefined) => {
   const {
     data: user,
+    isLoading: loading,
     error: errors,
     mutate,
   } = useSWR<User, FetchError[]>(url ? [url, ""] : null, genericFetcher)
-  const loading = !errors && !user
   return { user, loading, errors, mutate }
 }
 

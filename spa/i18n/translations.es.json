@@ -64,6 +64,7 @@
     "errorLoadingCard": "Parece que ocurrió un error durante la carga del nft.",
     "errorLoadingProfileDescription": "Parece que ocurrió un error durante la carga de la descripción del perfil.",
     "errorLoadingTab": "Parece que ocurrió un error durante la carga de la pestaña.",
+    "errorLoadingBuyOrderCard": "Parece que ocurrió un error durante la carga de esta oferta",
     "removeOffer": "Error al eliminar la oferta",
     "acceptOffer": "Error al aceptar la oferta",
     "sellNft": "Error al poner a la venta el NFT",

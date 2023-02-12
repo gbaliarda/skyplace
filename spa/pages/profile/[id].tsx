@@ -11,6 +11,8 @@ import ReviewsTab from "../../components/molecules/profile/tabs/ReviewsTab"
 import HistoryTab from "../../components/molecules/profile/tabs/HistoryTab"
 import useSession from "../../hooks/useSession"
 import { getResourceUrl } from "../../services/endpoints"
+import { useUser } from "../../services/users"
+import Spinner from "../../components/atoms/Spinner"
 
 const TABS = [
   { key: "inventory", isPublic: true },
@@ -32,13 +34,22 @@ export default function Profile() {
     tab: string | undefined
   }
 
-  if (tab === undefined || tab === "") tab = "inventory"
+  const tabOptions = ["inventory", "selling", "favorited", "buyorders", "history", "reviews"]
+
+  if (tab === undefined || !tabOptions.includes(tab)) tab = "inventory"
 
   const { userId: loggedUserId } = useSession()
   const parsedUserId = parseInt(id)
-
-  /* TODO: Throw 404 on this case */
-  if (id === undefined) return <h1>Error loading User with id {id}</h1>
+  const { loading, errors } = useUser(parsedUserId)
+  if (!router.isReady || loading)
+    return (
+      <Layout>
+        <div className="flex justify-center items-center h-full">
+          <Spinner className="w-12 h-12" />
+        </div>
+      </Layout>
+    )
+  if (errors || (router.isReady && Number.isNaN(parsedUserId))) router.push("/404")
 
   const profilePath = `/profile/${id}`
 
@@ -47,61 +58,71 @@ export default function Profile() {
 
   return (
     <Layout>
-      <div className="flex flex-col flex-wrap pb-8 gap-8 mx-10 lg:mx-24 xl:mx-40">
-        <ProfileDescription userId={parsedUserId} />
+      {!errors && !Number.isNaN(parsedUserId) ? (
+        <div className="flex flex-col flex-wrap pb-8 gap-8 mx-10 lg:mx-24 xl:mx-40">
+          <ProfileDescription userId={parsedUserId} />
 
-        <div className="flex border-b border-gray-200">
-          <ul className="flex flex-wrap flex-grow justify-evenly items-center font-medium text-lg text-center text-gray-500">
-            {TABS.map((value) => {
-              if (!value.isPublic && parsedUserId !== loggedUserId) {
-                return
-              }
-              const isActive = tab === value.key
-              const tabClasses = isActive ? activeTabClasses : inactiveTabClasses
-              const tabImage = `/profile/tabs/${isActive ? "active" : "inactive"}/${value.key}.svg`
-              return (
-                <li className={tabClasses} key={value.key}>
-                  <Link
-                    href={{
-                      pathname: profilePath,
-                      query: {
-                        tab: value.key,
-                      },
-                    }}
-                  >
-                    <a>
-                      <div className="flex flex-row cursor-pointer">
-                        <img
-                          className="h-6 w-6 mr-2"
-                          src={getResourceUrl(tabImage)}
-                          alt="tab_icon"
-                        />
-                        {t(`profile.${value.key}`)}
-                      </div>
-                    </a>
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
+          <div className="flex border-b border-gray-200">
+            <ul className="flex flex-wrap flex-grow justify-evenly items-center font-medium text-lg text-center text-gray-500">
+              {TABS.map((value) => {
+                if (!value.isPublic && parsedUserId !== loggedUserId) {
+                  return
+                }
+                const isActive = tab === value.key
+                const tabClasses = isActive ? activeTabClasses : inactiveTabClasses
+                const tabImage = `/profile/tabs/${isActive ? "active" : "inactive"}/${
+                  value.key
+                }.svg`
+                return (
+                  <li className={tabClasses} key={value.key}>
+                    <Link
+                      href={{
+                        pathname: profilePath,
+                        query: {
+                          tab: value.key,
+                        },
+                      }}
+                    >
+                      <a>
+                        <div className="flex flex-row cursor-pointer">
+                          <img
+                            className="h-6 w-6 mr-2"
+                            src={getResourceUrl(tabImage)}
+                            alt="tab_icon"
+                          />
+                          {t(`profile.${value.key}`)}
+                        </div>
+                      </a>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+
+          {tab === "inventory" && <InventoryTab userId={parsedUserId} />}
+
+          {tab === "selling" && <SellingTab userId={parsedUserId} />}
+
+          {tab === "favorited" && parsedUserId === loggedUserId && (
+            <FavoritedTab userId={parsedUserId} />
+          )}
+
+          {tab === "buyorders" && parsedUserId === loggedUserId && (
+            <BuyordersTab userId={parsedUserId} />
+          )}
+
+          {tab === "history" && parsedUserId === loggedUserId && (
+            <HistoryTab userId={parsedUserId} />
+          )}
+
+          {tab === "reviews" && <ReviewsTab userId={parsedUserId} />}
         </div>
-
-        {tab === "inventory" && <InventoryTab userId={parsedUserId} />}
-
-        {tab === "selling" && <SellingTab userId={parsedUserId} />}
-
-        {tab === "favorited" && parsedUserId === loggedUserId && (
-          <FavoritedTab userId={parsedUserId} />
-        )}
-
-        {tab === "buyorders" && parsedUserId === loggedUserId && (
-          <BuyordersTab userId={parsedUserId} />
-        )}
-
-        {tab === "history" && parsedUserId === loggedUserId && <HistoryTab userId={parsedUserId} />}
-
-        {tab === "reviews" && <ReviewsTab userId={parsedUserId} />}
-      </div>
+      ) : (
+        <div className="flex justify-center items-center h-full">
+          <Spinner className="w-12 h-12" />
+        </div>
+      )}
     </Layout>
   )
 }

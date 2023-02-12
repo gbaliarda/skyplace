@@ -23,19 +23,36 @@ export default function ProfileBuyorderCard({ buyorder, status }: Props) {
     user: bidder,
     loading: loadingBidder,
     errors: errorsBidder,
+    mutate: mutateBidder,
   } = useUserUrl(buyorder.offeredBy.toString())
   const {
     sellorder,
     loading: loadingSellorder,
     errors: errorsSellorder,
+    mutate: mutateSellorder,
   } = useSellorderUrl(buyorder.sellorder.toString())
-  const { nft, loading: loadingNft, errors: errorsNft } = useNftUrl(sellorder?.nft.toString())
-  const { img, loading: loadingImage, errors: errorsImage } = useImageUrl(nft?.image.toString())
+  const {
+    nft,
+    loading: loadingNft,
+    errors: errorsNft,
+    mutate: mutateNft,
+  } = useNftUrl(sellorder?.nft.toString())
+  const {
+    img,
+    loading: loadingImage,
+    errors: errorsImage,
+    mutate: mutateImage,
+  } = useImageUrl(nft?.image.toString())
 
-  // TODO: add error box
-  if (errorsBidder || errorsSellorder || errorsNft) return <h1>Error loading buyordercard</h1>
+  const reloadContent = () => {
+    mutateBidder()
+    mutateImage()
+    mutateNft()
+    mutateSellorder()
+  }
 
-  const imageSrc = getResourceUrl(`data:image/jpg;base64,${img?.image.toString()}`)
+  const imageSrc =
+    img !== undefined ? getResourceUrl(`data:image/jpg;base64,${img.image.toString()}`) : undefined
   const nftName = `${nft?.nftName} #${nft?.nftId}`
   const userIsBidder = bidder?.id === userId
 
@@ -61,27 +78,39 @@ export default function ProfileBuyorderCard({ buyorder, status }: Props) {
               )}
             </figure>
 
-            <div className="max-w-[34rem]">
-              {loadingSellorder || loadingNft ? (
-                <Skeleton className="w-36 h-5 mb-1" />
-              ) : (
-                <h3 className="font-display text-jacarta-700 mb-1 text-base font-semibold truncate">
-                  {nftName}
-                </h3>
-              )}
-              {loadingBidder ? (
-                <Skeleton className="w-48" />
-              ) : (
-                <div suppressHydrationWarning className="text-jacarta-500 block text-sm">
-                  {!userIsBidder
-                    ? t("buyorders.forSale", { bidder: bidder?.username, amount: buyorder.amount })
-                    : t("buyorders.bidded", { amount: buyorder.amount })}
-                </div>
-              )}
-              <div suppressHydrationWarning className="text-sm pt-3">
-                {status === "NEW" ? t("buyorders.pending") : t("buyorders.accepted")}
+            {errorsBidder || errorsSellorder || errorsNft ? (
+              <div>
+                <ErrorBox
+                  errorMessage={t("errors.errorLoadingBuyOrderCard")}
+                  retryAction={reloadContent}
+                />
               </div>
-            </div>
+            ) : (
+              <div className="max-w-[34rem]">
+                {loadingSellorder || loadingNft ? (
+                  <Skeleton className="w-36 h-5 mb-1" />
+                ) : (
+                  <h3 className="font-display text-jacarta-700 mb-1 text-base font-semibold truncate">
+                    {nftName}
+                  </h3>
+                )}
+                {loadingBidder ? (
+                  <Skeleton className="w-48" />
+                ) : (
+                  <div suppressHydrationWarning className="text-jacarta-500 block text-sm">
+                    {!userIsBidder
+                      ? t("buyorders.forSale", {
+                          bidder: bidder?.username,
+                          amount: buyorder.amount,
+                        })
+                      : t("buyorders.bidded", { amount: buyorder.amount })}
+                  </div>
+                )}
+                <div suppressHydrationWarning className="text-sm pt-3">
+                  {status === "NEW" ? t("buyorders.pending") : t("buyorders.accepted")}
+                </div>
+              </div>
+            )}
           </div>
           {/* Modals
         <c:if

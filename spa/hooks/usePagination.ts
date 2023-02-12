@@ -1,6 +1,6 @@
 import { useState } from "react"
 import parse from "parse-link-header"
-import { genericFetcher } from '../services/endpoints';
+import { genericFetcher } from "../services/endpoints"
 import { FetchError } from "../types/FetchError"
 
 const usePagination = <T>(requiresSession: boolean = false) => {

@@ -49,7 +49,7 @@ const Product = () => {
     recommendations,
     loading: loadingRecommendations,
     errors: errorsRecommendations,
-  } = useRecommendedNfts(id)
+  } = useRecommendedNfts(nft?.id)
   const { userId: currentUserId, roles, accessToken } = useSession()
   const {
     favorite,
@@ -85,6 +85,9 @@ const Product = () => {
     reloadContent()
   }
 
+  if (router.isReady && Number.isNaN(parseInt(id))) router.push("/404")
+  if (errorsNft && errorsNft[0].cause.statusCode === 404) router.push("/404")
+
   return (
     <Layout>
       <ConfirmTransactionModal
@@ -102,7 +105,7 @@ const Product = () => {
                 <div className="flex-col w-1/2">
                   {loadingImage || errorsImage || errorsNft ? (
                     <div className="w-[95%] h-1/2 m-auto mb-8">
-                      {errorsImage || errorsNft ? (
+                      {errorsImage || (errorsNft && errorsNft[0].cause.statusCode !== 404) ? (
                         <div className="flex items-center justify-center h-full">
                           <ErrorBox
                             errorMessage={t("errors.errorLoadingImage")}
@@ -125,7 +128,9 @@ const Product = () => {
                   />
                 </div>
 
-                {errorsNft || errorsOwner || errorsSellorder ? (
+                {(errorsNft && errorsNft[0].cause.statusCode !== 404) ||
+                errorsOwner ||
+                errorsSellorder ? (
                   <div className="flex justify-center md:w-3/5">
                     <ErrorBox
                       errorMessage={t("errors.errorLoadingNft")}
