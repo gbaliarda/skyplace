@@ -4,8 +4,3 @@ export default interface Buyorder {
   self: URL
   sellorder: URL
 }
-
-export interface BuyOrderApi {
-  buyorders: Buyorder[]
-  totalPages: number
-}

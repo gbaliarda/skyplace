@@ -50,39 +50,51 @@ const NavbarDropdown = () => {
             <p suppressHydrationWarning className="py-2 px-4 text-center">
               {t("navbar.currentUser")} <b className="text-cyan-700">{user}</b>
             </p>
-            <li>
+            <li className="w-full">
               <Link href={userProfileUrl} className="py-2 px-4">
-                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a
+                  suppressHydrationWarning
+                  className="text-sm hover:bg-gray-600 hover:text-white transition-none"
+                >
                   <UserIcon className="h-4 w-4" />
                   {t("navbar.profile")}
                 </a>
               </Link>
             </li>
-            <li>
+            <li className="w-full">
               <Link href={userBuyordersUrl} className="py-2 px-4">
-                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a
+                  suppressHydrationWarning
+                  className="text-sm hover:bg-gray-600 hover:text-white transition-none"
+                >
                   <BanknotesIcon className="h-4 w-4" />
                   {t("navbar.bidding")}
                 </a>
               </Link>
             </li>
-            <li>
+            <li className="w-full">
               <Link href={userSellordersUrl} className="py-2 px-4">
-                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a
+                  suppressHydrationWarning
+                  className="text-sm hover:bg-gray-600 hover:text-white transition-none"
+                >
                   <ShoppingCartIcon className="h-4 w-4" />
                   {t("navbar.selling")}
                 </a>
               </Link>
             </li>
-            <li>
+            <li className="w-full">
               <Link href={userFavoritesUrl} className="py-2 px-4">
-                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none">
+                <a
+                  suppressHydrationWarning
+                  className="text-sm hover:bg-gray-600 hover:text-white transition-none"
+                >
                   <HeartIcon className="h-4 w-4" />
                   {t("navbar.favorites")}
                 </a>
               </Link>
             </li>
-            <li>
+            <li className="w-full">
               <button
                 suppressHydrationWarning
                 onClick={logout}
@@ -97,14 +109,20 @@ const NavbarDropdown = () => {
           <>
             <li>
               <Link href="/login" className="py-2 px-4">
-                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	">
+                <a
+                  suppressHydrationWarning
+                  className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	"
+                >
                   {t("navbar.login")}
                 </a>
               </Link>
             </li>
             <li>
               <Link href="/register" className="py-2 px-4">
-                <a suppressHydrationWarning className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	">
+                <a
+                  suppressHydrationWarning
+                  className="text-sm hover:bg-gray-600 hover:text-white transition-none whitespace-nowrap	"
+                >
                   {t("navbar.signUp")}
                 </a>
               </Link>

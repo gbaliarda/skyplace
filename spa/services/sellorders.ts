@@ -2,10 +2,10 @@ import { useEffect } from "react"
 import useSWR from "swr"
 import Sellorder from "../types/Sellorder"
 import { fetcher, genericFetcher } from "./endpoints"
-import Buyorder, { BuyOrderApi } from "../types/Buyorder"
+import Buyorder from "../types/Buyorder"
 import { BuyordersURL } from "./users"
 import usePagination from "../hooks/usePagination"
-import {FetchError} from "../types/FetchError";
+import { FetchError } from "../types/FetchError"
 
 export const useSellorderUrl = (url: string | undefined) => {
   const {
@@ -40,10 +40,15 @@ export const useBuyOrders = (url: BuyordersURL) => {
 }
 
 export const usePendingBuyOrder = (sellOrderId: number | undefined) => {
-  const { data, error: errors, isLoading, mutate } = useSWR<BuyOrderApi, FetchError[]>(
+  const {
+    data,
+    error: errors,
+    isLoading,
+    mutate,
+  } = useSWR<Buyorder[], FetchError[]>(
     sellOrderId ? `/sellorders/${sellOrderId}/buyorders?status=PENDING` : null,
     fetcher,
   )
-  const pendingBuyOrder = data?.buyorders[0] as Buyorder | undefined
+  const pendingBuyOrder = data !== undefined && data.length > 0 ? data[0] : undefined
   return { pendingBuyOrder, isLoading, errors, mutate }
 }

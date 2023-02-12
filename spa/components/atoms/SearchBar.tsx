@@ -1,9 +1,11 @@
 import { BaseSyntheticEvent, useEffect, useState } from "react"
 import { useRouter } from "next/router"
+import { useTranslation } from "next-export-i18n"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { SearchType } from "../../types/Filters"
 
 const SearchBar = () => {
+  const { t } = useTranslation()
   const router = useRouter()
   const querySearch = router.query.search
   const [searchFilter, setSearchFilter] = useState({
@@ -52,7 +54,7 @@ const SearchBar = () => {
           name="search"
           className="pl-2 outline-none w-full border-none p-0 focus:border-none focus:ring-0"
           type="text"
-          placeholder=""
+          placeholder={t("navbar.search")}
           value={searchFilter.search}
           onChange={(ev) => setSearchFilter({ ...searchFilter, search: ev.currentTarget.value })}
         />

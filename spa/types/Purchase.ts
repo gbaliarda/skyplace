@@ -12,11 +12,6 @@ export default interface Purchase {
   status: string
 }
 
-export interface PurchaseApi {
-  purchases: Purchase[]
-  totalPages: number
-}
-
 export enum PurchaseStatus {
   Success = "Success",
   Cancelled = "Cancelled",
