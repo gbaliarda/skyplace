@@ -1,10 +1,9 @@
 export interface ApiSource {
-    pointer?: string
+  pointer?: string
 }
 
 export default interface ApiError {
-    code: string
-    title: string
-    source?: ApiSource
+  code: string
+  title: string
+  source?: ApiSource
 }
-

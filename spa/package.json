@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export && npm run deploy",
+    "build": "npm run lint:fix && next build && next export && npm run deploy",
     "deploy": "cd out && copyfiles ./** ../../webapp/src/main/webapp",
     "start": "next start",
     "lint": "next lint",

@@ -3,7 +3,7 @@ import Link from "next/link"
 import Purchase from "../../types/Purchase"
 import { useImageUrl } from "../../services/images"
 import { useUserUrl } from "../../services/users"
-import { epochToIntlDate } from '../../utils/epochToIntlDate';
+import { epochToIntlDate } from "../../utils/epochToIntlDate"
 
 export default function HistoryItem({ purchase, userId }: { purchase: Purchase; userId: number }) {
   const { t } = useTranslation()

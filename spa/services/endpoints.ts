@@ -1,21 +1,20 @@
 import { FetchError } from "../types/FetchError"
 import USErrorCodes from "../i18n/translations.en.json"
 import ESErrorCodes from "../i18n/translations.es.json"
-import Error from "next/error";
-import ApiError from "../types/ApiError";
+import ApiError from "../types/ApiError"
 
 const errorTranslations = {
   en: { ...USErrorCodes.errorCodes },
   es: { ...ESErrorCodes.errorCodes },
 }
 
-export const api = process.env.NODE_ENV === "development"
-  ? "http://localhost:8080/api"
-  : "http://pawserver.it.itba.edu.ar/paw-2022a-09/api"
+export const api =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:8080/api"
+    : "http://pawserver.it.itba.edu.ar/paw-2022a-09/api"
 
-export const getResourceUrl = (resource: string) => process.env.NODE_ENV === "development"
-  ? resource
-  : "/paw-2022a-09" + resource
+export const getResourceUrl = (resource: string) =>
+  process.env.NODE_ENV === "development" ? resource : "/paw-2022a-09" + resource
 
 const jsonHeader = (accessToken: string = "") => ({
   headers: {
@@ -32,23 +31,28 @@ const jsonOptions = (data: Object, accessToken: string = "") => ({
 export const checkStatus = async (res: Response) => {
   if (!res.ok) {
     const { errors } = await res.json()
+    
     // @ts-ignore
     const userLang = errorTranslations[navigator.language.substring(0, 2)]
       ? navigator.language.substring(0, 2)
       : "en"
-    // const error = new Error() as FetchError
+
     let parsedErrors: FetchError[] = []
+
     errors.forEach((apiError: ApiError) => {
-      // @ts-ignore
       const auxError = new Error() as FetchError
       auxError.name = res.statusText
-      // @ts-ignore
-      auxError.message = errorTranslations[userLang][apiError.code] ?? (errorTranslations[userLang][res.status] ?? "Error :(")
+      auxError.message =
+        // @ts-ignore
+        errorTranslations[userLang][apiError.code] ??
+        // @ts-ignore
+        errorTranslations[userLang][res.status] ??
+        "Error :("
       auxError.cause = {
         statusCode: res.status,
         errorCode: apiError.code,
         description: apiError.title,
-        field: apiError.source?.pointer
+        field: apiError.source?.pointer,
       }
       parsedErrors.push(auxError)
     })

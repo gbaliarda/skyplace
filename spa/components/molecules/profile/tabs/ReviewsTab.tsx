@@ -135,18 +135,20 @@ export default function ReviewsTab({ userId }: Props) {
             </h2>
 
             {/* TODO: check if totalPurchasesPagesBetweenUsers is 0 if no purchases */}
-            {totalPurchasesPagesBetweenUsers !== 0 && totalReviewsBetweenUsers === 0 && loggedInUser !== userId && (
-              <Link href={newReviewPath}>
-                <a>
-                  <button
-                    type="button"
-                    className="shadow-md px-6 py-2.5 rounded-md transition duration-300 bg-cyan-600 hover:bg-cyan-800 text-white hover:shadow-xl"
-                  >
-                    {t("profile.addReview")}
-                  </button>
-                </a>
-              </Link>
-            )}
+            {totalPurchasesPagesBetweenUsers !== 0 &&
+              totalReviewsBetweenUsers === 0 &&
+              loggedInUser !== userId && (
+                <Link href={newReviewPath}>
+                  <a>
+                    <button
+                      type="button"
+                      className="shadow-md px-6 py-2.5 rounded-md transition duration-300 bg-cyan-600 hover:bg-cyan-800 text-white hover:shadow-xl"
+                    >
+                      {t("profile.addReview")}
+                    </button>
+                  </a>
+                </Link>
+              )}
 
             {/* TODO: add permission check */}
 

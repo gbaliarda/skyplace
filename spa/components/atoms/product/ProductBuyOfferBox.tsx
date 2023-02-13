@@ -24,7 +24,11 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
       await sendJson("POST", `/sellorders/${sellOrder.id}/buyorders`, { price: offer }, accessToken)
       priceRef.current!!.value = "0"
       setOffer(0)
-      Swal.fire({ title: t("product.makeOfferSuccess"), text: t("product.makeOfferSuccessInfo"), icon: "success" })
+      Swal.fire({
+        title: t("product.makeOfferSuccess"),
+        text: t("product.makeOfferSuccessInfo"),
+        icon: "success",
+      })
     } catch (errs: any) {
       console.log(errs)
       Swal.fire({ title: t("product.makeOfferError"), text: errs[0].message, icon: "error" })
