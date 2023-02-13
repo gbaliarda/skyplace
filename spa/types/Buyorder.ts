@@ -3,4 +3,5 @@ export default interface Buyorder {
   offeredBy: URL
   self: URL
   sellorder: URL
+  status: string // "NEW" || "PENDING" || "CANCELLED" ?
 }

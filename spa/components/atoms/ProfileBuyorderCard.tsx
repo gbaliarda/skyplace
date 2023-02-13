@@ -99,39 +99,23 @@ export default function ProfileBuyorderCard({ buyorder, status }: Props) {
                 ) : (
                   <div suppressHydrationWarning className="text-jacarta-500 block text-sm">
                     {!userIsBidder
-                      ? t("buyorders.forSale", {
-                          bidder: bidder?.username,
-                          amount: buyorder.amount,
-                        })
+                      ? 
+                        <p>
+                          <Link href={`/profile/${bidder?.id}`}>
+                            <a className="text-cyan-600 hover:text-cyan-800 hover:underline cursor-pointer">{bidder?.username}</a>
+                          </Link>
+                          {t("buyorders.forSale", { bidder: bidder?.username, amount: buyorder.amount })}
+                        </p>
                       : t("buyorders.bidded", { amount: buyorder.amount })}
                   </div>
                 )}
-                <div suppressHydrationWarning className="text-sm pt-3">
-                  {status === "NEW" ? t("buyorders.pending") : t("buyorders.accepted")}
-                </div>
+                <p suppressHydrationWarning className="text-sm pt-3 text-cyan-600">
+                  {buyorder.status === "NEW" && <span className="text-slate-500">{t("buyorders.pending")}</span>}
+                  {buyorder.status === "PENDING" && <span className="text-yellow-600">{t("buyorders.accepted")}</span>}
+                </p>
               </div>
             )}
           </div>
-          {/* Modals
-        <c:if
-          test="${param.isAdmin == true || (param.isMySale == false && param.isOwner != null && param.isOwner == true)}">
-          <c:choose>
-            <c:when test="${param.status == 'NEW'}">
-              <button type="submit" onClick="openDeleteOfferModal(${param.sellOrderId}, ${param.buyerId})"
-                      className="px-5 py-2 rounded-md text-white transition duration-300 shadow-md hover:shadow-xl bg-red-500 hover:bg-red-900 z-10 absolute right-8">
-                <spring:message code="buyoffer.delete" />
-              </button>
-            </c:when>
-            <c:otherwise>
-              <button
-                onClick="openConfirmBuyOfferModal('${param.buyerUsername}', '${param.buyerWallet}', '${param.sellerUsername}', '${param.sellerWallet}', '${param.nftName}', '${param.nftContractAddr}', ${param.price}, ${param.nftCollectionId}, ${param.productId}, ${param.sellOrderId}, ${param.buyerId})"
-                className="px-5 py-2 rounded-md text-white transition duration-300 shadow-md hover:shadow-xl bg-cyan-600 hover:bg-cyan-800 z-10 absolute right-8">
-                <spring:message code="buyoffer.confirm" />
-              </button>
-            </c:otherwise>
-          </c:choose>
-        </c:if>
-        */}
         </div>
       </a>
     </Link>

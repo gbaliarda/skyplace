@@ -160,10 +160,10 @@ const Product = () => {
                           <div className="flex">
                             {currentUserId !== null && !errorsFavorites && (
                               <ProductFavNft
-                                amountFavourites={nft!!.favorites}
+                                amountFavourites={nft?.favorites}
                                 isFaved={favorite === undefined ? false : favorite.length > 0}
                                 mutateFavs={mutateFavorites}
-                                nftId={nft!!.id}
+                                nftId={nft?.id}
                               />
                             )}
                             {(currentUserId === owner?.id || isAdmin) && !pendingBuyOrder && (

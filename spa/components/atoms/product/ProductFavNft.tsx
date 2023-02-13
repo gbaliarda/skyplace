@@ -5,7 +5,7 @@ import useSession from "../../../hooks/useSession"
 
 interface Props {
   isFaved?: boolean
-  nftId: number
+  nftId?: number
   mutateFavs: () => void
   amountFavourites?: number
 }
