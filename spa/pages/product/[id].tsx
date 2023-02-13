@@ -166,7 +166,7 @@ const Product = () => {
                                 nftId={nft!!.id}
                               />
                             )}
-                            {(currentUserId === owner!!.id || isAdmin) && !pendingBuyOrder && (
+                            {(currentUserId === owner?.id || isAdmin) && !pendingBuyOrder && (
                               <ProductDropdown nft={nft!!} />
                             )}
                           </div>

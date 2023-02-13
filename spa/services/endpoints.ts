@@ -31,7 +31,7 @@ const jsonOptions = (data: Object, accessToken: string = "") => ({
 export const checkStatus = async (res: Response) => {
   if (!res.ok) {
     const { errors } = await res.json()
-    
+
     // @ts-ignore
     const userLang = errorTranslations[navigator.language.substring(0, 2)]
       ? navigator.language.substring(0, 2)
