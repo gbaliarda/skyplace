@@ -12,12 +12,12 @@ import { api } from "../../../../services/endpoints"
 
 interface Props {
   userId: number
+  loggedInUser: number
 }
 
-export default function ReviewsTab({ userId }: Props) {
+export default function ReviewsTab({ userId, loggedInUser }: Props) {
   const { t } = useTranslation()
 
-  const { userId: loggedInUser } = useSession()
   const defaultURL = {
     baseUrl: `${api}/users/${userId}/reviews?page=1`,
   } as ReviewsURL
@@ -49,8 +49,8 @@ export default function ReviewsTab({ userId }: Props) {
     loading: loadingPurchasesBetweenUsers,
     errors: errorsPurchasesBetweenUsers,
   } = usePurchases({
-    baseUrl: `${api}/users/${userId}/purchases?page=1`,
-    purchaser: loggedInUser ?? undefined,
+    baseUrl: `${api}/users/${loggedInUser}/purchases?page=1`,
+    purchaser: userId ?? undefined,
   })
 
   const reloadReviews = () => {

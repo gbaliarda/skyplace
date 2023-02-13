@@ -5,6 +5,7 @@ import { Review } from "../../types/Review"
 import { useUser } from "../../services/users"
 import { deleteReview } from "../../services/reviews"
 import { getResourceUrl } from "../../services/endpoints"
+import useSession from '../../hooks/useSession';
 
 export default function ReviewItem({
   review,
@@ -16,6 +17,7 @@ export default function ReviewItem({
   mutateReviews: () => void
 }) {
   const { t } = useTranslation()
+  const { userId, roles } = useSession()
 
   const reviewerId = parseInt(review.reviewer.toString().split("/").slice(-1)[0])
   const reviewerProfileUrl: string = `/profile/${reviewerId}`
@@ -88,53 +90,16 @@ export default function ReviewItem({
       <h3 className="font-semibold text-gray-500 mt-4">{review.title}</h3>
       <p className="mb-2 mt-1 font-light text-gray-500">{review.comments}</p>
       {/* The button to open modal */}
-      <div className="flex flex-row items-center justify-end">
-        <button
-          onClick={handleOpenDeleteModal}
-          className="btn normal-case shadow-md px-6 py-2.5 rounded-md transition duration-300 bg-red-500 hover:bg-red-900 text-white hover:shadow-xl cursor-pointer"
-        >
-          {t("profile.deleteReview")}
-        </button>
-      </div>
-
-      {/* Put this part before </body> tag
-      <input type="checkbox" id={deleteModalId} className="modal-toggle" />
-      <div className="modal">
-        <div className="modal-box relative">
-          <label htmlFor={deleteModalId} className="btn btn-sm btn-circle absolute right-2 top-2">
-            X
-          </label>
-          <p>{t("profile:confirmDeleteReview")}</p>
+      { (userId === reviewerId || roles?.includes("Admin")) &&
+        <div className="flex flex-row items-center justify-end">
           <button
-            onClick={handleDelete}
-            className="px-4 py-2 rounded-md bg-red-500 transition duration-300 hover:bg-red-900 text-white shadow-md hover:shadow-xl"
-          >
-            {t("profile:deleteReview")}
+            onClick={handleOpenDeleteModal}
+            className="btn normal-case shadow-md px-6 py-2.5 rounded-md transition duration-300 bg-red-500 hover:bg-red-900 text-white hover:shadow-xl cursor-pointer"
+            >
+            {t("profile.deleteReview")}
           </button>
         </div>
-      </div>
-      */}
-      {/* TODO: CHECK PERMISSION */}
-      {/* <c:if test="${param.isAdmin || param.isReviewer}">
-                <c:url value='/review/${param.revieweeId}/delete' var="deletePath" />
-                <div className="flex flex-row items-center justify-end">
-                    <button id="open-delete-modal-${param.modalId}" className="shadow-md px-6 py-2.5 rounded-md transition duration-300 bg-red-500 hover:bg-red-900 text-white hover:shadow-xl cursor-pointer">
-                        <spring:message code="review.delete" />
-                    </button>
-                </div>
-                <!-- Modal -->
-                <spring:message code="review.delete" var="deleteReview" />
-                <spring:message code="review.deleteDesc" var="deleteReviewDesc" />
-                <dialog className="relative p-4 rounded-lg text-center max-w-md" id="delete-modal-${param.modalId}">
-                    <button className="absolute top-4 right-6 font-bold text-slate-600" id="close-delete-modal-${param.modalId}">X</button>
-                    <h2 className="font-bold text-xl text-red-500"><c:out value="${deleteReview}" /></h2>
-                    <p className="py-6 text-slate-600"><c:out value="${deleteReviewDesc}" /></p>
-                    <form className="mb-0" action='<c:out value="${deletePath}"/>' method="post">
-                        <input type="hidden" name="reviewId" value='<c:out value="${param.reviewId}"/>'>
-                            <button className="px-4 py-2 rounded-md text-white bg-red-500 transition duration-300 hover:bg-red-900 text-white shadow-md hover:shadow-xl" type="submit"><spring:message code="deleteModal.delete" /></button>
-                    </form>
-                </dialog>
-            </c:if> */}
+      }
     </div>
   )
 }
