@@ -16,4 +16,6 @@ public @interface ValidChainConstraint {
     String message() default "Invalid chain";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+
+    String errorMessageTemplate();
 }

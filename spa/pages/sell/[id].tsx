@@ -12,6 +12,7 @@ import FormSubmit from "../../components/atoms/forms/FormSubmit"
 import Navbar from "../../components/molecules/Navbar"
 import { sendJson } from "../../services/endpoints"
 import useSession from "../../hooks/useSession"
+import { FetchError } from "../../types/FetchError"
 
 const CATEGORIES = [
   "Collectible",
@@ -36,6 +37,15 @@ const INITIAL_DATA: FormData = {
   price: 0,
 }
 
+interface FieldData {
+  name: string
+  updateFunction: (error: string) => void
+}
+
+interface FieldsDataMap {
+  [key: string]: FieldData
+}
+
 export default function Sell() {
   const router = useRouter()
   const { update, category, price } = router.query as {
@@ -49,6 +59,20 @@ export default function Sell() {
   const [data, updateFields] = useForm<FormData>(INITIAL_DATA)
   const { accessToken } = useSession()
   const [loading, setLoading] = useState(false)
+
+  const [categoryError, updateCategoryError] = useState("")
+  const [priceError, updatePriceError] = useState("")
+
+  const FIELDS_DATA: FieldsDataMap = {
+    category: {
+      name: t("register.email"),
+      updateFunction: (error: string) => updateCategoryError(error),
+    },
+    price: {
+      name: t("register.walletAddress"),
+      updateFunction: (error: string) => updatePriceError(error),
+    },
+  }
 
   useEffect(() => {
     if (category) updateFields({ category })
@@ -76,9 +100,24 @@ export default function Sell() {
       router.push(`/product/${id}`)
     } catch (errs: any) {
       const errorTitle = update ? t("errors.updateSellorder") : t("errors.sellNft")
+      let errorFields: string = ""
+      let auxIdx = 1
+      errs.forEach((err: FetchError) => {
+        FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].updateFunction(
+          err.cause.description,
+        )
+        errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].name}`
+
+        if (auxIdx < errs.length) errorFields += ", "
+
+        auxIdx += 1
+      })
       Swal.fire({
         title: errorTitle,
-        text: t("errors.invalidField", { field: errs[0].cause.field }),
+        text:
+          errs.length === 1
+            ? t("errors.invalidField", { field: errorFields })
+            : t("errors.invalidFields", { fields: errorFields }),
         icon: "error",
       })
     }
@@ -114,6 +153,7 @@ export default function Sell() {
             name={t("sell.category")}
             options={CATEGORIES}
             value={data.category}
+            error={categoryError}
             onChange={(e) => updateFields({ category: e.target.value })}
           />
 
@@ -121,6 +161,7 @@ export default function Sell() {
             name={`${t("sell.price")} (ETH)`}
             decimals={18}
             value={data.price}
+            error={priceError}
             onChange={(e) => updateFields({ price: parseFloat(e.target.value) })}
           />
 

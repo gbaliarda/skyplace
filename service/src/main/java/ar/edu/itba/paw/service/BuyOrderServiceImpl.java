@@ -80,9 +80,14 @@ public class BuyOrderServiceImpl implements BuyOrderService {
     @Override
     public List<BuyOrder> getBuyOrdersForUser(User user, int page, String status) {
         checkPendingOrdersDateForUser(user);
-        if(!status.equals("MYSALES"))
-            return buyOrderDao.getBuyOrdersForUser(user, page, status, getPageSize());
-        return buyOrderDao.getPendingBuyOrdersToUser(user, page, getPageSize());
+        switch(status) {
+            case "ALL":
+                return buyOrderDao.getAllBuyOrdersForUser(user, page, getPageSize());
+            case "MYSALES":
+                return buyOrderDao.getPendingBuyOrdersToUser(user, page, getPageSize());
+            default:
+                return buyOrderDao.getBuyOrdersForUser(user, page, status, getPageSize());
+        }
     }
 
     @Override

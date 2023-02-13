@@ -14,7 +14,7 @@ public class CreateSellOrderForm {
     @NotNull
     private int nftId;
 
-    @ValidCategoryConstraint
+    @ValidCategoryConstraint(errorMessageTemplate = "InvalidCategoryException.message")
     private String category;
 
     @Digits(integer=18, fraction=18)

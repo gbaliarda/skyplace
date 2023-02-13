@@ -16,7 +16,8 @@ public class PathParamExceptionMapper implements ExceptionMapper<ParamException.
 
     @Override
     public Response toResponse(ParamException.PathParamException e) {
-        final ErrorDto error = ErrorDto.fromGenericException(e, 404);
+        // TODO: Check if this response is thrown
+        final ErrorDto error = ErrorDto.fromGenericException(e, 404, "ParamException.PathParamException");
         final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(error));
 
         return Response.status(Response.Status.NOT_FOUND)

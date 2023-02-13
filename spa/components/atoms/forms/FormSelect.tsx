@@ -11,7 +11,8 @@ export default function FormSelect({ options, name, value, onChange, error }: Pr
         required
         value={value}
         onChange={onChange}
-        className="pl-3 sm:text-sm rounded-lg border-slate-300 focus:ring-cyan-800 focus:border-cyan-800 text-cyan-700 placeholder:text-slate-400 shadow-sm"
+        className={`pl-3 sm:text-sm rounded-lg focus:ring-cyan-800 focus:border-cyan-800 text-cyan-700 placeholder:text-slate-400 shadow-sm
+        ${error === "" ? "border-slate-300" : "border-red-600"}`}
       >
         {options.map((category) => (
           <option key={category} value={category}>

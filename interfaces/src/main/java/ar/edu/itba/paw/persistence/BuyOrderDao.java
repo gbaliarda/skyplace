@@ -27,6 +27,8 @@ public interface BuyOrderDao {
 
     List<BuyOrder> getPendingBuyOrdersToUser(User user, int page, int pageSize);
 
+    List<BuyOrder> getAllBuyOrdersForUser(User user, int page, int pageSize);
+
     List<BuyOrder> getOrdersBySellOrderId(int page, int sellOrderId, String status, int pageSize);
 
     List<BuyOrder> getExpiredPendingOffersByUser(User user);

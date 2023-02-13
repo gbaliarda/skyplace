@@ -116,7 +116,7 @@ export default function CreateReview() {
             <FormTextArea
               name={t("reviews.description")}
               value={data.comments}
-              classes="h-60 max-h-60 w-96 pl-3 sm:text-sm rounded-lg border-slate-300 focus:ring-cyan-800 focus:border-cyan-800 text-cyan-700 placeholder:text-slate-400 shadow-sm"
+              classes="h-60 max-h-60 w-96 pl-3 sm:text-sm rounded-lg focus:ring-cyan-800 focus:border-cyan-800 text-cyan-700 placeholder:text-slate-400 shadow-sm"
               onChange={(e) => updateFields({ comments: e.target.value })}
             />
           </div>

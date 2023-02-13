@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
@@ -20,18 +21,31 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Properties;
 
 @ComponentScan({
+        "ar.edu.itba.paw.webapp.auth",
+        "ar.edu.itba.paw.webapp.config",
         "ar.edu.itba.paw.webapp.controller",
+        "ar.edu.itba.paw.webapp.dto",
+        "ar.edu.itba.paw.webapp.exceptions",
+        "ar.edu.itba.paw.webapp.form",
+        "ar.edu.itba.paw.webapp.helpers",
+        "ar.edu.itba.paw.webapp.mappers",
+        "ar.edu.itba.paw.webapp.validators",
+        "ar.edu.itba.paw.webapp.validators.interfaces",
         "ar.edu.itba.paw.service",
         "ar.edu.itba.paw.persistence",
 })
@@ -75,7 +89,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         messageSource.setCacheSeconds(5);
         return messageSource;
     }
-
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -127,6 +140,19 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("forward:/index.html");
+    }
+
+    @Bean
+    public ResourceBundleMessageSource bundleMessageSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        return messageSource;
+    }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        return new CookieLocaleResolver();
     }
 
 }

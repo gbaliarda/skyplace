@@ -3,6 +3,10 @@ package ar.edu.itba.paw.webapp.mappers;
 import ar.edu.itba.paw.exceptions.SellOrderHasPendingBuyOrderException;
 import ar.edu.itba.paw.webapp.dto.ErrorDto;
 import ar.edu.itba.paw.webapp.dto.wrappers.ResponseErrorsDto;
+import ar.edu.itba.paw.webapp.helpers.ApiReturnCodes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -14,11 +18,14 @@ import java.util.Collections;
 @Provider
 public class SellOrderHasPendingBuyOrderExceptionMapper implements ExceptionMapper<SellOrderHasPendingBuyOrderException> {
 
+    @Autowired
+    private MessageSource messageSource;
+
     @Override
     public Response toResponse(SellOrderHasPendingBuyOrderException e) {
-        final ErrorDto error = ErrorDto.fromGenericException(e, 403, "41");
+        final String errorMessage = messageSource.getMessage(e.getMessage(), null, LocaleContextHolder.getLocale());
+        final ErrorDto error = ErrorDto.fromGenericException(e, 403, errorMessage, ApiReturnCodes.SELLORDER_ALREADY_HAS_PENDING_BUYORDER.getCode());
         final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(error));
-
 
         return Response.status(Response.Status.FORBIDDEN)
                 .entity(new GenericEntity<ResponseErrorsDto>(errorList){})

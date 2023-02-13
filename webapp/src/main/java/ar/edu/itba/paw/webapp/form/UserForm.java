@@ -10,12 +10,12 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@FieldsEqualConstraint(first = "password", second = "passwordRepeat")
+@FieldsEqualConstraint(first = "password", second = "passwordRepeat", errorMessageTemplate = "PasswordsEqualConstraint.userForm")
 public class UserForm {
 
     @NotBlank
     @Email
-    @UniqueEmailConstraint
+    @UniqueEmailConstraint(errorMessageTemplate = "UniqueEmailConstraint.email")
     private String email;
 
     @NotBlank
@@ -23,13 +23,13 @@ public class UserForm {
     private String walletAddress;
 
     @NotBlank
-    @ValidChainConstraint
+    @ValidChainConstraint(errorMessageTemplate = "InvalidChainException.message")
     private String walletChain;
 
     @NotBlank
     @Size(min = 6, max = 20)
     @Pattern(regexp = "[a-zA-Z][a-zA-Z0-9]*")
-    @UniqueUsernameConstraint
+    @UniqueUsernameConstraint(errorMessageTemplate = "UniqueUsernameConstraint.username")
     private String username;
 
     @NotBlank

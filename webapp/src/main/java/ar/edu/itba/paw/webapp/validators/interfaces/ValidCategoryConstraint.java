@@ -16,4 +16,6 @@ public @interface ValidCategoryConstraint {
     String message() default "Invalid category";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+
+    String errorMessageTemplate();
 }

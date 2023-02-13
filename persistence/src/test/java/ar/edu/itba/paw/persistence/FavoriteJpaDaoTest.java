@@ -24,7 +24,8 @@ import static org.junit.Assert.*;
 @Transactional
 public class FavoriteJpaDaoTest {
     @Autowired
-    private FavoriteJpaDao favoriteJpaDao;
+    private
+    FavoriteJpaDao favoriteJpaDao;
 
     @PersistenceContext
     private EntityManager em;

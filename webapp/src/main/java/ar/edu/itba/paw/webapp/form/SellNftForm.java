@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.form;
 import ar.edu.itba.paw.webapp.validators.interfaces.ValidCategoryConstraint;
 
 public class SellNftForm extends PriceForm {
-    @ValidCategoryConstraint
+    @ValidCategoryConstraint(errorMessageTemplate = "InvalidCategoryException.message")
     private String category;
 
     public String getCategory() {

@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.exceptions;
 public class InvalidParameterException extends RuntimeException{
 
     private static final long serialVersionUID = -2402437139501496045L;
-    private static final String MESSAGE = "Invalid parameter sent";
+    private static final String MESSAGE = "InvalidParameterException.message";
     private final String parameter;
 
     public InvalidParameterException(String parameter) {

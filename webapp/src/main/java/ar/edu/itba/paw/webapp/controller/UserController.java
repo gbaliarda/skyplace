@@ -13,6 +13,7 @@ import ar.edu.itba.paw.webapp.dto.reviews.ReviewDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewStarScoreDto;
 import ar.edu.itba.paw.webapp.dto.reviews.ReviewsDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
+import ar.edu.itba.paw.webapp.exceptions.ReviewNotFoundException;
 import ar.edu.itba.paw.webapp.form.ReviewForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import ar.edu.itba.paw.webapp.helpers.ResponseHelpers;
@@ -273,7 +274,7 @@ public class UserController {
             ReviewDto dto = ReviewDto.fromReview(uriInfo, maybeReview.get());
             return Response.ok(dto).build();
         }
-        throw new NotFoundException();
+        throw new ReviewNotFoundException();
     }
 
     @DELETE

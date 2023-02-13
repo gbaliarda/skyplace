@@ -1,11 +1,10 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.webapp.exceptions.InvalidParameterException;
+import ar.edu.itba.paw.webapp.helpers.ApiReturnCodes;
 
 import javax.validation.ConstraintViolation;
 import javax.ws.rs.ClientErrorException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ErrorDto {
 
@@ -16,40 +15,44 @@ public class ErrorDto {
     private String detail;
     private SourceDto source;
 
-    public static ErrorDto fromGenericException(final RuntimeException e, final int statusCode){
+    public static ErrorDto fromGenericException(final RuntimeException e, final int statusCode, final String message){
         final ErrorDto dto = new ErrorDto();
 
         dto.status = statusCode;
-        dto.title = e.getMessage();
+        dto.title = message;
+        // dto.title = e.getMessage();
 
         return dto;
     }
 
-    public static ErrorDto fromGenericException(final RuntimeException e, final int statusCode, final String internalCode){
+    public static ErrorDto fromGenericException(final RuntimeException e, final int statusCode, final String message, final String internalCode){
         final ErrorDto dto = new ErrorDto();
 
         dto.status = statusCode;
-        dto.title = e.getMessage();
+        dto.title = message;
+        // dto.title = e.getMessage();
         dto.code = internalCode;
 
         return dto;
     }
 
-    public static ErrorDto fromClientErrorException(final ClientErrorException e){
+    public static ErrorDto fromClientErrorException(final ClientErrorException e, final String message){
         final ErrorDto dto = new ErrorDto();
 
         dto.status = e.getResponse().getStatus();
-        dto.title = e.getResponse().getStatusInfo().getReasonPhrase();
+        dto.title = message;
+        // dto.title = e.getResponse().getStatusInfo().getReasonPhrase();
 
         return dto;
     }
 
-    public static ErrorDto fromInvalidParameterException(final InvalidParameterException e) {
+    public static ErrorDto fromInvalidParameterException(final InvalidParameterException e, final String message) {
         final ErrorDto dto = new ErrorDto();
 
         dto.status = 400;
-        dto.code = "10";
-        dto.title = e.getMessage();
+        dto.code = ApiReturnCodes.EMPTY_PARAMETER.getCode();
+        dto.title = message;
+        // dto.title = e.getMessage();
         dto.source = new SourceDto();
         dto.source.setParameter(e.getParameter());
 
@@ -60,9 +63,9 @@ public class ErrorDto {
         final ErrorDto dto = new ErrorDto();
 
         dto.status = 400;
-        dto.code = "11";                        // TODO: Check if this is not needed
+        dto.code = ApiReturnCodes.INVALID_PARAMETER.getCode();                        // TODO: Check if this is not needed
         if(vex.getInvalidValue() == null)
-            dto.code = "10";
+            dto.code = ApiReturnCodes.EMPTY_PARAMETER.getCode();
         dto.source = new SourceDto();
         dto.source.setPointer(getPointerString(vex.getPropertyPath().toString()));
         dto.title = vex.getMessage();

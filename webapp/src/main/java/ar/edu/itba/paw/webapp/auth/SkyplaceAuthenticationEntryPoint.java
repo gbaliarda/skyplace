@@ -18,8 +18,9 @@ public class SkyplaceAuthenticationEntryPoint implements AuthenticationEntryPoin
     private final Gson gson = new Gson();
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        final ErrorDto dto = ErrorDto.fromGenericException(authException, HttpServletResponse.SC_FORBIDDEN);
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        // TODO: Check if spring puts i18n message
+        final ErrorDto dto = ErrorDto.fromGenericException(authException, HttpServletResponse.SC_FORBIDDEN, authException.getLocalizedMessage());
         final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));
         response.setContentType(MediaType.APPLICATION_JSON);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);

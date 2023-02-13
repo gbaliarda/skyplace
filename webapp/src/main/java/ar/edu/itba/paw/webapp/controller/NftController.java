@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.exceptions.NftNotFoundException;
 import ar.edu.itba.paw.model.Nft;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.FavoriteService;

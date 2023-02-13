@@ -4,10 +4,14 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.dto.ErrorDto;
 import ar.edu.itba.paw.webapp.dto.wrappers.ResponseErrorsDto;
+import ar.edu.itba.paw.webapp.helpers.ApiReturnCodes;
 import ar.edu.itba.paw.webapp.helpers.Pair;
 import com.google.gson.Gson;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,6 +34,9 @@ import java.util.*;
 
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private MessageSource messageSource;
 
     private final UserService userService;
     private final SkyplaceUserDetailsService userDetailsService;
@@ -83,7 +90,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 try {
                     token = userDetailsService.restLogin(userPass[0], userPass[1]);
                 } catch (UsernameNotFoundException e) {
-                    setErrorResponse(response, e, HttpServletResponse.SC_BAD_REQUEST, "21");
+                    setErrorResponse(response, e, HttpServletResponse.SC_BAD_REQUEST, ApiReturnCodes.INVALID_USER_PASSWORD.getCode());
                     return;
                 }
 
@@ -106,10 +113,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         setResponseTokens(response, email);
 
                 } catch (ExpiredJwtException e) {
-                    setErrorResponse(response, e, HttpServletResponse.SC_UNAUTHORIZED, "14");
+                    setErrorResponse(response, e, HttpServletResponse.SC_UNAUTHORIZED, ApiReturnCodes.EXPIRED_JWT.getCode());
                     return;
                 } catch (UsernameNotFoundException e) {
-                    setErrorResponse(response, e, HttpServletResponse.SC_BAD_REQUEST, "21");
+                    setErrorResponse(response, e, HttpServletResponse.SC_BAD_REQUEST, ApiReturnCodes.INVALID_USER_PASSWORD.getCode());
                     return;
                 }
                 break;
@@ -140,7 +147,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private void setErrorResponse(HttpServletResponse r, RuntimeException e, int statusCode, String internalCode) throws IOException {
         final Gson gson = new Gson();
-        final ErrorDto dto = ErrorDto.fromGenericException(e, statusCode, internalCode);
+        final String errorMessage = messageSource.getMessage(e.getMessage(), null, LocaleContextHolder.getLocale());
+        final ErrorDto dto = ErrorDto.fromGenericException(e, statusCode, errorMessage, internalCode);
         final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));
         r.setContentType(MediaType.APPLICATION_JSON);
         r.setStatus(statusCode);

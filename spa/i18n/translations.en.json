@@ -71,8 +71,8 @@
     "updateSellorder": "Error updating sell order",
     "createNft": "Error creating NFT",
     "createReview": "Error creating review",
-    "invalidFieldError": "Field {{ field }} is invalid",
-    "invalidFieldsError": "Fields {{ fields }} are invalid"
+    "invalidField": "Field {{ field }} is invalid",
+    "invalidFields": "Fields {{ fields }} are invalid"
   },
   "buyorders": {
     "ALL": "All",

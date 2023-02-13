@@ -24,7 +24,8 @@ export default function FormType({
         required={isRequired}
         autoComplete="off"
         placeholder={placeholder}
-        className="pl-3 sm:text-sm rounded-lg border-slate-300 focus:ring-cyan-800 focus:border-cyan-800 text-cyan-700 placeholder:text-slate-400 shadow-sm"
+        className={`pl-3 sm:text-sm rounded-lgfocus:ring-cyan-800 focus:border-cyan-800 text-cyan-700 placeholder:text-slate-400 shadow-sm
+          ${error === "" ? "border-slate-300" : "border-red-600"}`}
       />
     </FormInput>
   )

@@ -53,9 +53,9 @@ public class SkyplaceUserDetailsService implements UserDetailsService {
 
     public UsernamePasswordAuthenticationToken restLogin(String email, String password) throws UsernameNotFoundException {
         final User user = us.getUserByEmail(email).
-                orElseThrow(() -> new UsernameNotFoundException("No such user with credentials sent"));
+                orElseThrow(() -> new UsernameNotFoundException("UsernameNotFoundException.message"));
         if(!passwordEncoder.matches(password, user.getPassword())) {
-            throw new UsernameNotFoundException("No such user with credentials sent");
+            throw new UsernameNotFoundException("UsernameNotFoundERxception.message");
         }
 
         final List<GrantedAuthority> roles = new ArrayList<>();
@@ -69,7 +69,7 @@ public class SkyplaceUserDetailsService implements UserDetailsService {
 
     public UsernamePasswordAuthenticationToken jwtLogin(String email) throws UsernameNotFoundException {
         final User user = us.getUserByEmail(email).
-                orElseThrow(() -> new UsernameNotFoundException("No such user with credentials sent"));
+                orElseThrow(() -> new UsernameNotFoundException("UsernameNotFoundException.message"));
 
         final List<GrantedAuthority> roles = new ArrayList<>();
         for(String rol:Role.getRoles()) {
@@ -78,18 +78,6 @@ public class SkyplaceUserDetailsService implements UserDetailsService {
             }
         }
         return new UsernamePasswordAuthenticationToken(email, user.getPassword(), roles);
-    }
-
-    public void autologin(String username, String password) {
-        UserDetails userDetails = loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
-
-        Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-
-        if (auth.isAuthenticated()) {
-            SecurityContextHolder.getContext().setAuthentication(auth);
-        }
-
     }
 
 }

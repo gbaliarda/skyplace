@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { FormEvent } from "react"
+import { FormEvent, useState } from "react"
 // @ts-ignore
 import { useTranslation } from "next-export-i18n"
 import Swal from "sweetalert2"
@@ -22,6 +22,15 @@ interface FormData {
   confirmPassword: string
 }
 
+interface FieldData {
+  name: string
+  updateFunction: (error: string) => void
+}
+
+interface FieldsDataMap {
+  [key: string]: FieldData
+}
+
 const INITIAL_DATA: FormData = {
   email: "",
   wallet: "",
@@ -34,6 +43,12 @@ const INITIAL_DATA: FormData = {
 export default function Register() {
   const router = useRouter()
   const [data, updateFields] = useForm<FormData>(INITIAL_DATA)
+  const [emailError, updateEmailError] = useState("")
+  const [walletError, updateWalletError] = useState("")
+  const [walletChainError, updateWalletChainError] = useState("")
+  const [usernameError, updateUsernameError] = useState("")
+  const [passwordError, updatePasswordError] = useState("")
+  const [passwordRepeatError, updatePasswordRepeatError] = useState("")
   const { t } = useTranslation()
 
   const homeRedirect = () => {
@@ -51,20 +66,54 @@ export default function Register() {
       await createUser(data)
       homeRedirect()
     } catch (errs: any) {
-      const errorMessage: string =
-        errs.length === 1
-          ? t("errors.invalidField", { field: errs[0].cause.field })
-          : t("errors.invalidFields", {
-              fields: errs.map((err: FetchError) => {
-                return err.cause.field
-              }),
-            })
+      let errorFields: string = ""
+      let auxIdx = 1
+      errs.forEach((err: FetchError) => {
+        FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].updateFunction(
+          err.cause.description,
+        )
+        errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].name}`
+
+        if (auxIdx < errs.length) errorFields += ", "
+
+        auxIdx += 1
+      })
       Swal.fire({
         title: t("register.error"),
-        text: errorMessage,
+        text:
+          errs.length === 1
+            ? t("errors.invalidField", { field: errorFields })
+            : t("errors.invalidFields", { fields: errorFields }),
         icon: "error",
       })
     }
+  }
+
+  const FIELDS_DATA: FieldsDataMap = {
+    email: {
+      name: t("register.email"),
+      updateFunction: (error: string) => updateEmailError(error),
+    },
+    walletAddress: {
+      name: t("register.walletAddress"),
+      updateFunction: (error: string) => updateWalletError(error),
+    },
+    walletChain: {
+      name: t("register.walletChain"),
+      updateFunction: (error: string) => updateWalletChainError(error),
+    },
+    username: {
+      name: t("register.username"),
+      updateFunction: (error: string) => updateUsernameError(error),
+    },
+    password: {
+      name: t("register.password"),
+      updateFunction: (error: string) => updatePasswordError(error),
+    },
+    passwordRepeat: {
+      name: t("register.passwordRepeat"),
+      updateFunction: (error: string) => updatePasswordRepeatError(error),
+    },
   }
 
   return (
@@ -90,34 +139,40 @@ export default function Register() {
                 name={t("register.email")}
                 type="email"
                 value={data.email}
+                error={emailError}
                 onChange={(e) => updateFields({ email: e.target.value })}
               />
               <FormType
                 name={t("register.walletAddress")}
                 value={data.wallet}
+                error={walletError}
                 onChange={(e) => updateFields({ wallet: e.target.value })}
               />
               <FormSelect
                 name={t("register.walletChain")}
                 options={CHAINS}
                 value={data.walletChain}
+                error={walletChainError}
                 onChange={(e) => updateFields({ walletChain: e.target.value })}
               />
               <FormType
                 name={t("register.username")}
                 value={data.username}
+                error={usernameError}
                 onChange={(e) => updateFields({ username: e.target.value })}
               />
               <FormType
                 name={t("register.password")}
                 type="password"
                 value={data.password}
+                error={passwordError}
                 onChange={(e) => updateFields({ password: e.target.value })}
               />
               <FormType
                 name={t("register.passwordRepeat")}
                 type="password"
                 value={data.confirmPassword}
+                error={passwordRepeatError}
                 onChange={(e) => updateFields({ confirmPassword: e.target.value })}
               />
             </div>

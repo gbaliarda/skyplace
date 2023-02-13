@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef } from "react"
+import { FormEvent, useEffect, useRef, useState } from "react"
 import { useTranslation } from "next-export-i18n"
 import Swal from "sweetalert2"
 import { useRouter } from "next/router"
@@ -12,6 +12,7 @@ import FormTextArea from "../components/atoms/forms/FormTextArea"
 import FormFile from "../components/atoms/forms/FormFile"
 import useSession from "../hooks/useSession"
 import { fetcher } from "../services/endpoints"
+import { FetchError } from "../types/FetchError"
 
 export const CHAINS = [
   "Ethereum",
@@ -43,12 +44,61 @@ const INITIAL_DATA: FormData = {
   description: "",
 }
 
+interface FieldData {
+  name: string
+  updateFunction: (error: string) => void
+}
+
+interface FieldsDataMap {
+  [key: string]: FieldData
+}
+
 export default function Create() {
   const { t } = useTranslation()
+
+  const [nameError, updateNameError] = useState("")
+  const [contractAddrError, updateContractAddrError] = useState("")
+  const [collectionError, updateCollectionError] = useState("")
+  const [descriptionError, updateDescriptionError] = useState("")
+  const [nftIdError, updateNftIdError] = useState("")
+  const [chainError, updateChainError] = useState("")
+  const [imageError, updateImageError] = useState("")
+
   const [data, updateFields] = useForm<FormData>(INITIAL_DATA)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const { accessToken } = useSession()
+
+  const FIELDS_DATA: FieldsDataMap = {
+    name: {
+      name: t("create.name"),
+      updateFunction: (error: string) => updateNameError(error),
+    },
+    contractAddr: {
+      name: t("create.contract"),
+      updateFunction: (error: string) => updateContractAddrError(error),
+    },
+    collection: {
+      name: t("create.collection"),
+      updateFunction: (error: string) => updateCollectionError(error),
+    },
+    description: {
+      name: t("create.description"),
+      updateFunction: (error: string) => updateDescriptionError(error),
+    },
+    nftId: {
+      name: "Id",
+      updateFunction: (error: string) => updateNftIdError(error),
+    },
+    chain: {
+      name: "Blockchain",
+      updateFunction: (error: string) => updateChainError(error),
+    },
+    image: {
+      name: t("create.image"),
+      updateFunction: (error: string) => updateImageError(error),
+    },
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -84,9 +134,24 @@ export default function Create() {
         })
       })
     } catch (errs: any) {
-      await Swal.fire({
+      let errorFields: string = ""
+      let auxIdx = 1
+      errs.forEach((err: FetchError) => {
+        FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].updateFunction(
+          err.cause.description,
+        )
+        errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].name}`
+
+        if (auxIdx < errs.length) errorFields += ", "
+
+        auxIdx += 1
+      })
+      Swal.fire({
         title: t("errors.createNft"),
-        text: t("errors.invalidField", { field: errs[0].cause.field }),
+        text:
+          errs.length === 1
+            ? t("errors.invalidField", { field: errorFields })
+            : t("errors.invalidFields", { fields: errorFields }),
         icon: "error",
       })
     }
@@ -116,12 +181,14 @@ export default function Create() {
             name={t("create.name")}
             placeholder="Space Ape"
             value={data.name}
+            error={nameError}
             onChange={(e) => updateFields({ name: e.target.value })}
           />
 
           <FormNumber
             name="Id"
             value={data.tokenId}
+            error={nftIdError}
             onChange={(e) => updateFields({ tokenId: parseInt(e.target.value) })}
           />
 
@@ -129,6 +196,7 @@ export default function Create() {
             name={t("create.contract")}
             placeholder="0xabcdef0123456789ABCDEF0123456789abcdef01"
             value={data.contractAddress}
+            error={contractAddrError}
             onChange={(e) => updateFields({ contractAddress: e.target.value })}
           />
 
@@ -136,6 +204,7 @@ export default function Create() {
             name="Blockchain"
             options={CHAINS}
             value={data.blockchain}
+            error={chainError}
             onChange={(e) => updateFields({ blockchain: e.target.value })}
           />
 
@@ -143,16 +212,18 @@ export default function Create() {
             name={t("create.collection")}
             placeholder="Crypto Apes"
             value={data.collection}
+            error={collectionError}
             onChange={(e) => updateFields({ collection: e.target.value })}
           />
 
-          <FormFile name={t("create.image")} ref={fileInputRef} />
+          <FormFile name={t("create.image")} ref={fileInputRef} error={imageError} />
 
           <FormTextArea
             name={t("create.description")}
             placeholder=""
             value={data.description}
-            classes="min-h-16 max-h-32 pl-3 sm:text-sm rounded-lg border-slate-300 focus:ring-cyan-800 focus:border-cyan-800 text-cyan-700 placeholder:text-slate-400 shadow-sm"
+            error={descriptionError}
+            classes="min-h-16 max-h-32 pl-3 sm:text-sm rounded-lg focus:ring-cyan-800 focus:border-cyan-800 text-cyan-700 placeholder:text-slate-400 shadow-sm"
             onChange={(e) => updateFields({ description: e.target.value })}
           />
 

@@ -20,7 +20,7 @@ export default function FormTextArea({
         onChange={onChange}
         autoComplete="off"
         placeholder={placeholder}
-        className={classes}
+        className={`${classes}${error === "" ? "border-slate-300" : "border-red-600"}`}
       />
     </FormInput>
   )

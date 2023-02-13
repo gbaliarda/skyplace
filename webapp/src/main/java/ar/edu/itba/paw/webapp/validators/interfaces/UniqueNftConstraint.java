@@ -22,4 +22,6 @@ public @interface UniqueNftConstraint {
     String nftId();
     String contractAddr();
     String chain();
+
+    String errorMessageTemplate();
 }

@@ -18,4 +18,5 @@ public @interface ImageConstraint {
     Class<? extends Payload>[] payload() default {};
 
     double maxSizeMB();
+    String errorMessageTemplate();
 }

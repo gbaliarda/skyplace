@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.*;
 
-@UniqueNftConstraint(nftId = "nftId", contractAddr = "contractAddr", chain = "chain")
+@UniqueNftConstraint(nftId = "nftId", contractAddr = "contractAddr", chain = "chain", errorMessageTemplate = "UniqueNftConstraint.createNftForm")
 public class CreateNftForm {
     @Digits(integer = 15, fraction = 0)
     @Min(value=0L)
@@ -23,7 +23,7 @@ public class CreateNftForm {
     private String name;
 
     @NotBlank
-    @ValidChainConstraint
+    @ValidChainConstraint(errorMessageTemplate = "InvalidChainException.message")
     private String chain;
 
     @NotBlank

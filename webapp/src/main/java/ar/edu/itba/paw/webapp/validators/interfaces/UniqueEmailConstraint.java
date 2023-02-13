@@ -14,6 +14,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueEmailConstraint {
     String message() default "User with email sent already exists";
+    // String message() default "{UniqueEmailConstraint.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+
+    String errorMessageTemplate();
 }

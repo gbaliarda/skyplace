@@ -24,4 +24,5 @@ public @interface FieldsEqualConstraint {
 
     String first();
     String second();
+    String errorMessageTemplate();
 }

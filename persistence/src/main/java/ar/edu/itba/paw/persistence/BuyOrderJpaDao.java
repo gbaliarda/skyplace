@@ -147,6 +147,35 @@ public class BuyOrderJpaDao implements BuyOrderDao {
     /**
      * Retrieves a list of buy orders for a certain user, with or without filters.
      * @param page number of the page to retrieve.
+     * @param pageSize number of buy orders that can contain a single page
+     * @return A list of pageSize or less elements with all the different buy orders in a certain page for a certain user.
+     */
+    @Override
+    public List<BuyOrder> getAllBuyOrdersForUser(User user, int page, int pageSize) {
+        final Query idQuery = em.createNativeQuery("SELECT id_sellorder, id_buyer FROM nfts INNER JOIN users ON nfts.id_owner=users.id INNER JOIN sellorders ON sellorders.id_nft=nfts.id INNER JOIN buyorders ON sellorders.id=buyorders.id_sellorder WHERE users.id=:userId OR id_buyer=:userId LIMIT :pageSize OFFSET :offset");
+        idQuery.setParameter("userId",user.getId());
+        idQuery.setParameter("pageSize", pageSize);
+        idQuery.setParameter("offset", (page-1) * pageSize);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> res = (List<Object[]>) idQuery.getResultList();
+        List<BuyOrderId> buyOrderIds = new ArrayList<>();
+
+        for(Object[] r:res)
+            buyOrderIds.add(new BuyOrderId((int)r[0],(int)r[1]));
+
+        if(buyOrderIds.size() == 0)
+            return Collections.emptyList();
+
+        final TypedQuery<BuyOrder> query = em.createQuery("FROM BuyOrder b WHERE b.buyOrderId IN :buyOrderIds",BuyOrder.class);
+        query.setParameter("buyOrderIds",buyOrderIds);
+        return query.getResultList();
+    }
+
+
+    /**
+     * Retrieves a list of buy orders for a certain user, with or without filters.
+     * @param page number of the page to retrieve.
      * @param status Status name to filter, if no valid status received, no filter applied.
      * @param pageSize number of buy orders that can contain a single page
      * @return A list of pageSize or less elements with all the different buy orders in a certain page for a certain user.
@@ -186,9 +215,11 @@ public class BuyOrderJpaDao implements BuyOrderDao {
      */
     @Override
     public List<BuyOrder> getPendingBuyOrdersToUser(User user, int page, int pageSize) {
-        final Query idQuery = em.createNativeQuery("SELECT id_sellorder, id_buyer FROM  nfts INNER JOIN users ON nfts.id_owner=users.id INNER JOIN sellorders ON sellorders.id_nft=nfts.id INNER JOIN buyorders ON sellorders.id=buyorders.id_sellorder WHERE users.id=:userId AND status=:pendingStatus");
+        final Query idQuery = em.createNativeQuery("SELECT id_sellorder, id_buyer FROM nfts INNER JOIN users ON nfts.id_owner=users.id INNER JOIN sellorders ON sellorders.id_nft=nfts.id INNER JOIN buyorders ON sellorders.id=buyorders.id_sellorder WHERE users.id=:userId LIMIT :pageSize OFFSET :offset"); //" AND status=:pendingStatus");
         idQuery.setParameter("userId",user.getId());
-        idQuery.setParameter("pendingStatus", StatusBuyOrder.PENDING.name());
+        idQuery.setParameter("pageSize", pageSize);
+        idQuery.setParameter("offset", (page-1) * pageSize);
+        // idQuery.setParameter("pendingStatus", StatusBuyOrder.PENDING.name());
 
         @SuppressWarnings("unchecked")
         List<Object[]> res = (List<Object[]>) idQuery.getResultList();

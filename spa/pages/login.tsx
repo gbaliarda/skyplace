@@ -37,9 +37,8 @@ export default function Login() {
       await router.replace(from === undefined ? "/" : from)
       setLoggingIn(false)
     } catch (errs: any) {
-      console.log(errs[0].name, errs[0].message)
       setLoggingIn(false)
-      Swal.fire({ title: t("login.signInError"), text: errs[0].message, icon: "error" })
+      Swal.fire({ title: t("login.signInError"), text: errs[0].cause.description, icon: "error" })
     }
   }
 

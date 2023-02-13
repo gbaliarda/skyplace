@@ -3,6 +3,9 @@ package ar.edu.itba.paw.webapp.mappers;
 import ar.edu.itba.paw.webapp.dto.ErrorDto;
 import ar.edu.itba.paw.webapp.dto.wrappers.ResponseErrorsDto;
 import ar.edu.itba.paw.webapp.exceptions.InvalidNftFormException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -13,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Provider
-public class InvalidFormExceptionMapper implements ExceptionMapper<InvalidNftFormException> {
+public class InvalidNftFormExceptionMapper implements ExceptionMapper<InvalidNftFormException> {
 
     @Override
     public Response toResponse(InvalidNftFormException e) {

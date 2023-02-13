@@ -4,6 +4,8 @@ import ar.edu.itba.paw.service.NftService;
 import ar.edu.itba.paw.webapp.validators.interfaces.UniqueNftConstraint;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
@@ -13,17 +15,23 @@ import javax.validation.ConstraintValidatorContext;
 public class UniqueNftConstraintValidator implements ConstraintValidator<UniqueNftConstraint, Object> {
 
     @Autowired
-    private NftService nftServiceImpl;
+    private NftService nftService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     private String nftId;
     private String contractAddr;
     private String chain;
 
+    private String errorMessageTemplate;
+
     @Override
     public void initialize(UniqueNftConstraint arg0) {
-        this.nftId = arg0.nftId();
-        this.contractAddr = arg0.contractAddr();
-        this.chain = arg0.chain();
+        nftId = arg0.nftId();
+        contractAddr = arg0.contractAddr();
+        chain = arg0.chain();
+        errorMessageTemplate = arg0.errorMessageTemplate();
     }
 
     @Override
@@ -33,7 +41,13 @@ public class UniqueNftConstraintValidator implements ConstraintValidator<UniqueN
         String contractAddrObj = (String)wrapper.getPropertyValue(contractAddr);
         String chainObj = (String)wrapper.getPropertyValue(chain);
         // TODO: Fix service autowire injection (is null on runtime)
-        // return !nftServiceImpl.isNftCreated(nftIdObj, contractAddrObj, chainObj);
+        // return !nftService.isNftCreated(nftIdObj, contractAddrObj, chainObj);
+        if (false) {
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext
+                    .buildConstraintViolationWithTemplate(messageSource.getMessage(errorMessageTemplate, null, LocaleContextHolder.getLocale()))
+                    .addConstraintViolation();
+        }
         return true;
     }
 }
