@@ -40,14 +40,13 @@ public class UniqueNftConstraintValidator implements ConstraintValidator<UniqueN
         int nftIdObj = (int)wrapper.getPropertyValue(nftId);
         String contractAddrObj = (String)wrapper.getPropertyValue(contractAddr);
         String chainObj = (String)wrapper.getPropertyValue(chain);
-        // TODO: Fix service autowire injection (is null on runtime)
-        // return !nftService.isNftCreated(nftIdObj, contractAddrObj, chainObj);
-        if (false) {
+        boolean notExists = !nftService.isNftCreated(nftIdObj, contractAddrObj, chainObj);
+        if (notExists) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext
                     .buildConstraintViolationWithTemplate(messageSource.getMessage(errorMessageTemplate, null, LocaleContextHolder.getLocale()))
                     .addConstraintViolation();
         }
-        return true;
+        return notExists;
     }
 }

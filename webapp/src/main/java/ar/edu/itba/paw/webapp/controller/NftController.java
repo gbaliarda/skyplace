@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.*;
@@ -64,19 +65,16 @@ public class NftController {
         return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, lastPage).build();
     }
 
-    @Consumes({ MediaType.MULTIPART_FORM_DATA, })
+    @Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON })
     @POST
-    public Response createNft(@ModelAttribute @FormDataParam("model") FormDataBodyPart model,
-                              @FormDataParam("image") InputStream imageInput) throws InvalidNftFormException {
-        if(model == null)
+    public Response createNft(@FormDataParam("image") InputStream imageInput,
+                              @Valid @FormDataParam("model") CreateNftForm nftForm) {
+        if(nftForm == null)
             throw new NoBodyException();
         Optional<User> currentUser = userService.getCurrentUser();
         if(!currentUser.isPresent())
             return Response.status(Response.Status.UNAUTHORIZED).build();
         try {
-            model.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-            CreateNftForm nftForm = model.getValueAs(CreateNftForm.class);
-            NftFormValidator.validateForm(nftForm);
             byte[] image = IOUtils.toByteArray(imageInput);
             final Nft newNft = nftService.create(nftForm.getNftId(), nftForm.getContractAddr(), nftForm.getName(), nftForm.getChain(), image, currentUser.get().getId(), nftForm.getCollection(), nftForm.getDescription());
 

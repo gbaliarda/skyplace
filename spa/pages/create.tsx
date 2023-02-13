@@ -114,7 +114,12 @@ export default function Create() {
       collection: data.collection,
       description: data.description,
     }
-    fd.append("model", JSON.stringify(body))
+    fd.append(
+      "model",
+      new Blob([JSON.stringify(body)], {
+        type: "application/json",
+      }),
+    )
 
     try {
       await fetcher(
