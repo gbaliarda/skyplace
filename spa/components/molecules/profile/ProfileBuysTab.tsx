@@ -44,9 +44,7 @@ export default function ProfileBuysTab({
       {buyorders.length > 0 ? (
         <div className="flex flex-col gap-2 w-3/4 max-w-4xl self-center">
           {buyorders.map((value) => {
-            return (
-              <ProfileBuyorderCard buyorder={value} key={value.self.toString()} />
-            )
+            return <ProfileBuyorderCard buyorder={value} key={value.self.toString()} />
           })}
         </div>
       ) : (
