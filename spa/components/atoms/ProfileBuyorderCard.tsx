@@ -12,10 +12,9 @@ import ErrorBox from "./ErrorBox"
 
 interface Props {
   buyorder: Buyorder
-  status: string | undefined
 }
 
-export default function ProfileBuyorderCard({ buyorder, status }: Props) {
+export default function ProfileBuyorderCard({ buyorder }: Props) {
   const { t } = useTranslation()
   const { userId } = useSession()
 
@@ -98,20 +97,30 @@ export default function ProfileBuyorderCard({ buyorder, status }: Props) {
                   <Skeleton className="w-48" />
                 ) : (
                   <div suppressHydrationWarning className="text-jacarta-500 block text-sm">
-                    {!userIsBidder
-                      ? 
-                        <p>
-                          <Link href={`/profile/${bidder?.id}`}>
-                            <a className="text-cyan-600 hover:text-cyan-800 hover:underline cursor-pointer">{bidder?.username}</a>
-                          </Link>
-                          {t("buyorders.forSale", { bidder: bidder?.username, amount: buyorder.amount })}
-                        </p>
-                      : t("buyorders.bidded", { amount: buyorder.amount })}
+                    {!userIsBidder ? (
+                      <p>
+                        <Link href={`/profile/${bidder?.id}`}>
+                          <a className="text-cyan-600 hover:text-cyan-800 hover:underline cursor-pointer">
+                            {bidder?.username}
+                          </a>
+                        </Link>
+                        {t("buyorders.forSale", {
+                          bidder: bidder?.username,
+                          amount: buyorder.amount,
+                        })}
+                      </p>
+                    ) : (
+                      t("buyorders.bidded", { amount: buyorder.amount })
+                    )}
                   </div>
                 )}
                 <p suppressHydrationWarning className="text-sm pt-3 text-cyan-600">
-                  {buyorder.status === "NEW" && <span className="text-slate-500">{t("buyorders.pending")}</span>}
-                  {buyorder.status === "PENDING" && <span className="text-yellow-600">{t("buyorders.accepted")}</span>}
+                  {buyorder.status === "NEW" && (
+                    <span className="text-slate-500">{t("buyorders.pending")}</span>
+                  )}
+                  {buyorder.status === "PENDING" && (
+                    <span className="text-yellow-600">{t("buyorders.accepted")}</span>
+                  )}
                 </p>
               </div>
             )}

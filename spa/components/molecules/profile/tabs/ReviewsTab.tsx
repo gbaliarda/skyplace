@@ -7,7 +7,6 @@ import Paginator from "../../Paginator"
 import ErrorBox from "../../../atoms/ErrorBox"
 import Loader from "../../../atoms/Loader"
 import { usePurchases } from "../../../../services/purchases"
-import useSession from "../../../../hooks/useSession"
 import { api } from "../../../../services/endpoints"
 
 interface Props {

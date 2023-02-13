@@ -45,7 +45,7 @@ export default function ProfileBuysTab({
         <div className="flex flex-col gap-2 w-3/4 max-w-4xl self-center">
           {buyorders.map((value) => {
             return (
-              <ProfileBuyorderCard buyorder={value} status={status} key={value.self.toString()} />
+              <ProfileBuyorderCard buyorder={value} key={value.self.toString()} />
             )
           })}
         </div>

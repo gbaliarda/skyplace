@@ -5,7 +5,7 @@ import { Review } from "../../types/Review"
 import { useUser } from "../../services/users"
 import { deleteReview } from "../../services/reviews"
 import { getResourceUrl } from "../../services/endpoints"
-import useSession from '../../hooks/useSession';
+import useSession from "../../hooks/useSession"
 
 export default function ReviewItem({
   review,
@@ -90,16 +90,16 @@ export default function ReviewItem({
       <h3 className="font-semibold text-gray-500 mt-4">{review.title}</h3>
       <p className="mb-2 mt-1 font-light text-gray-500">{review.comments}</p>
       {/* The button to open modal */}
-      { (userId === reviewerId || roles?.includes("Admin")) &&
+      {(userId === reviewerId || roles?.includes("Admin")) && (
         <div className="flex flex-row items-center justify-end">
           <button
             onClick={handleOpenDeleteModal}
             className="btn normal-case shadow-md px-6 py-2.5 rounded-md transition duration-300 bg-red-500 hover:bg-red-900 text-white hover:shadow-xl cursor-pointer"
-            >
+          >
             {t("profile.deleteReview")}
           </button>
         </div>
-      }
+      )}
     </div>
   )
 }
