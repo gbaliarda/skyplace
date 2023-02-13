@@ -12,9 +12,10 @@ import { useUserUrl } from "../../../services/users"
 
 interface Props {
   nft: Nft
+  isOwner: boolean
 }
 
-const ProductDropdown = ({ nft }: Props) => {
+const ProductDropdown = ({ nft, isOwner }: Props) => {
   const { t } = useTranslation()
   const router = useRouter()
   const { accessToken } = useSession()
@@ -89,18 +90,20 @@ const ProductDropdown = ({ nft }: Props) => {
           tabIndex={0}
           className="dropdown-content menu mt-2 border border-gray-300 text-sm shadow bg-base-100 rounded-md"
         >
-          <li>
-            <Link
-              href={`/sell/${nft.id}?update=${sellorder?.id}&category=${sellorder?.category}&price=${sellorder?.price}`}
-            >
-              <span
-                suppressHydrationWarning
-                className="text-xs whitespace-nowrap hover:bg-gray-600 rounded-t-md hover:text-white transition-none py-2"
+          {isOwner && (
+            <li>
+              <Link
+                href={`/sell/${nft.id}?update=${sellorder?.id}&category=${sellorder?.category}&price=${sellorder?.price}`}
               >
-                {t("product.updateSell")}
-              </span>
-            </Link>
-          </li>
+                <span
+                  suppressHydrationWarning
+                  className="text-xs whitespace-nowrap hover:bg-gray-600 rounded-t-md hover:text-white transition-none py-2"
+                >
+                  {t("product.updateSell")}
+                </span>
+              </Link>
+            </li>
+          )}
           <li>
             <button
               onClick={handleDeleteSellorder}
@@ -116,16 +119,18 @@ const ProductDropdown = ({ nft }: Props) => {
           tabIndex={0}
           className="dropdown-content menu mt-2 border border-gray-300 text-sm shadow bg-base-100 rounded-md"
         >
-          <li>
-            <Link href={`/sell/${nft.id}`}>
-              <span
-                suppressHydrationWarning
-                className="text-xs whitespace-nowrap hover:bg-gray-600 rounded-t-md hover:text-white transition-none py-2"
-              >
-                {t("product.sell")}
-              </span>
-            </Link>
-          </li>
+          {isOwner && (
+            <li>
+              <Link href={`/sell/${nft.id}`}>
+                <span
+                  suppressHydrationWarning
+                  className="text-xs whitespace-nowrap hover:bg-gray-600 rounded-t-md hover:text-white transition-none py-2"
+                >
+                  {t("product.sell")}
+                </span>
+              </Link>
+            </li>
+          )}
           <li>
             <button
               onClick={handleDeleteNft}
