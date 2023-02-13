@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.webapp.exceptions.BuyOrderNotFoundException;
+import ar.edu.itba.paw.exceptions.BuyOrderNotFoundException;
 import ar.edu.itba.paw.exceptions.SellOrderNotFoundException;
 import ar.edu.itba.paw.exceptions.UserNoPermissionException;
 import ar.edu.itba.paw.exceptions.UserNotFoundException;

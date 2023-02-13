@@ -195,17 +195,21 @@ public class BuyOrderServiceImpl implements BuyOrderService {
     public Optional<Integer> validateTransaction(String txHash, int sellOrderId, int buyerId) {
         if(!sellOrderService.getOrderById(sellOrderId).isPresent())
             throw new SellOrderNotFoundException();
+
         if(purchaseService.isTxHashAlreadyInUse(txHash))
-            return Optional.empty();
+            throw new TransactionAlreadyUsedException();
 
         Optional<BuyOrder> buyOrder = getPendingBuyOrder(sellOrderId);
-        if(!buyOrder.isPresent() || !buyOrder.get().getStatus().equals(StatusBuyOrder.PENDING))
-            return Optional.empty();
+        if(!buyOrder.isPresent())
+            throw new BuyOrderNotFoundException();
+        if(!buyOrder.get().getStatus().equals(StatusBuyOrder.PENDING))
+            throw new BuyOrderIsNotPendingException();
+
         User seller = buyOrder.get().getOfferedFor().getNft().getOwner();
         User buyer = userService.getUserById(buyerId).orElseThrow(UserNotFoundException::new);
         boolean isValid = etherscanService.isTransactionValid(txHash, buyer.getWallet(), seller.getWallet(), buyOrder.get().getAmount());
         if(!isValid)
-            return Optional.empty();
+            throw new NoTransactionFromUserToAnotherException(buyer.getUsername(), seller.getUsername(), buyOrder.get().getAmount());
 
         return confirmBuyOrder(sellOrderId, buyerId, txHash);
     }
