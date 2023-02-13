@@ -12,13 +12,19 @@ import com.google.gson.Gson;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.i18n.SimpleLocaleContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.servlet.support.RequestContext;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.FilterChain;
@@ -59,6 +65,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final Key jwtKey;
 
+    private final static List<Locale> SUPPORTED_LOCALES = Arrays.asList(new Locale("en"), new Locale("es"));
+
     public JwtAuthorizationFilter(SkyplaceUserDetailsService userDetailsService, UserService userService) {
         this.userService = userService;
         this.userDetailsService = userDetailsService;
@@ -74,11 +82,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String prefix = "";
         String credentials = "";
 
+        // Set locale
+        String requestedLocales = request.getHeader(HttpHeaders.ACCEPT_LANGUAGE);
+        if(requestedLocales != null) {
+            List<Locale.LanguageRange> requestedLocalesList = Locale.LanguageRange.parse(requestedLocales);
+            System.out.println("SETEO EL LOCALE CONTEXT HOLDER EN " + Locale.lookup(requestedLocalesList, SUPPORTED_LOCALES));
+            LocaleContextHolder.setLocale(Locale.lookup(requestedLocalesList, SUPPORTED_LOCALES));
+        }
+        response.addHeader(HttpHeaders.CONTENT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
+
         String headerContent = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(headerContent != null){
+        if(headerContent != null) {
             String[] contentInfo = headerContent.split(" ", 2);
-            if(contentInfo.length == 2){
+            if(contentInfo.length == 2) {
                 prefix = contentInfo[0].toLowerCase(Locale.ROOT);
                 credentials = contentInfo[1];
             }
@@ -128,6 +145,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             default:
                 break;
         }
+
         // go to the next filter in the filter chain
         chain.doFilter(request, response);
     }
@@ -152,6 +170,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private void setErrorResponse(HttpServletResponse r, RuntimeException e, int statusCode, String internalCode) throws IOException {
         final Gson gson = new Gson();
+        System.out.println("EL LOCALE CONTEXT HOLDER ES " + LocaleContextHolder.getLocale());
+        System.out.println("EL LOCALE DEFAULT ES " + Locale.getDefault());
         final String errorMessage = messageSource.getMessage(e.getMessage(), null, LocaleContextHolder.getLocale());
         final ErrorDto dto = ErrorDto.fromGenericException(e, statusCode, errorMessage, internalCode);
         final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));
