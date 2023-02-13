@@ -73,6 +73,10 @@ const BuyorderCard = ({ buyorder, owner, index, url, refetchData }: Props) => {
 
   const handleRemoveOffer = async () => {
     try {
+      if (isUserOwner) {
+        const { isConfirmed } = await Swal.fire({ title: t("product.confirmRemoveOffer"), text: t("product.deleteNftInfo"), icon: "warning", showCancelButton: true })
+        if (!isConfirmed) return
+      }
       await fetcher(`/sellorders/${sellorder!!.id}/buyorders/${offerer.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${accessToken}` },
