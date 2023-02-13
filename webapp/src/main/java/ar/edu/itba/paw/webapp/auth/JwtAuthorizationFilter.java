@@ -4,6 +4,8 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.dto.ErrorDto;
 import ar.edu.itba.paw.webapp.dto.wrappers.ResponseErrorsDto;
+import ar.edu.itba.paw.webapp.exceptions.SkyplaceExpiredJwtException;
+import ar.edu.itba.paw.webapp.exceptions.SkyplaceMalformedJwtException;
 import ar.edu.itba.paw.webapp.helpers.ApiReturnCodes;
 import ar.edu.itba.paw.webapp.helpers.Pair;
 import com.google.gson.Gson;
@@ -113,7 +115,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         setResponseTokens(response, email);
 
                 } catch (ExpiredJwtException e) {
-                    setErrorResponse(response, e, HttpServletResponse.SC_UNAUTHORIZED, ApiReturnCodes.EXPIRED_JWT.getCode());
+                    setErrorResponse(response, new SkyplaceExpiredJwtException(), HttpServletResponse.SC_UNAUTHORIZED, ApiReturnCodes.EXPIRED_JWT.getCode());
+                    return;
+                } catch (MalformedJwtException e) {
+                    setErrorResponse(response, new SkyplaceMalformedJwtException(), HttpServletResponse.SC_BAD_REQUEST, ApiReturnCodes.MALFORMED_JWT.getCode());
                     return;
                 } catch (UsernameNotFoundException e) {
                     setErrorResponse(response, e, HttpServletResponse.SC_BAD_REQUEST, ApiReturnCodes.INVALID_USER_PASSWORD.getCode());

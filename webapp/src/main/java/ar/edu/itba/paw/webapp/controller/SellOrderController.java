@@ -145,11 +145,11 @@ public class SellOrderController {
     @Produces({ MediaType.APPLICATION_JSON, })
     public Response getBuyOrderFromUserId(@PathParam("id") int id, @PathParam("userId") int userId) {
         Optional<BuyOrder> buyorder = buyOrderService.getBuyOrder(id, userId);
-        if (!buyorder.isPresent())
-            throw new NotFoundException();
-
-        BuyOrderDto dto = BuyOrderDto.fromBuyOrder(buyorder.get(), uriInfo);
-        return Response.ok(dto).build();
+        if(buyorder.isPresent()) {
+            BuyOrderDto dto = BuyOrderDto.fromBuyOrder(buyorder.get(), uriInfo);
+            return Response.ok(dto).build();
+        }
+        throw new BuyOrderNotFoundException();
     }
 
     @POST
