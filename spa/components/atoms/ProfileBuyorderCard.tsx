@@ -7,7 +7,6 @@ import { useNftUrl } from "../../services/nfts"
 import { useImageUrl } from "../../services/images"
 import { useUserUrl } from "../../services/users"
 import useSession from "../../hooks/useSession"
-import { getResourceUrl } from "../../services/endpoints"
 import ErrorBox from "./ErrorBox"
 
 interface Props {
@@ -50,8 +49,7 @@ export default function ProfileBuyorderCard({ buyorder }: Props) {
     mutateSellorder()
   }
 
-  const imageSrc =
-    img !== undefined ? getResourceUrl(`data:image/jpg;base64,${img.image.toString()}`) : undefined
+  const imageSrc = img !== undefined ? `data:image/jpg;base64,${img.image.toString()}` : undefined
   const nftName = `${nft?.nftName} #${nft?.nftId}`
   const userIsBidder = bidder?.id === userId
 
