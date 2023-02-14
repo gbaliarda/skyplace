@@ -69,7 +69,7 @@ export const genericFetcher = (
   withHeaders: boolean = false,
   retryWithRefreshToken: boolean = true,
 ): any =>
-  fetch(baseUrl + resource, options)
+  fetch(baseUrl + resource, { ...options, headers: { ...options?.headers, "Accept-Language": navigator.language }  })
     .then(checkStatus)
     // Do not throw if the response's status is 204 (no content, body empty)
     .then((res) => {
