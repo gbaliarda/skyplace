@@ -61,7 +61,7 @@ const Card = ({ nft, mutateFavs, isFaved }: Props) => {
     </div>
   ) : (
     <Link
-      href={`/product/${nft.id}`}
+      href={`/product?id=${nft.id}`}
       className="hover:underline decoration-2 decoration-cyan-500 underline-offset-4"
     >
       <a>

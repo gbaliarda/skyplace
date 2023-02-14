@@ -42,7 +42,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
 
   const productLink = () => {
     if (purchase.nft.id !== undefined) {
-      return `/product/${purchase.nft.id}`
+      return `/product?id=${purchase.nft.id}`
     }
     return "javascript:void(0)"
   }

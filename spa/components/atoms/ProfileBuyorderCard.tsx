@@ -54,7 +54,7 @@ export default function ProfileBuyorderCard({ buyorder }: Props) {
   const userIsBidder = bidder?.id === userId
 
   return (
-    <Link href={`/product/${nft?.id}`} className="flex inset-0 absolute w-full gap-2">
+    <Link href={`/product?id=${nft?.id}`} className="flex inset-0 absolute w-full gap-2">
       <a>
         <div className="border-jacarta-100 rounded-2.5xl h-32 relative flex items-center border bg-white p-4 transition-shadow hover:shadow-lg z-0 cursor-pointer">
           <div className="flex flex-row items-center ml-4">

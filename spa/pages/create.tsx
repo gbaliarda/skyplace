@@ -139,7 +139,7 @@ export default function Create() {
       ).then((result: any) => {
         Swal.fire({ title: t("create.createSuccess"), icon: "success" }).then(() => {
           const url = result.headers.get("Location").replace(/\/$/, "")
-          router.push(`/product/${url.split("/").slice(-1)}`)
+          router.push(`/product?id=${url.split("/").slice(-1)}`)
         })
       })
     } catch (errs: any) {
