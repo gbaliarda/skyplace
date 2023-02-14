@@ -24,7 +24,6 @@ public class PurchaseJpaDao implements PurchaseDao {
     @PersistenceContext
     private EntityManager em;
 
-    // FIXME: Falta paginacion
     @Override
     public List<Purchase> getUserSales(int userId) {
         final TypedQuery<Purchase> query = em.createQuery("FROM Purchase p WHERE p.buyer.id = :userId", Purchase.class);
@@ -32,7 +31,6 @@ public class PurchaseJpaDao implements PurchaseDao {
         return query.getResultList();
     }
 
-    // FIXME: Falta paginacion
     @Override
     public List<Purchase> getUserPurchases(int userId) {
         final TypedQuery<Purchase> query = em.createQuery("FROM Purchase p WHERE p.seller.id = :userId", Purchase.class);
@@ -40,7 +38,6 @@ public class PurchaseJpaDao implements PurchaseDao {
         return query.getResultList();
     }
 
-    // FIXME: Falta paginacion
     @Override
     public List<Purchase> getTransactionsBetweenUsers(int user1Id, int user2Id, int page, int pageSize) {
         final Query idQuery = em.createNativeQuery("SELECT id FROM purchases WHERE id_buyer = :user1 AND id_seller = :user2 OR id_buyer = :user2 AND id_seller = :user1 ORDER BY buy_date DESC LIMIT :pageSize OFFSET :offset");
