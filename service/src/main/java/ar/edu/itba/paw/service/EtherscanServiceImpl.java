@@ -136,7 +136,6 @@ public class EtherscanServiceImpl implements EtherscanService {
         }
 
         boolean valid = from.equalsIgnoreCase(walletBuyer) && to.equalsIgnoreCase(walletSeller) && value.compareTo(price) == 0;
-        System.out.println(valid);
 
         con.disconnect();
         return valid;

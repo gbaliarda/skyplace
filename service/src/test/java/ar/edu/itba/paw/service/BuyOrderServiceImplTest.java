@@ -282,30 +282,24 @@ public class BuyOrderServiceImplTest {
         buyOrderService.deleteBuyOrder(ID_SELLORDER, ID_BUYER);
     }
 
-    /*
-    @Test
+    @Test(expected = TransactionAlreadyUsedException.class)
     public void testValidateTransactionOnTxAlreadyInUse(){
         Mockito.when(purchaseService.isTxHashAlreadyInUse(TX_HASH)).thenReturn(true);
         Mockito.doReturn(Optional.of(new SellOrder(null, null, null))).when(sellOrderService).getOrderById(ID_SELLORDER);
-        Optional<Integer> result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
 
-        assertFalse(result.isPresent());
+        buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
     }
 
-    @Test
+    @Test(expected = BuyOrderNotFoundException.class)
     public void testValidateTransactionOnBuyOrderNotPresent(){
         Mockito.when(purchaseService.isTxHashAlreadyInUse(TX_HASH)).thenReturn(false);
         Mockito.when(buyOrderService.getPendingBuyOrder(ID_SELLORDER)).thenReturn(Optional.empty());
         Mockito.doReturn(Optional.of(new SellOrder(null, null, null))).when(sellOrderService).getOrderById(ID_SELLORDER);
 
-        Optional<Integer> result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
-
-        assertFalse(result.isPresent());
+        buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
     }
 
-
-
-    @Test
+    @Test(expected = BuyOrderIsNotPendingException.class)
     public void testValidateTransactionOnBuyOrderNotPending(){
         User seller = new User(ID_USER2, USERNAME_USER2, WALLET_USER2, MAIL_USER2, PASSWORD_USER2, WALLETCHAIN_USER2, ROLE_USER2, LOCALE_USER2);
         User bidder = new User(ID_USER1, USERNAME_USER1, WALLET_USER1, MAIL_USER1, PASSWORD_USER1, WALLETCHAIN_USER1, ROLE_USER1, LOCALE_USER1);
@@ -317,11 +311,8 @@ public class BuyOrderServiceImplTest {
         Mockito.when(buyOrderService.getPendingBuyOrder(ID_SELLORDER)).thenReturn(Optional.of(buyOrder));
         Mockito.doReturn(Optional.of(new SellOrder(null, null, null))).when(sellOrderService).getOrderById(ID_SELLORDER);
 
-        Optional<Integer> result = buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
-
-        assertFalse(result.isPresent());
+        buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
     }
-     */
 
     @Test(expected = UserNotFoundException.class)
     public void testValidateTransactionOnInvalidUser(){
@@ -339,8 +330,7 @@ public class BuyOrderServiceImplTest {
         buyOrderService.validateTransaction(TX_HASH, ID_SELLORDER, ID_BUYER);
     }
 
-    /*
-    @Test
+    @Test(expected = NoTransactionFromUserToAnotherException.class)
     public void testValidateTransactionOnInvalidTransaction(){
         User seller = new User(ID_USER2, USERNAME_USER2, WALLET_USER2, MAIL_USER2, PASSWORD_USER2, WALLETCHAIN_USER2, ROLE_USER2, LOCALE_USER2);
         User bidder = new User(ID_USER1, USERNAME_USER1, WALLET_USER1, MAIL_USER1, PASSWORD_USER1, WALLETCHAIN_USER1, ROLE_USER1, LOCALE_USER1);
@@ -358,8 +348,6 @@ public class BuyOrderServiceImplTest {
 
         assertFalse(result.isPresent());
     }
-
-     */
 
     @Test
     public void testNftHasValidTransactionOnSellOrderNotValid(){

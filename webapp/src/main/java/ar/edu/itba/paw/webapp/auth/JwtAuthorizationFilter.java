@@ -86,7 +86,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String requestedLocales = request.getHeader(HttpHeaders.ACCEPT_LANGUAGE);
         if(requestedLocales != null) {
             List<Locale.LanguageRange> requestedLocalesList = Locale.LanguageRange.parse(requestedLocales);
-            System.out.println("SETEO EL LOCALE CONTEXT HOLDER EN " + Locale.lookup(requestedLocalesList, SUPPORTED_LOCALES));
             LocaleContextHolder.setLocale(Locale.lookup(requestedLocalesList, SUPPORTED_LOCALES));
         }
         response.addHeader(HttpHeaders.CONTENT_LANGUAGE, LocaleContextHolder.getLocale().toLanguageTag());
@@ -170,8 +169,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private void setErrorResponse(HttpServletResponse r, RuntimeException e, int statusCode, String internalCode) throws IOException {
         final Gson gson = new Gson();
-        System.out.println("EL LOCALE CONTEXT HOLDER ES " + LocaleContextHolder.getLocale());
-        System.out.println("EL LOCALE DEFAULT ES " + Locale.getDefault());
         final String errorMessage = messageSource.getMessage(e.getMessage(), null, LocaleContextHolder.getLocale());
         final ErrorDto dto = ErrorDto.fromGenericException(e, statusCode, errorMessage, internalCode);
         final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));

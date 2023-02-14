@@ -22,7 +22,6 @@ public class NftNotFoundExceptionMapper implements ExceptionMapper<NftNotFoundEx
 
     @Override
     public Response toResponse(NftNotFoundException e) {
-        System.out.println(messageSource.toString());
         final String errorMessage = messageSource.getMessage(e.getMessage(), null, LocaleContextHolder.getLocale());
         final ErrorDto error = ErrorDto.fromGenericException(e, 404, errorMessage);
         final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(error));

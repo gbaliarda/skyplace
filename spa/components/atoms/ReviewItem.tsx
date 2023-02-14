@@ -17,7 +17,7 @@ export default function ReviewItem({
   mutateReviews: () => void
 }) {
   const { t } = useTranslation()
-  const { userId, roles } = useSession()
+  const { userId, roles, accessToken } = useSession()
 
   const reviewerId = parseInt(review.reviewer.toString().split("/").slice(-1)[0])
   const reviewerProfileUrl: string = `/profile?id=${reviewerId}`
@@ -46,7 +46,7 @@ export default function ReviewItem({
       cancelButtonText: t("reviews.cancelDelete"),
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteReview(revieweeId, review.id).then(() => mutateReviews())
+        deleteReview(revieweeId, review.id, accessToken).then(() => mutateReviews())
       }
     })
   }
