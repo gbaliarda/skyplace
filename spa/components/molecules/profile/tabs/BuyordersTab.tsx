@@ -29,6 +29,10 @@ export default function BuyordersTab({ userId }: Props) {
     [url],
   )
 
+  const refetchBuyorders = () => {
+    refetchData(defaultURL)
+  }
+
   useEffect(() => {
     setUrl({
       baseUrl: `${api}/users/${userId}/buyorders?page=1`,
@@ -52,6 +56,7 @@ export default function BuyordersTab({ userId }: Props) {
       status={status}
       setStatus={setStatus}
       buyorders={buyorders}
+      updateBuyorders={refetchBuyorders}
     />
   )
 }

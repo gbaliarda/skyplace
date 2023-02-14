@@ -12,6 +12,7 @@ interface Props {
   status: string
   setStatus: (status: string) => void
   buyorders: Buyorder[] // TODO: Add history items type
+  updateBuyorders: () => void
   amountPages: number
 }
 
@@ -21,6 +22,7 @@ export default function ProfileBuysTab({
   status,
   setStatus,
   buyorders,
+  updateBuyorders,
   amountPages,
 }: Props) {
   const { t } = useTranslation()
@@ -44,7 +46,13 @@ export default function ProfileBuysTab({
       {buyorders.length > 0 ? (
         <div className="flex flex-col gap-2 w-3/4 max-w-4xl self-center">
           {buyorders.map((value) => {
-            return <ProfileBuyorderCard buyorder={value} key={value.self.toString()} />
+            return (
+              <ProfileBuyorderCard
+                buyorder={value}
+                updateBuyorders={updateBuyorders}
+                key={value.self.toString()}
+              />
+            )
           })}
         </div>
       ) : (

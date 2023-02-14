@@ -84,7 +84,11 @@
     "forSale": " ofertó {{amount}} ETH por tu NFT",
     "pendingDate": "oferta realizada el {{date}}",
     "pending": "Oferta propuesta",
-    "accepted": "Oferta aceptada, pendiente de confirmación de pago"
+    "accepted": "Oferta aceptada, pendiente de confirmación de pago",
+    "confirmOffer": "Confirmar oferta",
+    "deleteOffer": "Borrar oferta",
+    "offerDeleted": "Oferta borrada",
+    "offerDeletedText": "Se borró la oferta de forma exitosa"
   },
   "common": {
     "sell": "Vender un NFT",
