@@ -37,6 +37,11 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <url-pattern>/api/*</url-pattern>
   </servlet-mapping>
 
+  <error-page>
+    <error-code>404</error-code>
+    <location>/404.html</location>
+  </error-page>
+
   <filter>
     <filter-name>encoding-filter</filter-name>
     <filter-class>
