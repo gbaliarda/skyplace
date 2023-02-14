@@ -31,5 +31,5 @@ De gbaliarda@itba.edu.ar a pescudeiro@itba.edu.ar
 
 - Gonzalo Baliarda - 61490
 - Ezequiel Perez - 61475
-- Nicolas Birsa - 
+- Nicolas Birsa - 61482
 - Valentin Ye Li - 61011 
