@@ -2,6 +2,7 @@ package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.exceptions.InvalidReviewException;
 import ar.edu.itba.paw.exceptions.NoTransactionBetweenUsersException;
+import ar.edu.itba.paw.exceptions.UserNoPermissionException;
 import ar.edu.itba.paw.exceptions.UserNotFoundException;
 import ar.edu.itba.paw.model.Review;
 import ar.edu.itba.paw.model.User;
@@ -113,8 +114,9 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public void deleteReview(int reviewId) {
         Optional<User> maybeUser = userService.getCurrentUser();
-        if(maybeUser.isPresent() && hasDeletePermission(reviewId, maybeUser.get().getId()))
-            reviewDao.deleteReview(reviewId);
+        if(!maybeUser.isPresent() || !hasDeletePermission(reviewId, maybeUser.get().getId()))
+            throw new UserNoPermissionException();
+        reviewDao.deleteReview(reviewId);
     }
 
     @Override
