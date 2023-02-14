@@ -17,9 +17,9 @@ const NavbarDropdown = () => {
   const isAuthenticated: boolean = userId !== null
 
   let userProfileUrl = ""
-  let userBuyordersUrl = "?tab=buyorders"
-  let userSellordersUrl = "?tab=selling"
-  let userFavoritesUrl = "?tab=favorited"
+  let userBuyordersUrl = "&tab=buyorders"
+  let userSellordersUrl = "&tab=selling"
+  let userFavoritesUrl = "&tab=favorited"
 
   if (isAuthenticated) {
     userProfileUrl = `/profile?id=${userId}`

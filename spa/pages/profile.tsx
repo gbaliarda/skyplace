@@ -48,8 +48,6 @@ export default function Profile() {
     )
   if (errors || (router.isReady && Number.isNaN(parsedUserId))) router.push("/404")
 
-  const profilePath = `/profile?id=${id}`
-
   const activeTabClasses = "border-b-2 border-cyan-600 text-cyan-600 active pb-3"
   const inactiveTabClasses = "border-transparent hover:text-gray-700 pb-3"
 
@@ -74,8 +72,9 @@ export default function Profile() {
                   <li className={tabClasses} key={value.key}>
                     <Link
                       href={{
-                        pathname: profilePath,
+                        pathname: "/profile",
                         query: {
+                          id: router.query.id,
                           tab: value.key,
                         },
                       }}

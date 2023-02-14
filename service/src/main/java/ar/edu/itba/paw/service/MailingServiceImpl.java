@@ -41,10 +41,7 @@ public class MailingServiceImpl implements MailingService{
 
     private static final String PROFILE_BASE_URL = "http://pawserver.it.itba.edu.ar/paw-2022a-09/profile?id=";
 
-    private static final String REVIEW_BASE_URL = "http://pawserver.it.itba.edu.ar/paw-2022a-09/review/";
-
-    private final static String CREATE_REVIEW_SUFFIX = "/create";
-
+    private static final String REVIEW_BASE_URL = "http://pawserver.it.itba.edu.ar/paw-2022a-09/review?id=";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailingServiceImpl.class);
 
@@ -246,7 +243,7 @@ public class MailingServiceImpl implements MailingService{
             context.setVariable("nftAddress", nftAddress);
             context.setVariable("offerPrice", offerPrice.toPlainString());
             context.setVariable("productUrl", PRODUCT_BASE_URL + productId);
-            context.setVariable("reviewUrl", REVIEW_BASE_URL + sellerId + CREATE_REVIEW_SUFFIX);
+            context.setVariable("reviewUrl", REVIEW_BASE_URL + sellerId);
             context.setVariable("logoResourceName", "logo");
             context.setVariable("nftImageResourceName", "nftImage");
             context.setVariable("userImageResourceName", "userImage");

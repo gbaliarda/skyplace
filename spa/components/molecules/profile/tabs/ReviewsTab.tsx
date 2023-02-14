@@ -61,7 +61,7 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
   }
 
   const auxEmpty = ["e", "e", "e", "e"]
-  const newReviewPath = `/review/${userId}/create`
+  const newReviewPath = `/review?id=${userId}`
 
   if (errors)
     return <ErrorBox errorMessage={t("errors.errorLoadingTab")} retryAction={reloadReviews} />
@@ -133,7 +133,6 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
               {t("profile.reviews")}
             </h2>
 
-            {/* TODO: check if totalPurchasesPagesBetweenUsers is 0 if no purchases */}
             {totalPurchasesPagesBetweenUsers !== 0 &&
               totalReviewsBetweenUsers === 0 &&
               loggedInUser !== userId && (
@@ -148,16 +147,6 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
                   </a>
                 </Link>
               )}
-
-            {/* TODO: add permission check */}
-
-            {/* <c:if test="${param.canReview == true}">
-                          <a href="<c:url value='/review/${param.userId}/create'/>">
-                              <button type="button" className="shadow-md px-6 py-2.5 rounded-md transition duration-300 bg-cyan-600 hover:bg-cyan-800 text-white hover:shadow-xl">
-                                  <spring:message code="profile.addReview" />
-                              </button>
-                          </a>
-                      </c:if> */}
           </div>
 
           {total === 0 ? (

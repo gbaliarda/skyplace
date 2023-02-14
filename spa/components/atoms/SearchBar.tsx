@@ -54,6 +54,7 @@ const SearchBar = () => {
           name="search"
           className="pl-2 outline-none w-full border-none p-0 focus:border-none focus:ring-0"
           type="text"
+          suppressHydrationWarning
           placeholder={t("navbar.search")}
           value={searchFilter.search}
           onChange={(ev) => setSearchFilter({ ...searchFilter, search: ev.currentTarget.value })}
