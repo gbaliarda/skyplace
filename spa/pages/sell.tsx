@@ -3,16 +3,16 @@ import Error from "next/error"
 import { FormEvent, useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import { useTranslation } from "next-export-i18n"
-import { useNft } from "../../services/nfts"
-import Layout from "../../components/Layout"
-import useForm from "../../hooks/useForm"
-import FormSelect from "../../components/atoms/forms/FormSelect"
-import FormNumber from "../../components/atoms/forms/FormNumber"
-import FormSubmit from "../../components/atoms/forms/FormSubmit"
-import Navbar from "../../components/molecules/Navbar"
-import { sendJson } from "../../services/endpoints"
-import useSession from "../../hooks/useSession"
-import { FetchError } from "../../types/FetchError"
+import { useNft } from "../services/nfts"
+import Layout from "../components/Layout"
+import useForm from "../hooks/useForm"
+import FormSelect from "../components/atoms/forms/FormSelect"
+import FormNumber from "../components/atoms/forms/FormNumber"
+import FormSubmit from "../components/atoms/forms/FormSubmit"
+import Navbar from "../components/molecules/Navbar"
+import { sendJson } from "../services/endpoints"
+import useSession from "../hooks/useSession"
+import { FetchError } from "../types/FetchError"
 
 const CATEGORIES = [
   "Collectible",
@@ -75,6 +75,7 @@ export default function Sell() {
   }
 
   useEffect(() => {
+    if (router.isReady && !id) router.push("/404")
     if (category) updateFields({ category })
     if (price) updateFields({ price })
     // eslint-disable-next-line react-hooks/exhaustive-deps

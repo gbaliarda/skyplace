@@ -93,7 +93,7 @@ const ProductDropdown = ({ nft, isOwner }: Props) => {
           {isOwner && (
             <li>
               <Link
-                href={`/sell/${nft.id}?update=${sellorder?.id}&category=${sellorder?.category}&price=${sellorder?.price}`}
+                href={`/sell?id=${nft.id}&update=${sellorder?.id}&category=${sellorder?.category}&price=${sellorder?.price}`}
               >
                 <span
                   suppressHydrationWarning
@@ -121,7 +121,7 @@ const ProductDropdown = ({ nft, isOwner }: Props) => {
         >
           {isOwner && (
             <li>
-              <Link href={`/sell/${nft.id}`}>
+              <Link href={`/sell?id=${nft.id}`}>
                 <span
                   suppressHydrationWarning
                   className="text-xs whitespace-nowrap hover:bg-gray-600 rounded-t-md hover:text-white transition-none py-2"

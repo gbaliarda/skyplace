@@ -254,7 +254,7 @@ const Product = () => {
                     {nft?.sellorder === undefined &&
                       currentUserId !== null &&
                       currentUserId === owner?.id && (
-                        <Link href={`/sell/${nft?.id}`}>
+                        <Link href={`/sell?id=${nft?.id}`}>
                           <a
                             suppressHydrationWarning
                             className="btn normal-case font-medium bg-cyan-600 hover:bg-cyan-800 text-white px-6 rounded-md border-0"
