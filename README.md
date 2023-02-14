@@ -1,5 +1,45 @@
 # Skyplace
 
+Skyplace es un Marketplace de NFTs.
+
+La aplicación consiste en un proyecto maven que se ocupa de buildear tanto el frontend (SPA, NextJS) como el backend (API REST, Spring + Jersey), en un único WAR que luego puede ser deployado a un servidor como Tomcat.
+
+La interfaz web fue testeada en los navegadores Chrome y Firefox en sus últimas versiones.
+
+## Estructura del backend
+
+El backend esta estructurado en un modelo de N-capas, compuesto de los siguientes módulos:
+- webapp: implementa las rutas de la API REST, haciendo uso de la capa de `services`.
+- services: se encarga de ejecutar la lógica de negocio, conectando los controladores presentes en la capa de `webapp` con la capa de `persistence`.
+- persistence: se encarga de manejar el acceso a los datos, conectando la base de datos (PostgreSQL) con la aplicación.
+- interfaces: contiene los contratos para las implementaciones tanto de la capa de `services` como de `persistence`.
+- models: contiene las entidades que se usan en la aplicación (ORM-based entities for JPA).
+
+Las rutas de la API se encuentran detras de `/api`, y emplean un mecanismo de autorización basado en JWT, donde cada usuario tiene tanto un `accessToken` como un `refreshToken`.
+- Cuando el `accessToken` expira, se pide uno nuevo haciendo uso del `refreshToken`.
+- Cuando el `refreshToken` expira, el usuario debe solicitar un par nuevo de tokens.
+
+Para generar el par de JWTs, se emplea un mecanismo de `Authorization: Basic`.
+
+## Frontend
+
+El frontend consiste en una SPA hecha con NextJS + Typescript, haciendo uso de la funcionalidad de *static export* del framework.
+
+El mismo es accesible en la ruta `/` de la aplicación.
+
+Para correr en modo desarrollo, se puede navegar a la carpeta `/spa` y ejecutar el comando:
+```
+npm run dev
+```
+
+Para generar los archivos estáticos que luego son copiados al módulo de `webapp` del backend, se debe ejecutar el comando:
+```
+npm run build
+```
+
+Los tokens JWT son almacenados en `localStorage` si el usuario desea mantener sesión iniciada, o en `sessionStorage` si desea que sus credenciales desaparezcan al cerrar la sesión de su navegador.
+
+
 ### Credenciales de usuarios para los distintos niveles de acceso
 
 #### Admin:
@@ -14,7 +54,7 @@ Los **admins** pueden moderar el contenido publicado, es decir, borrar NFTs pert
 
 Los **users** son los usuarios regulares que pueden crearse desde el registro dentro de la aplicación, pueden crear, publicar, comprar otros productos y realizar reseñas a otros usuarios.
 
-### Transacciones en Goerli (No se puede usar más de 1 vez la misma)
+### Transacciones en Goerli para probar (no se puede usar más de 1 vez la misma)
 De pescudeiro@itba.edu.ar a gbaliarda@itba.edu.ar
 
 - 0xd53b38bafe933fb80bfd48c9634e20b292e65edd243ad5761e5f220d7f3f619e (0.05 ETH)
