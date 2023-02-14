@@ -27,13 +27,7 @@ public class ImageConstraintValidator implements ConstraintValidator<ImageConstr
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext constraintValidatorContext) {
         boolean result = multipartFile != null && !multipartFile.isEmpty() &&
                 multipartFile.getContentType().startsWith("image/") && multipartFile.getSize() <= maxSizeMB * 1048576;
-        /*
-        if(multipartFile == null || multipartFile.isEmpty() || !multipartFile.getContentType().startsWith("image/")) {
-            return false;
-        }
-        return multipartFile.getSize() <= maxSizeMB * 1048576;
-
-         */
+                
         if (!result) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext

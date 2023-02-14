@@ -36,21 +36,17 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
   const {
     total: totalReviewsBetweenUsers,
     loading: loadingReviewsBetweenUsers,
-    errors: errorsReviewsBetweenUsers,
     refetchData: refetchDataBetweenUsers,
   } = useReviews({
     baseUrl: `${api}/users/${userId}/reviews?page=1`,
     reviewer: loggedInUser ?? undefined,
   })
 
-  const {
-    totalPages: totalPurchasesPagesBetweenUsers,
-    loading: loadingPurchasesBetweenUsers,
-    errors: errorsPurchasesBetweenUsers,
-  } = usePurchases({
-    baseUrl: `${api}/users/${loggedInUser}/purchases?page=1`,
-    purchaser: userId ?? undefined,
-  })
+  const { totalPages: totalPurchasesPagesBetweenUsers, loading: loadingPurchasesBetweenUsers } =
+    usePurchases({
+      baseUrl: `${api}/users/${loggedInUser}/purchases?page=1`,
+      purchaser: userId ?? undefined,
+    })
 
   const reloadReviews = () => {
     refetchData(defaultURL)
@@ -65,15 +61,8 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
 
   if (errors)
     return <ErrorBox errorMessage={t("errors.errorLoadingTab")} retryAction={reloadReviews} />
-  if (loading) return <Loader className="grow flex items-center justify-center mb-32" />
-
-  /* TODO: Add error and reload on checking */
-
-  if (loadingReviewsBetweenUsers) return <span>CARGANDO REVIEWS</span>
-  if (errorsReviewsBetweenUsers) return <span>ERROR REVIEWS</span>
-
-  if (loadingPurchasesBetweenUsers) return <span>CARGANDO PURCHASES</span>
-  if (errorsPurchasesBetweenUsers) return <span>ERROR PURCHASES</span>
+  if (loading || loadingReviewsBetweenUsers || loadingPurchasesBetweenUsers)
+    return <Loader className="grow flex items-center justify-center mb-32" />
 
   return (
     <>

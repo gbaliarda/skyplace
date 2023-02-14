@@ -42,7 +42,6 @@ const FilterSideBar = ({
       })
     } else {
       let newArray: FilterValueType[]
-      // TODO: Check if this is the best way, without the switch setFilters shows ts(2349) error
       switch (filterType) {
         case FilterType.CATEGORY:
           newArray = filters[FilterType.CATEGORY]!!.filter((v: Category) => v !== newValue)

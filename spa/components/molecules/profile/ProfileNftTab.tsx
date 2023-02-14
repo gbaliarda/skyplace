@@ -41,12 +41,10 @@ export default function ProfileNftTab({
   return (
     <>
       <div className="flex flex-row items-center justify-between">
-        {/* Paginator */}
         {links !== undefined && (
           <Paginator links={links} updateUrl={updateUrl} amountPages={totalPages} />
         )}
 
-        {/* Dropdown menu */}
         <SortDropdown
           sortDefaultValue={sort}
           options={sortOptions}
@@ -54,7 +52,6 @@ export default function ProfileNftTab({
         />
       </div>
 
-      {/* Page items */}
       {nfts.length > 0 ? (
         <div className="flex flex-wrap justify-center gap-8 items-start">
           {nfts.map((nft) => {

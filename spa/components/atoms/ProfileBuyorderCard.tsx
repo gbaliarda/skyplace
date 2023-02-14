@@ -184,25 +184,22 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
                     {buyorder.status === "PENDING" && (
                       /* eslint-disable */
                         <label
-                          className="btn normal-case border-0 px-4 py-2 bg-cyan-600 rounded-lg flex w-full text-white w-max"
+                          className="btn normal-case border-0 px-4 py-2 bg-cyan-600 rounded-lg flex text-white w-max"
                           suppressHydrationWarning
                           htmlFor="my-modal"
                           onClick={ignoreLink}
                         >
                           {t("buyorders.confirmOffer")}
                         </label>
-                        /* eslint-disable */
                     )}
                     {buyorder.status === "NEW" && (
-                        /* eslint-disable */
                         <label
-                            className="btn normal-case border-0 px-4 py-2 bg-red-600 rounded-lg flex w-full text-white w-max"
+                            className="btn normal-case border-0 px-4 py-2 bg-red-600 rounded-lg flex text-white w-max"
                             suppressHydrationWarning
                             onClick={handleRemoveOffer}
                         >
                           {t("buyorders.deleteOffer")}
                         </label>
-                        /* eslint-disable */
                     )}
                   </div>
                 </div>

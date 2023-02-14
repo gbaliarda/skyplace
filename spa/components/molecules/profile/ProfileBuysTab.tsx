@@ -11,7 +11,7 @@ interface Props {
   updateUrl: (url: string) => void
   status: string
   setStatus: (status: string) => void
-  buyorders: Buyorder[] // TODO: Add history items type
+  buyorders: Buyorder[]
   updateBuyorders: () => void
   amountPages: number
 }

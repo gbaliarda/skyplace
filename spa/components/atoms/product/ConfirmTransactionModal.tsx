@@ -42,7 +42,6 @@ export default function ConfirmTransactionModal({
       <input type="checkbox" id="my-modal" className="modal-toggle" />
       <label ref={toggleRef} htmlFor="my-modal" className="modal cursor-pointer">
         <div className="modal-box relative w-10/12 max-w-2xl">
-          {/* <label htmlFor="my-modal" className="btn btn-sm btn-circle absolute right-2 top-2">✕</label> */}
           <h2 className="text-xl font-bold text-center">
             <span
               suppressHydrationWarning
