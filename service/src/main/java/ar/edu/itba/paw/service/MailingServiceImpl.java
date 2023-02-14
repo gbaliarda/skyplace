@@ -39,7 +39,7 @@ public class MailingServiceImpl implements MailingService{
 
     private static final String PRODUCT_BASE_URL = "http://pawserver.it.itba.edu.ar/paw-2022a-09/product?id=";
 
-    private static final String PROFILE_BASE_URL = "http://pawserver.it.itba.edu.ar/paw-2022a-09/profile/";
+    private static final String PROFILE_BASE_URL = "http://pawserver.it.itba.edu.ar/paw-2022a-09/profile?id=";
 
     private static final String REVIEW_BASE_URL = "http://pawserver.it.itba.edu.ar/paw-2022a-09/review/";
 

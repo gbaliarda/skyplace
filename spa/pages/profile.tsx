@@ -1,18 +1,18 @@
 import { useRouter } from "next/router"
 import { useTranslation } from "next-export-i18n"
 import Link from "next/link"
-import Layout from "../../components/Layout"
-import ProfileDescription from "../../components/molecules/profile/ProfileDescription"
-import InventoryTab from "../../components/molecules/profile/tabs/InventoryTab"
-import SellingTab from "../../components/molecules/profile/tabs/SellingTab"
-import FavoritedTab from "../../components/molecules/profile/tabs/FavoritedTab"
-import BuyordersTab from "../../components/molecules/profile/tabs/BuyordersTab"
-import ReviewsTab from "../../components/molecules/profile/tabs/ReviewsTab"
-import HistoryTab from "../../components/molecules/profile/tabs/HistoryTab"
-import useSession from "../../hooks/useSession"
-import { getResourceUrl } from "../../services/endpoints"
-import { useUser } from "../../services/users"
-import Spinner from "../../components/atoms/Spinner"
+import Layout from "../components/Layout"
+import ProfileDescription from "../components/molecules/profile/ProfileDescription"
+import InventoryTab from "../components/molecules/profile/tabs/InventoryTab"
+import SellingTab from "../components/molecules/profile/tabs/SellingTab"
+import FavoritedTab from "../components/molecules/profile/tabs/FavoritedTab"
+import BuyordersTab from "../components/molecules/profile/tabs/BuyordersTab"
+import ReviewsTab from "../components/molecules/profile/tabs/ReviewsTab"
+import HistoryTab from "../components/molecules/profile/tabs/HistoryTab"
+import useSession from "../hooks/useSession"
+import { getResourceUrl } from "../services/endpoints"
+import { useUser } from "../services/users"
+import Spinner from "../components/atoms/Spinner"
 
 const TABS = [
   { key: "inventory", isPublic: true },
@@ -26,10 +26,7 @@ const TABS = [
 export default function Profile() {
   const { t } = useTranslation()
   const router = useRouter()
-  const { id } = router.query as {
-    // id is retrieved as string, even if marked as number
-    id: string
-  }
+  const { id } = router.query as { id: string }
   let { tab } = router.query as {
     tab: string | undefined
   }
@@ -51,7 +48,7 @@ export default function Profile() {
     )
   if (errors || (router.isReady && Number.isNaN(parsedUserId))) router.push("/404")
 
-  const profilePath = `/profile/${id}`
+  const profilePath = `/profile?id=${id}`
 
   const activeTabClasses = "border-b-2 border-cyan-600 text-cyan-600 active pb-3"
   const inactiveTabClasses = "border-transparent hover:text-gray-700 pb-3"

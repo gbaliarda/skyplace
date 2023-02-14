@@ -20,7 +20,7 @@ export default function ReviewItem({
   const { userId, roles } = useSession()
 
   const reviewerId = parseInt(review.reviewer.toString().split("/").slice(-1)[0])
-  const reviewerProfileUrl: string = `/profile/${reviewerId}`
+  const reviewerProfileUrl: string = `/profile?id=${reviewerId}`
 
   const { user: reviewer, loading: loadingReviewer, errors: errorsReviewer } = useUser(reviewerId)
 

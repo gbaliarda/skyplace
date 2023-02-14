@@ -97,7 +97,7 @@ export default function ProfileBuyorderCard({ buyorder }: Props) {
                   <div suppressHydrationWarning className="text-jacarta-500 block text-sm">
                     {!userIsBidder ? (
                       <p>
-                        <Link href={`/profile/${bidder?.id}`}>
+                        <Link href={`/profile?id=${bidder?.id}`}>
                           <a className="text-cyan-600 hover:text-cyan-800 hover:underline cursor-pointer">
                             {bidder?.username}
                           </a>

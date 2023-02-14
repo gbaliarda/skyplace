@@ -45,7 +45,7 @@ export default function CreateReview() {
     try {
       await sendJson("POST", `/users/${parsedId}/reviews`, { ...data }, accessToken)
       await Swal.fire({ title: t("reviews.createSuccess"), icon: "success" })
-      router.replace(`/profile/${parsedId}?tab=reviews`)
+      router.replace(`/profile?id=${parsedId}&tab=reviews`)
     } catch (errs: any) {
       await Swal.fire({
         title: t("errors.createReview"),

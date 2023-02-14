@@ -140,7 +140,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
             {purchase.status === "SUCCESS" && sold && (
               <>
                 {t("profile.soldTo")}
-                <Link href={`/profile/${buyer?.id}`}>
+                <Link href={`/profile?id=${buyer?.id}`}>
                   <a className={usernameClasses}>{buyer?.username}</a>
                 </Link>
               </>
@@ -148,7 +148,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
             {purchase.status === "SUCCESS" && !sold && (
               <>
                 {t("profile.boughtFrom")}
-                <Link href={`/profile/${seller?.id}`}>
+                <Link href={`/profile?id=${seller?.id}`}>
                   <a className={usernameClasses}>{seller?.username}</a>
                 </Link>
               </>
@@ -156,7 +156,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
             {purchase.status === "CANCELLED" && !sold && (
               <>
                 {t("profile.historyErrorBoughtFrom")}
-                <Link href={`/profile/${seller?.id}`}>
+                <Link href={`/profile?id=${seller?.id}`}>
                   <a className={usernameClasses}>{seller?.username}</a>
                 </Link>
               </>
@@ -164,7 +164,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
             {purchase.status === "CANCELLED" && sold && (
               <>
                 {t("profile.historyErrorSoldTo")}
-                <Link href={`/profile/${seller?.id}`}>
+                <Link href={`/profile?id=${seller?.id}`}>
                   <a className={usernameClasses}>{buyer?.username}</a>
                 </Link>
               </>

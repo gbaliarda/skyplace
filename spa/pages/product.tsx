@@ -65,7 +65,7 @@ const Product = () => {
   const { user: userPendingBuyOrder } = useUserUrl(pendingBuyOrder?.offeredBy?.toString())
 
   const imageSrc = `data:image/jpg;base64,${img?.image?.toString()}`
-  const ownerUrl = `/profile/${owner?.id}`
+  const ownerUrl = `/profile?id=${owner?.id}`
   const collectionUrl = `/explore?searchFor=collection&search=${nft?.collection}`
 
   const reloadContent = async () => {

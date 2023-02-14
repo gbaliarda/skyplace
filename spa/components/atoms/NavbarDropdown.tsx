@@ -22,7 +22,7 @@ const NavbarDropdown = () => {
   let userFavoritesUrl = "?tab=favorited"
 
   if (isAuthenticated) {
-    userProfileUrl = `/profile/${userId}`
+    userProfileUrl = `/profile?id=${userId}`
     userBuyordersUrl = userProfileUrl.concat(userBuyordersUrl)
     userSellordersUrl = userProfileUrl.concat(userSellordersUrl)
     userFavoritesUrl = userProfileUrl.concat(userFavoritesUrl)

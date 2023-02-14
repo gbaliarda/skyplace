@@ -54,7 +54,7 @@ export default function ProfileDescription({ userId }: Props) {
       </div>
     )
 
-  const reviewsPath = `/profile/${user?.id}?tab=reviews`
+  const reviewsPath = `/profile?id=${user?.id}&tab=reviews`
   return loadingUser || loadingReviews ? (
     <div className="flex mt-10">
       <Skeleton circle className="w-40 h-40" />

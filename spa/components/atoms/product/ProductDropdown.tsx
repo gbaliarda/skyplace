@@ -69,7 +69,7 @@ const ProductDropdown = ({ nft, isOwner }: Props) => {
           },
         })
         await Swal.fire({ title: t("product.deleteNftSuccess"), icon: "success" })
-        router.replace(`/profile/${user!!.id}`)
+        router.replace(`/profile?id=${user!!.id}`)
       }
     } catch (e: any) {
       console.log(e.name, e.message)

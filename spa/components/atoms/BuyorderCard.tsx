@@ -67,7 +67,7 @@ const BuyorderCard = ({ buyorder, owner, index, url, refetchData }: Props) => {
     )
   }
 
-  const offererUrl = `/profile/${offerer.id}`
+  const offererUrl = `/profile?id=${offerer.id}`
   const isUserOfferer = userId === offerer.id
   const isUserOwner = userId === owner?.id
 
