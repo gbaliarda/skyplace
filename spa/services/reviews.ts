@@ -32,5 +32,12 @@ export const useReviews = (url: ReviewsURL) => {
   return { reviewsInfo, total, totalPages, links, loading, errors, refetchData }
 }
 
-export const deleteReview = (revieweeId: number, reviewId: number) =>
-  fetcher(`/users/${revieweeId}/reviews/${reviewId}`, { method: "DELETE" })
+export const deleteReview = (
+  revieweeId: number,
+  reviewId: number,
+  accessToken: string | null | undefined,
+) =>
+  fetcher(`/users/${revieweeId}/reviews/${reviewId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
