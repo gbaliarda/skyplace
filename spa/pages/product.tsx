@@ -64,7 +64,7 @@ const Product = () => {
   const { pendingBuyOrder } = usePendingBuyOrder(sellorder?.id)
   const { user: userPendingBuyOrder } = useUserUrl(pendingBuyOrder?.offeredBy?.toString())
 
-  const imageSrc = `data:image/jpg;base64,${img?.image?.toString()}`
+  const imageSrc = img !== undefined ? `data:image/jpg;base64,${img.image.toString()}` : undefined
   const ownerUrl = `/profile?id=${owner?.id}`
   const collectionUrl = `/explore?searchFor=collection&search=${nft?.collection}`
 

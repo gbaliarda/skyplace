@@ -1,9 +1,11 @@
 import { useTranslation } from "next-export-i18n"
+import Skeleton from "react-loading-skeleton"
 import Link from "next/link"
 import Purchase from "../../types/Purchase"
 import { useImageUrl } from "../../services/images"
 import { useUserUrl } from "../../services/users"
 import { epochToIntlDate } from "../../utils/epochToIntlDate"
+import ErrorBox from "./ErrorBox"
 
 export default function HistoryItem({ purchase, userId }: { purchase: Purchase; userId: number }) {
   const { t } = useTranslation()
@@ -16,25 +18,8 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
     errors: errorsImage,
   } = useImageUrl(purchase?.nft.image.toString())
 
-  const {
-    user: seller,
-    loading: loadingSeller,
-    errors: errorsSeller,
-  } = useUserUrl(purchase.seller.toString())
-  const {
-    user: buyer,
-    loading: loadingBuyer,
-    errors: errorsBuyer,
-  } = useUserUrl(purchase.buyer.toString())
-
-  if (errorsImage) return <h1>Error loading Image of Nft with id {purchase.nft.id}</h1>
-  if (loadingImage) return <h1>Loading Image...</h1>
-
-  if (errorsSeller) return <h1>Error loading seller user with {seller?.id}</h1>
-  if (loadingSeller && seller !== undefined) return <h1>Loading sellerUser...</h1>
-
-  if (errorsBuyer) return <h1>Error loading buyer user with {buyer?.id}</h1>
-  if (loadingBuyer && buyer !== undefined) return <h1>Loading Buyer User...</h1>
+  const { user: seller } = useUserUrl(purchase.seller.toString())
+  const { user: buyer } = useUserUrl(purchase.buyer.toString())
 
   const sold = userId === seller?.id
 
@@ -117,12 +102,20 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
         className={`border-jacarta-100 rounded-2.5xl relative flex items-center border bg-white p-4 transition-shadow hover:shadow-lg ${linkClasses()}`}
       >
         <figure className="mr-5 self-start">
-          <img
-            src={imageSrc}
-            className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
-            alt="avatar 2"
-            loading="lazy"
-          />
+          {loadingImage ? (
+            <Skeleton className="w-[6rem] h-[6rem] rounded-lg" />
+          ) : errorsImage ? (
+            <div className="w-[6rem] h-[6rem] flex justify-center items-center rounded-lg border border-gray-300">
+              <ErrorBox errorMessage={""} />
+            </div>
+          ) : (
+            <img
+              src={imageSrc}
+              className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
+              alt="avatar 2"
+              loading="lazy"
+            />
+          )}
         </figure>
         <div className="max-w-[34rem]">
           <h3 className="font-display text-jacarta-700 mb-1 text-base flex items-center font-semibold truncate">
@@ -164,7 +157,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
             {purchase.status === "CANCELLED" && sold && (
               <>
                 {t("profile.historyErrorSoldTo")}
-                <Link href={`/profile?id=${seller?.id}`}>
+                <Link href={`/profile?id=${buyer?.id}`}>
                   <a className={usernameClasses}>{buyer?.username}</a>
                 </Link>
               </>
