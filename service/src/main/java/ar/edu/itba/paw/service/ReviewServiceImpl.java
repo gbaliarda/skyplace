@@ -22,6 +22,7 @@ public class ReviewServiceImpl implements ReviewService{
     private final ReviewDao reviewDao;
     private final UserDao userDao;
     private final PurchaseService purchaseService;
+    private final UserService userService;
 
     private final MailingService mailingService;
     private final static int pageSize = 5;
@@ -29,11 +30,12 @@ public class ReviewServiceImpl implements ReviewService{
     private final static int maxScore = 5;
 
     @Autowired
-    public ReviewServiceImpl(ReviewDao reviewDao, UserDao userDao, MailingService mailingService, PurchaseService purchaseService) {
+    public ReviewServiceImpl(ReviewDao reviewDao, UserDao userDao, MailingService mailingService, PurchaseService purchaseService, UserService userService) {
         this.reviewDao = reviewDao;
         this.userDao = userDao;
         this.mailingService = mailingService;
         this.purchaseService = purchaseService;
+        this.userService = userService;
     }
 
     @Transactional
@@ -102,10 +104,17 @@ public class ReviewServiceImpl implements ReviewService{
         return reviewDao.getUserReviewsAmount(userId);
     }
 
+    protected boolean hasDeletePermission(int reviewId, int deleterId) {
+        Optional<Review> maybeReview = getReview(reviewId);
+        return maybeReview.filter(review -> userService.isAdmin() || review.getUsersByIdReviewer().getId() == deleterId).isPresent();
+    }
+
     @Transactional
     @Override
     public void deleteReview(int reviewId) {
-        reviewDao.deleteReview(reviewId);
+        Optional<User> maybeUser = userService.getCurrentUser();
+        if(maybeUser.isPresent() && hasDeletePermission(reviewId, maybeUser.get().getId()))
+            reviewDao.deleteReview(reviewId);
     }
 
     @Override

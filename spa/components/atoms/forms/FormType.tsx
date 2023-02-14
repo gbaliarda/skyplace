@@ -11,7 +11,7 @@ export default function FormType({
   type = "text",
   isRequired = true,
   name,
-  error,
+  error = "",
   value,
   onChange,
 }: Props) {
