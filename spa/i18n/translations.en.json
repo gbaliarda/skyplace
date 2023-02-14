@@ -43,7 +43,8 @@
     "publish": "Publish",
     "nftName": "Nft name",
     "nftDescription": "Nft description",
-    "createSuccess": "NFT created successfully"
+    "createSuccess": "NFT created successfully",
+    "nftAlreadyExists": "NFT with Id, Contract and Collection sent already exists"
   },
   "errors": {
     "badRequest": "Bad Request",

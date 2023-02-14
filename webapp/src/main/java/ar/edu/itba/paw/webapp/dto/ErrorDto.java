@@ -20,7 +20,6 @@ public class ErrorDto {
 
         dto.status = statusCode;
         dto.title = message;
-        // dto.title = e.getMessage();
 
         return dto;
     }
@@ -30,7 +29,6 @@ public class ErrorDto {
 
         dto.status = statusCode;
         dto.title = message;
-        // dto.title = e.getMessage();
         dto.code = internalCode;
 
         return dto;
@@ -41,7 +39,6 @@ public class ErrorDto {
 
         dto.status = e.getResponse().getStatus();
         dto.title = message;
-        // dto.title = e.getResponse().getStatusInfo().getReasonPhrase();
 
         return dto;
     }
@@ -52,7 +49,6 @@ public class ErrorDto {
         dto.status = 400;
         dto.code = ApiReturnCodes.EMPTY_PARAMETER.getCode();
         dto.title = message;
-        // dto.title = e.getMessage();
         dto.source = new SourceDto();
         dto.source.setParameter(e.getParameter());
 
@@ -76,6 +72,8 @@ public class ErrorDto {
         if(propertyPath == null)
             return "";
         String[] pointerStrings = propertyPath.split("\\.");
+        if(pointerStrings.length == 2)
+            return "/";
         return pointerStrings[pointerStrings.length-1];
     }
 

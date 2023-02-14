@@ -41,7 +41,7 @@ public class UniqueNftConstraintValidator implements ConstraintValidator<UniqueN
         String contractAddrObj = (String)wrapper.getPropertyValue(contractAddr);
         String chainObj = (String)wrapper.getPropertyValue(chain);
         boolean notExists = !nftService.isNftCreated(nftIdObj, contractAddrObj, chainObj);
-        if (notExists) {
+        if (!notExists) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext
                     .buildConstraintViolationWithTemplate(messageSource.getMessage(errorMessageTemplate, null, LocaleContextHolder.getLocale()))

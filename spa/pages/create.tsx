@@ -98,6 +98,10 @@ export default function Create() {
       name: t("create.image"),
       updateFunction: (error: string) => updateImageError(error),
     },
+    "": {
+      name: "",
+      updateFunction: () => "javascript:void(0)",
+    },
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -141,22 +145,28 @@ export default function Create() {
     } catch (errs: any) {
       let errorFields: string = ""
       let auxIdx = 1
+      let hasWholeFormError: boolean = false
       errs.forEach((err: FetchError) => {
-        FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].updateFunction(
-          err.cause.description,
-        )
-        errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].name}`
+        if (err.cause.field !== "/") {
+          FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].updateFunction(
+            err.cause.description,
+          )
+          errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].name}`
 
-        if (auxIdx < errs.length) errorFields += ", "
+          if (auxIdx < errs.length) errorFields += ", "
+        } else {
+          hasWholeFormError = true
+        }
 
         auxIdx += 1
       })
       Swal.fire({
         title: t("errors.createNft"),
-        text:
-          errs.length === 1
-            ? t("errors.invalidField", { field: errorFields })
-            : t("errors.invalidFields", { fields: errorFields }),
+        text: hasWholeFormError
+          ? t("create.nftAlreadyExists")
+          : errs.length === 1
+          ? t("errors.invalidField", { field: errorFields })
+          : t("errors.invalidFields", { fields: errorFields }),
         icon: "error",
       })
     }
