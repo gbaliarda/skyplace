@@ -16,6 +16,8 @@ export default function SellingTab({ userId }: Props) {
   const defaultURL = {
     baseUrl: `${api}/nfts?page=1`,
     filters: { owner: userId, status: [SaleStatus.ONSALE] },
+    search: {},
+    sort: "",
   } as NftsURL
   const [url, setUrl] = useState<NftsURL>(defaultURL)
   const [sort, setSort] = useState("")

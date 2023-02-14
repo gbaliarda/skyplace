@@ -15,9 +15,11 @@ export default function InventoryTab({ userId }: Props) {
   const defaultURL = {
     baseUrl: `${api}/nfts?page=1`,
     filters: { owner: userId },
+    search: {},
+    sort: "",
   } as NftsURL
-  const [url, setUrl] = useState<NftsURL>(defaultURL)
   const [sort, setSort] = useState("")
+  const [url, setUrl] = useState<NftsURL>(defaultURL)
   const { nfts, links, totalPages, loading, error, refetchData } = useNfts(url)
   const updateUrl = useCallback(
     (_url: string) => {

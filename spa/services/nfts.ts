@@ -10,7 +10,7 @@ export type NftsURL = {
   baseUrl: string
   filters: NftsFilter
   sort: string
-  search: SearchFilter
+  search?: SearchFilter
 }
 
 export const encodeQueryParam = (filter?: Object) => {
@@ -27,9 +27,11 @@ export const useNfts = (url: NftsURL) => {
   const { elem: nfts, loading, links, total, totalPages, error, fetchData } = usePagination<Nft[]>()
 
   const refetchData = (_url: NftsURL) => {
+    if (_url.search === undefined) return
     const filterParams = encodeQueryParam(_url.filters)
     const searchParams = encodeQueryParam(_url.search)
-    fetchData(`${_url.baseUrl}&${filterParams}&${searchParams}&sort=${_url.sort}`)
+    const sort = _url.sort ? `&sort=${_url.sort}` : ""
+    fetchData(`${_url.baseUrl}&${filterParams}&${searchParams}${sort}`)
   }
 
   useEffect(() => {

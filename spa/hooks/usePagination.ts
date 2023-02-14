@@ -17,6 +17,8 @@ const usePagination = <T>(requiresSession: boolean = false) => {
     if (accessToken === null) accessToken = sessionStorage.getItem("access-token")
     const headers = requiresSession ? { headers: { Authorization: `Bearer ${accessToken}` } } : {}
     setLoading(true)
+    setError(undefined)
+    setElem(undefined)
     genericFetcher([_url, ""], headers, true)
       .then((res: Response) => {
         if (res.status === 204) {

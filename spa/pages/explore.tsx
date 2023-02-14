@@ -4,7 +4,7 @@ import { useTranslation } from "next-export-i18n"
 import FilterSideBar from "../components/molecules/FilterSideBar"
 import ExploreContent from "../components/molecules/ExploreContent"
 import Layout from "../components/Layout"
-import { useNfts } from "../services/nfts"
+import { NftsURL, useNfts } from "../services/nfts"
 import Loader from "../components/atoms/Loader"
 import { NftsFilter, SearchFilter, SearchType } from "../types/Filters"
 import ErrorBox from "../components/atoms/ErrorBox"
@@ -13,9 +13,8 @@ import { api } from "../services/endpoints"
 const Explore = () => {
   const router = useRouter()
 
-  const [search, setSearch] = useState<SearchFilter>({} as SearchFilter)
+  const [search, setSearch] = useState<SearchFilter>()
   useEffect(() => {
-    if (router.query.search === undefined || router.query.searchFor === undefined) return
     const querySearch = router.query.search
     setSearch({
       searchFor: (router.query.searchFor as SearchType) ?? SearchType.Nft,
@@ -23,11 +22,10 @@ const Explore = () => {
     })
   }, [router.query.search, router.query.searchFor])
 
-  const defaultURL = {
+  const defaultURL: NftsURL = {
     baseUrl: `${api}/nfts?page=1`,
     filters: {} as NftsFilter,
     sort: "",
-    search,
   }
   const [isFilterClosed, setIsFilterClosed] = useState(false)
   const [filters, setFilters] = useState<NftsFilter>({})
