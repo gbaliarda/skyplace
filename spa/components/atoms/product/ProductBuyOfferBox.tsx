@@ -76,7 +76,7 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
           </button>
           {ethPriceUsd && (
             <span id="offerDisplay" className="ml-4 text-slate-500 text-base">
-              ~ {offer * ethPriceUsd} USD
+              ~ {(offer * ethPriceUsd).toFixed(2)} USD
             </span>
           )}
         </div>

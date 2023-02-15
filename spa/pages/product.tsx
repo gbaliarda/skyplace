@@ -60,7 +60,7 @@ const Product = () => {
 
   const isAdmin = roles !== null ? roles.includes("Admin") : false
 
-  const { price: priceInUsd } = useCryptoPrice("ethereum")
+  const { price: ethPriceUsd } = useCryptoPrice("ethereum")
   const { pendingBuyOrder } = usePendingBuyOrder(sellorder?.id)
   const { user: userPendingBuyOrder } = useUserUrl(pendingBuyOrder?.offeredBy?.toString())
 
@@ -215,9 +215,11 @@ const Product = () => {
                           />
                           <div>
                             <span className="font-bold tracking-tight">{sellorder?.price}</span>
-                            <span className="ml-4 text-slate-500 text-base">
-                              ~ {priceInUsd} USD
-                            </span>
+                            {sellorder?.price && ethPriceUsd && 
+                              <span className="ml-4 text-slate-500 text-base">
+                                ~ {(sellorder.price * ethPriceUsd).toFixed(2)} USD
+                              </span>
+                            }
                           </div>
                         </>
                       ) : (
