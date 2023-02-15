@@ -91,7 +91,9 @@ const Card = ({ nft, mutateFavs, isFaved }: Props) => {
                 </div>
               ) : (
                 <div className="flex h-8 items-center">
-                  <span suppressHydrationWarning className="min-w-max">{t("explore:notOnSale")}</span>
+                  <span suppressHydrationWarning className="min-w-max">
+                    {t("explore.notOnSale")}
+                  </span>
                 </div>
               )}
             </div>
