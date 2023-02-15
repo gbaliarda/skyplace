@@ -271,7 +271,7 @@
     "ratings": "Ratings",
     "addReview": "Add review",
     "historyRemoved" : "(removed from skyplace)",
-    "historyerrorBoughtFrom" : "could not buy from",
+    "historyErrorBoughtFrom" : "could not buy from",
     "historyErrorSoldTo":"could not sell to",
     "historyFor": "for {{price}} ETH",
     "deleteReview": "Delete review",
