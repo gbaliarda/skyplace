@@ -44,7 +44,9 @@ const ProductDetails = ({ loading, contractAddr, category, chain, tokenId }: Pro
               <p suppressHydrationWarning className="font-medium">
                 {t("product.category")}
               </p>
-              <p suppressHydrationWarning className="font-light">{t(`categories.${category}`)}</p>
+              <p suppressHydrationWarning className="font-light">
+                {t(`categories.${category}`)}
+              </p>
             </div>
           )}
           <div className="flex justify-between">

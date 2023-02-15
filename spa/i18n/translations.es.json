@@ -86,7 +86,7 @@
     "createNft": "Error al crear NFT",
     "createReview": "Error al crear la reseña",
     "invalidField": "El campo {{ field }} es inválido",
-    "invalidFields": "Los campos{{ fields }} son inválidos"
+    "invalidFields": "Los campos {{ fields }} son inválidos"
   },
   "buyorders": {
     "ALL": "Todas",
