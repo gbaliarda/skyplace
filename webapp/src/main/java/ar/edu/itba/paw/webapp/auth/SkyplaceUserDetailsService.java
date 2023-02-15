@@ -55,7 +55,7 @@ public class SkyplaceUserDetailsService implements UserDetailsService {
         final User user = us.getUserByEmail(email).
                 orElseThrow(() -> new UsernameNotFoundException("UsernameNotFoundException.message"));
         if(!passwordEncoder.matches(password, user.getPassword())) {
-            throw new UsernameNotFoundException("UsernameNotFoundERxception.message");
+            throw new UsernameNotFoundException("UsernameNotFoundException.message");
         }
 
         final List<GrantedAuthority> roles = new ArrayList<>();
