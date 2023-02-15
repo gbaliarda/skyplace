@@ -57,12 +57,11 @@ public class NftController {
 
         int amountPublications = nftService.getAmountPublicationsByUser(nftFiltersDto.getStatus(), nftFiltersDto.getCategory(), nftFiltersDto.getChain(), nftFiltersDto.getMinPrice(), nftFiltersDto.getMaxPrice(), nftFiltersDto.getSort(), nftFiltersDto.getSearch(), nftFiltersDto.getSearchFor(), nftFiltersDto.getOwnerId());
         int amountPages = nftService.getAmountPages(amountPublications);
-        int lastPage = nftService.getAmountPages(nftService.getAmountPublications(nftFiltersDto.getStatus(), nftFiltersDto.getCategory(), nftFiltersDto.getChain(), nftFiltersDto.getMinPrice(), nftFiltersDto.getMaxPrice(), nftFiltersDto.getSort(), nftFiltersDto.getSearch(), nftFiltersDto.getSearchFor()));
 
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(nftList) {});
         ResponseHelpers.addTotalPagesHeader(responseBuilder, amountPages);
         ResponseHelpers.addTotalCountHeader(responseBuilder, amountPublications);
-        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, lastPage).build();
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, amountPages).build();
     }
 
     @Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON })
