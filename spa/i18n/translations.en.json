@@ -16,6 +16,18 @@
     "searchAlt": "search",
     "currentUser": "Logged in as"
   },
+  "categories": {
+    "Collectible": "Collectible",
+    "Utility": "Utility",
+    "Gaming": "Gaming",
+    "Sports": "Sports",
+    "Music": "Music",
+    "VR": "VR",
+    "Memes": "Memes",
+    "Photography": "Photography",
+    "Miscellaneous": "Miscellaneous",
+    "Art": "Art"
+  },
   "sell": {
     "publish": "Publish",
     "update": "Update",

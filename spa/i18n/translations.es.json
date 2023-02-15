@@ -16,6 +16,18 @@
     "searchAlt": "buscar",
     "currentUser": "Sesión iniciada como"
   },
+  "categories": {
+    "Collectible": "Coleccionable",
+    "Utility": "Utilidad",
+    "Gaming": "Juegos",
+    "Sports": "Deportes",
+    "Music": "Música",
+    "VR": "Realidad Virtual",
+    "Memes": "Memes",
+    "Photography": "Fotografía",
+    "Miscellaneous": "Misceláneo",
+    "Art": "Arte"
+  },
   "sell": {
     "publish": "Publicar",
     "update": "Actualizar",

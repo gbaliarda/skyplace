@@ -13,19 +13,9 @@ import Navbar from "../components/molecules/Navbar"
 import { sendJson } from "../services/endpoints"
 import useSession from "../hooks/useSession"
 import { FetchError } from "../types/FetchError"
+import { Category } from "../types/Nft"
 
-const CATEGORIES = [
-  "Collectible",
-  "Utility",
-  "Gaming",
-  "Sports",
-  "Music",
-  "VR",
-  "Memes",
-  "Photography",
-  "Miscellaneous",
-  "Art",
-]
+const CATEGORIES = Object.keys(Category)
 
 interface FormData {
   category: string
@@ -153,6 +143,7 @@ export default function Sell() {
           <FormSelect
             name={t("sell.category")}
             options={CATEGORIES}
+            translations={CATEGORIES.map((category) => t(`categories.${category}`))}
             value={data.category}
             error={categoryError}
             onChange={(e) => updateFields({ category: e.target.value })}

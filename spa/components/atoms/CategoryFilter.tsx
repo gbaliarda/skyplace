@@ -39,7 +39,7 @@ const CategoryFilter = ({ changeValueFilters }: Props) => {
                   )
                 }
               />
-              <label>{category}</label>
+              <label>{t(`categories.${category}`)}</label>
             </div>
           ))}
         </div>
