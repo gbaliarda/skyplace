@@ -10,7 +10,8 @@
     "login": "Iniciar sesión",
     "signUp": "Registrarse",
     "search": "Buscar nfts o colecciones",
-    "collection": "Colección",
+    "Collection": "Colección",
+    "Nft": "NFT",
     "username": "Usuario",
     "searchAlt": "buscar",
     "currentUser": "Sesión iniciada como"

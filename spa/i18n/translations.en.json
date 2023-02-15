@@ -10,7 +10,8 @@
     "login": "Log in",
     "signUp": "Sign up",
     "search": "Search nfts or collections",
-    "collection": "Collection",
+    "Collection": "Collection",
+    "Nft": "NFT",
     "username": "Username",
     "searchAlt": "search",
     "currentUser": "Logged in as"
