@@ -104,7 +104,6 @@ public class BuyOrderServiceImplTest {
         buyOrderService.create(ID_SELLORDER, testPrice, ID_USER1);
     }
 
-    // TODO: Check create test errors (getUserId() returns null) -> add User constructor with id?
     @Test(expected = UserNotFoundException.class)
     public void testCreateBuyOrderWithUnexistentSellerData() {
         User seller = new User(ID_USER2, USERNAME_USER2, WALLET_USER2, MAIL_USER2, PASSWORD_USER2, WALLETCHAIN_USER2, ROLE_USER2, LOCALE_USER2);

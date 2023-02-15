@@ -22,7 +22,6 @@ public class SkyplaceAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-        // TODO: Check if spring puts i18n message
         final ErrorDto dto = ErrorDto.fromGenericException(accessDeniedException, HttpServletResponse.SC_UNAUTHORIZED, accessDeniedException.getLocalizedMessage());
         final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(dto));
         response.setContentType(MediaType.APPLICATION_JSON);

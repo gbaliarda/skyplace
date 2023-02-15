@@ -35,13 +35,8 @@ import java.util.Properties;
         "ar.edu.itba.paw.webapp.auth",
         "ar.edu.itba.paw.webapp.config",
         "ar.edu.itba.paw.webapp.controller",
-        "ar.edu.itba.paw.webapp.dto",
-        "ar.edu.itba.paw.webapp.exceptions",
-        "ar.edu.itba.paw.webapp.form",
-        "ar.edu.itba.paw.webapp.helpers",
         "ar.edu.itba.paw.webapp.mappers",
         "ar.edu.itba.paw.webapp.validators",
-        "ar.edu.itba.paw.webapp.validators.interfaces",
         "ar.edu.itba.paw.service",
         "ar.edu.itba.paw.persistence",
 })

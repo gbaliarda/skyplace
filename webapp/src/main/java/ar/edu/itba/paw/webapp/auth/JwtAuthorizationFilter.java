@@ -50,7 +50,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final SkyplaceUserDetailsService userDetailsService;
     private final static Dotenv env = Dotenv.load();
 
-    // TODO: Move this to JwtConfig POJO Object and secret to somewhere else
     private final static String USERAUTH_PREFIX = "basic";
     private final static String JWTAUTH_PREFIX = "bearer";
     private final static String JWT_KEY_PARAMETER = "JWT_KEY";

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-// TODO: Refactor methods used
 @Component
 public class SkyplaceUserDetailsService implements UserDetailsService {
 

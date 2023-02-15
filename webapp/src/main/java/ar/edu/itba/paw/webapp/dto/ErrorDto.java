@@ -59,7 +59,7 @@ public class ErrorDto {
         final ErrorDto dto = new ErrorDto();
 
         dto.status = 400;
-        dto.code = ApiReturnCodes.INVALID_PARAMETER.getCode();                        // TODO: Check if this is not needed
+        dto.code = ApiReturnCodes.INVALID_PARAMETER.getCode();
         if(vex.getInvalidValue() == null)
             dto.code = ApiReturnCodes.EMPTY_PARAMETER.getCode();
         dto.source = new SourceDto();

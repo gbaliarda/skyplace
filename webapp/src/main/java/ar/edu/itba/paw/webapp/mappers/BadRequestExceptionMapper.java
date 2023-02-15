@@ -22,7 +22,7 @@ public class BadRequestExceptionMapper implements ExceptionMapper<BadRequestExce
 
     @Override
     public Response toResponse(BadRequestException e) {
-        final String errorMessage = messageSource.getMessage(e.getLocalizedMessage(), null, LocaleContextHolder.getLocale());
+        final String errorMessage = messageSource.getMessage("BadRequestException.message", null, LocaleContextHolder.getLocale());
         final ErrorDto error = ErrorDto.fromClientErrorException(e, errorMessage);
         final ResponseErrorsDto errorList = ResponseErrorsDto.fromResponseErrorDtoList(Collections.singletonList(error));
 
