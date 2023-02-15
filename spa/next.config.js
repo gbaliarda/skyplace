@@ -7,6 +7,9 @@ const nextConfig = {
   images: {
     domains: ['picsum.photos'],
   },
+  experimental: {
+    forceSwcTransforms: true,
+  },
   trailingSlash: true,
   basePath: isProd ? '/paw-2022a-09' : undefined,
   assetPrefix: isProd ? '/paw-2022a-09' : undefined,

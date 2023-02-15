@@ -2,19 +2,19 @@ export default class LocalStorageMock {
   private store: Record<string, string | number> = {}
 
   clear() {
-    this.store = {};
+    this.store = {}
   }
 
   getItem(key: string) {
-    return this.store[key] || null;
+    return this.store[key] || null
   }
 
   setItem(key: string, value: string | number) {
-    this.store[key] = String(value);
+    this.store[key] = String(value)
   }
 
   removeItem(key: string) {
-    delete this.store[key];
+    delete this.store[key]
   }
 }
 

@@ -27,15 +27,24 @@ El frontend consiste en una SPA hecha con NextJS + Typescript, haciendo uso de l
 
 El mismo es accesible en la ruta `/` de la aplicación.
 
-Para correr en modo desarrollo, se puede navegar a la carpeta `/spa` y ejecutar el comando:
+A continuación se listan los posibles comandos a ejecutar en el frontend, los cuales seran accesibles al navegar a la carpeta `/spa`.
+
+- Correr en modo desarrollo:
 ```
 npm run dev
 ```
 
-Para generar los archivos estáticos que luego son copiados al módulo de `webapp` del backend, se debe ejecutar el comando:
+- Generar los archivos estáticos que luego son copiados al módulo de `webapp` del backend:
 ```
 npm run build
 ```
+
+- Correr los tests:
+```
+npm run test
+```
+
+Para correr los tests, ejecutar
 
 Los tokens JWT son almacenados en `localStorage` si el usuario desea mantener sesión iniciada, o en `sessionStorage` si desea que sus credenciales desaparezcan al cerrar la sesión de su navegador.
 

@@ -1,2 +1,2 @@
 // @ts-ignore
-global.navigator = { language: "en" };
+global.navigator = { language: "en" }
