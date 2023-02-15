@@ -106,7 +106,7 @@ const Card = ({ nft, mutateFavs, isFaved }: Props) => {
             <p className="flex justify-between pt-1 pb-4 px-4 text-sm rounded-b-lg text-slate-500 border-x border-b border-gray-300">
               <span className="max-w-[40ch] inline-block truncate">{owner?.username}</span>
               {nft.sellorder !== undefined && (
-                <span className="min-w-max">{sellorder?.category}</span>
+                <span className="min-w-max">{t(`categories.${sellorder?.category}`)}</span>
               )}
             </p>
           )}
