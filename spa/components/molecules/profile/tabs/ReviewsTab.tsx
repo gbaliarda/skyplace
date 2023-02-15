@@ -11,7 +11,7 @@ import { api } from "../../../../services/endpoints"
 
 interface Props {
   userId: number
-  loggedInUser: number
+  loggedInUser: number | null
 }
 
 export default function ReviewsTab({ userId, loggedInUser }: Props) {
@@ -44,7 +44,7 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
 
   const { totalPages: totalPurchasesPagesBetweenUsers, loading: loadingPurchasesBetweenUsers } =
     usePurchases({
-      baseUrl: `${api}/users/${loggedInUser}/purchases?page=1`,
+      baseUrl: loggedInUser ? `${api}/users/${loggedInUser}/purchases?page=1` : null,
       purchaser: userId ?? undefined,
     })
 

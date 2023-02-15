@@ -112,7 +112,7 @@ export default function Profile() {
             <HistoryTab userId={parsedUserId} />
           )}
 
-          {tab === "reviews" && loggedUserId && (
+          {tab === "reviews" && (
             <ReviewsTab loggedInUser={loggedUserId} userId={parsedUserId} />
           )}
         </div>

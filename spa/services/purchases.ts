@@ -3,7 +3,7 @@ import Purchase from "../types/Purchase"
 import usePagination from "../hooks/usePagination"
 
 export type PurchasesURL = {
-  baseUrl: string
+  baseUrl: string | null
   purchaser?: number
 }
 
@@ -18,6 +18,7 @@ export const usePurchases = (url: PurchasesURL) => {
   } = usePagination<Purchase[]>(true)
 
   const refetchData = (_url: PurchasesURL) => {
+    if (_url.baseUrl === null) return
     const purchaserFilter = _url.purchaser ? `&purchaser=${_url.purchaser}` : ""
     fetchData(`${_url.baseUrl}${purchaserFilter}`)
   }
