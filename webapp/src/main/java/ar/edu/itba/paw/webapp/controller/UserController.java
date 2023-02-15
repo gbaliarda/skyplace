@@ -238,12 +238,11 @@ public class UserController {
         reviewsInfo = ReviewsDto.fromReviewList(reviewList, reviewService.getUserScore(revieweeId), reviewRatings);
         int reviewsPageAmount = reviewService.getUserReviewsPageAmount(revieweeId);
         int reviewsAmount = reviewService.getUserReviewsAmount(revieweeId);
-        int lastPage = (int) Math.ceil(reviewService.getUserReviewsAmount(revieweeId) / (double) reviewService.getPageSize());
 
-        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<ReviewsDto>(reviewsInfo) {}).header("X-Total-Pages", reviewsPageAmount).header("X-Total-Count", reviewsAmount);
+        Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<ReviewsDto>(reviewsInfo) {});
         ResponseHelpers.addTotalPagesHeader(responseBuilder, reviewsPageAmount);
         ResponseHelpers.addTotalCountHeader(responseBuilder, reviewsAmount);
-        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, lastPage).build();
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, reviewsPageAmount).build();
     }
 
     @POST
