@@ -2,7 +2,6 @@ import { useTranslation } from "next-export-i18n"
 import Skeleton from "react-loading-skeleton"
 import Link from "next/link"
 import Swal from "sweetalert2"
-import { useRouter } from "next/router"
 import Buyorder from "../../types/Buyorder"
 import { useSellorderUrl } from "../../services/sellorders"
 import { useNftUrl } from "../../services/nfts"
@@ -10,8 +9,7 @@ import { useImageUrl } from "../../services/images"
 import { useUserUrl } from "../../services/users"
 import useSession from "../../hooks/useSession"
 import ErrorBox from "./ErrorBox"
-import ConfirmTransactionModal from "./product/ConfirmTransactionModal"
-import { fetcher, sendJson } from "../../services/endpoints"
+import { fetcher } from "../../services/endpoints"
 
 interface Props {
   buyorder: Buyorder
@@ -21,7 +19,6 @@ interface Props {
 export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props) {
   const { t } = useTranslation()
   const { userId, accessToken } = useSession()
-  const router = useRouter()
 
   const {
     user: bidder,
@@ -41,7 +38,7 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
     errors: errorsNft,
     mutate: mutateNft,
   } = useNftUrl(sellorder?.nft.toString())
-  const { user: seller, mutate: mutateSeller } = useUserUrl(nft?.owner.toString())
+  const { mutate: mutateSeller } = useUserUrl(nft?.owner.toString())
   const {
     img,
     loading: loadingImage,
@@ -55,17 +52,6 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
     mutateNft()
     mutateSeller()
     mutateSellorder()
-  }
-
-  const handleConfirmPendingOffer = async (txHash: string) => {
-    // do not handle the error here, it will be handled in ConfirmTransactionModal
-    await sendJson(
-      "POST",
-      `/sellorders/${sellorder?.id}/buyorders/${bidder?.id}`,
-      { txHash },
-      accessToken!!,
-    )
-    await router.push(`/api/product?id=${nft?.id}`)
   }
 
   const handleRemoveOffer = async (e: any) => {
@@ -101,19 +87,8 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
   const nftName = `${nft?.nftName} #${nft?.nftId}`
   const userIsBidder = bidder?.id === userId
 
-  const ignoreLink = (e: any) => {
-    e.stopPropagation()
-  }
-
   return (
     <>
-      <ConfirmTransactionModal
-        userPendingBuyOrder={bidder}
-        owner={seller}
-        product={nft}
-        price={buyorder.amount}
-        handleConfirm={handleConfirmPendingOffer}
-      />
       <Link href={`/product?id=${nft?.id}`} className="flex inset-0 absolute w-full gap-2">
         <a>
           <div className="border-jacarta-100 rounded-2.5xl h-32 relative flex items-center border bg-white p-4 transition-shadow hover:shadow-lg z-0 cursor-pointer">
@@ -158,9 +133,9 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
                       {!userIsBidder ? (
                         <p>
                           <Link href={`/profile?id=${bidder?.id}`}>
-                            <a className="text-cyan-600 hover:text-cyan-800 hover:underline cursor-pointer">
+                            <span className="text-cyan-600 hover:text-cyan-800 hover:underline cursor-pointer">
                               {bidder?.username}
-                            </a>
+                            </span>
                           </Link>
                           {t("buyorders.forSale", {
                             bidder: bidder?.username,
@@ -181,20 +156,9 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
                         <span className="text-yellow-600">{t("buyorders.accepted")}</span>
                       )}
                     </p>
-                    {buyorder.status === "PENDING" && (
-                      /* eslint-disable */
-                      <label
-                        className="btn normal-case border-0 px-4 py-2 bg-cyan-600 rounded-lg flex text-white w-max"
-                        suppressHydrationWarning
-                        htmlFor="my-modal"
-                        onClick={ignoreLink}
-                      >
-                        {t("buyorders.confirmOffer")}
-                      </label>
-                    )}
                     {buyorder.status === "NEW" && (
                       <label
-                        className="btn normal-case border-0 px-4 py-2 bg-red-600 rounded-lg flex text-white w-max"
+                        className="btn normal-case border-0 text-sm px-3 bg-red-600 rounded-lg text-white w-max"
                         suppressHydrationWarning
                         onClick={handleRemoveOffer}
                       >
