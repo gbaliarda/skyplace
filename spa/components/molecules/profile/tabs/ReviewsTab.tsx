@@ -42,11 +42,10 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
     reviewer: loggedInUser ?? undefined,
   })
 
-  const { totalPages: totalPurchasesPagesBetweenUsers, loading: loadingPurchasesBetweenUsers } =
-    usePurchases({
-      baseUrl: loggedInUser ? `${api}/users/${loggedInUser}/purchases?page=1` : null,
-      purchaser: userId ?? undefined,
-    })
+  const { purchases: purchasesBetweenUsers, loading: loadingPurchasesBetweenUsers } = usePurchases({
+    baseUrl: loggedInUser ? `${api}/users/${loggedInUser}/purchases?page=1` : null,
+    purchaser: userId ?? undefined,
+  })
 
   const reloadReviews = () => {
     refetchData(defaultURL)
@@ -122,8 +121,10 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
               {t("profile.reviews")}
             </h2>
 
-            {totalPurchasesPagesBetweenUsers !== 0 &&
+            {purchasesBetweenUsers !== undefined &&
+              purchasesBetweenUsers.length !== 0 &&
               totalReviewsBetweenUsers === 0 &&
+              loggedInUser !== null &&
               loggedInUser !== userId && (
                 <Link href={newReviewPath}>
                   <a>
