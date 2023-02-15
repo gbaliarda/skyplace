@@ -112,9 +112,7 @@ export default function Profile() {
             <HistoryTab userId={parsedUserId} />
           )}
 
-          {tab === "reviews" && (
-            <ReviewsTab loggedInUser={loggedUserId} userId={parsedUserId} />
-          )}
+          {tab === "reviews" && <ReviewsTab loggedInUser={loggedUserId} userId={parsedUserId} />}
         </div>
       ) : (
         <div className="flex justify-center items-center h-full">

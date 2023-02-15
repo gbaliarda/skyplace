@@ -143,7 +143,7 @@ export default function Sell() {
           <FormSelect
             name={t("sell.category")}
             options={CATEGORIES}
-            translations={CATEGORIES.map((category) => t(`categories.${category}`))}
+            translations={CATEGORIES.map((categ) => t(`categories.${categ}`))}
             value={data.category}
             error={categoryError}
             onChange={(e) => updateFields({ category: e.target.value })}

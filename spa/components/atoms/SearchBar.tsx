@@ -45,7 +45,12 @@ const SearchBar = () => {
           }
         >
           {Object.keys(SearchType).map((type) => (
-            <option suppressHydrationWarning key={type} value={type.toLowerCase()} className="text-slate-500">
+            <option
+              suppressHydrationWarning
+              key={type}
+              value={type.toLowerCase()}
+              className="text-slate-500"
+            >
               {t(`navbar.${type}`)}
             </option>
           ))}
