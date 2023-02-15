@@ -39,7 +39,7 @@ const CategoryFilter = ({ changeValueFilters }: Props) => {
                   )
                 }
               />
-              <label>{t(`categories.${category}`)}</label>
+              <label suppressHydrationWarning>{t(`categories.${category}`)}</label>
             </div>
           ))}
         </div>
