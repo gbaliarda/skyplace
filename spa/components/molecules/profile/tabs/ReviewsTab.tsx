@@ -34,7 +34,7 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
   )
 
   const {
-    total: totalReviewsBetweenUsers,
+    reviewsInfo: reviewsBetweenUsers,
     loading: loadingReviewsBetweenUsers,
     refetchData: refetchDataBetweenUsers,
   } = useReviews({
@@ -123,7 +123,8 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
 
             {purchasesBetweenUsers !== undefined &&
               purchasesBetweenUsers.length !== 0 &&
-              totalReviewsBetweenUsers === 0 &&
+              reviewsBetweenUsers !== undefined &&
+              reviewsBetweenUsers.reviews.length === 0 &&
               loggedInUser !== null &&
               loggedInUser !== userId && (
                 <Link href={newReviewPath}>
