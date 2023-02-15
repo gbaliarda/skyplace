@@ -215,11 +215,11 @@ const Product = () => {
                           />
                           <div>
                             <span className="font-bold tracking-tight">{sellorder?.price}</span>
-                            {sellorder?.price && ethPriceUsd && 
+                            {sellorder?.price && ethPriceUsd && (
                               <span className="ml-4 text-slate-500 text-base">
                                 ~ {(sellorder.price * ethPriceUsd).toFixed(2)} USD
                               </span>
-                            }
+                            )}
                           </div>
                         </>
                       ) : (
