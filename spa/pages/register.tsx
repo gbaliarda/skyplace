@@ -51,9 +51,9 @@ export default function Register() {
   const [passwordRepeatError, updatePasswordRepeatError] = useState("")
   const { t } = useTranslation()
 
-  const homeRedirect = () => {
+  const homeRedirect = async () => {
     try {
-      loginUser(data.email, data.password)
+      await loginUser(data.email, data.password)
       router.push("/")
     } catch (errs: any) {
       Swal.fire({ title: t("login.signInError"), text: errs[0].message, icon: "error" })
@@ -64,7 +64,7 @@ export default function Register() {
     e.preventDefault()
     try {
       await createUser(data)
-      homeRedirect()
+      await homeRedirect()
     } catch (errs: any) {
       let errorFields: string = ""
       let auxIdx = 1
