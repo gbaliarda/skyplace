@@ -20,7 +20,6 @@ public class BadRequestExceptionMapper implements ExceptionMapper<BadRequestExce
     @Autowired
     private MessageSource messageSource;
 
-    // TODO: Check i18n
     @Override
     public Response toResponse(BadRequestException e) {
         final String errorMessage = messageSource.getMessage(e.getLocalizedMessage(), null, LocaleContextHolder.getLocale());

@@ -1,24 +1,19 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.exceptions.NftNotFoundException;
 import ar.edu.itba.paw.model.Nft;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.service.FavoriteService;
 import ar.edu.itba.paw.service.NftService;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.dto.NftFiltersDto;
-import ar.edu.itba.paw.webapp.exceptions.InvalidNftFormException;
 import ar.edu.itba.paw.webapp.dto.NftDto;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateNftForm;
-import ar.edu.itba.paw.webapp.helpers.NftFormValidator;
 import ar.edu.itba.paw.webapp.helpers.ResponseHelpers;
 import org.apache.commons.io.IOUtils;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
