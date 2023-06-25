@@ -48,6 +48,7 @@ Thumbs.db
 
 *.iml
 *.env
+.env.production
 
 webapp/src/main/webapp/*
 !webapp/src/main/webapp/WEB-INF/

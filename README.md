@@ -44,8 +44,6 @@ npm run build
 npm run test
 ```
 
-Para correr los tests, ejecutar
-
 Los tokens JWT son almacenados en `localStorage` si el usuario desea mantener sesión iniciada, o en `sessionStorage` si desea que sus credenciales desaparezcan al cerrar la sesión de su navegador.
 
 
