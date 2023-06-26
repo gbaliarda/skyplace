@@ -231,7 +231,7 @@
     "transactionHash": "Hash de la transacción",
     "confirmTransaction": "Confirmar transacción",
     "transactionSuccess": "La transacción ha sido confirmada exitosamente.",
-    "transactionFailure": "No se pudo confirmar la transacción pedida.",
+    "transactionFailure": "No se pudo confirmar la transacción.",
     "recommended": "NFTs recomendados",
     "loadingOffers": "Cargando ofertas...",
     "user": "Usuario",
@@ -240,8 +240,8 @@
     "name": "Nombre"
   },
   "profile": {
-    "copy": "Copiar",
-    "copied": "Copiado",
+    "copy": "Copiar dirección",
+    "copied": "Copiada al portapapeles",
     "inventory": "Inventario",
     "selling": "Venta",
     "favorited": "Favoritos",

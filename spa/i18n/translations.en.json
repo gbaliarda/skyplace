@@ -230,7 +230,7 @@
     "transactionHash": "Transaction hash",
     "confirmTransaction": "Confirm Transaction",
     "transactionSuccess": "Transaction has been confirmed successfully.",
-    "transactionFailure": "Transaction requested could not be confirmed.",
+    "transactionFailure": "Transaction could not be confirmed.",
     "recommended": "Recommended NFTs",
     "collection": "Collection: {{collectionName}}",
     "loadingOffers": "Loading offers...",
@@ -240,8 +240,8 @@
     "name": "Name"
   },
   "profile": {
-    "copy": "Copy",
-    "copied": "Copied",
+    "copy": "Copy address",
+    "copied": "Copied to clipboard",
     "inventory": "Inventory",
     "selling": "Selling",
     "favorited": "Favorited",

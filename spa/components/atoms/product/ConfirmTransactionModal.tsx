@@ -1,6 +1,9 @@
 import { useTranslation } from "next-export-i18n"
-import { useRef } from "react"
+import { useRef, useState, MouseEvent } from "react"
 import Swal from "sweetalert2"
+import { ClipboardIcon } from "@heroicons/react/24/outline"
+import { CopyToClipboard } from "react-copy-to-clipboard"
+
 import User from "../../../types/User"
 import Nft from "../../../types/Nft"
 
@@ -22,12 +25,22 @@ export default function ConfirmTransactionModal({
 }: Props) {
   const { t } = useTranslation()
   const toggleRef = useRef<HTMLLabelElement>(null)
-  const txHashRef = useRef<HTMLInputElement>(null)
+  const tooltipFromRef = useRef<HTMLButtonElement>(null)
+  const tooltipToRef = useRef<HTMLButtonElement>(null)
+  const [txHash, setTxHash] = useState("")
+
+  const changeTooltipText = (e: MouseEvent<HTMLButtonElement>, from = false) => {
+    const tooltipRef = from ? tooltipFromRef : tooltipToRef
+    tooltipRef.current?.setAttribute("data-tip", t("profile.copied"))
+    setTimeout(() => {
+      tooltipRef.current?.setAttribute("data-tip", t("profile.copy"))
+    }, 2000)
+  }
 
   const confirm = async () => {
     try {
-      await handleConfirm(txHashRef.current!!.value)
-      txHashRef.current!!.value = ""
+      await handleConfirm(txHash)
+      setTxHash("")
       // close modal on success
       await Swal.fire({ title: t("product.transactionSuccess"), icon: "success" })
       toggleRef.current?.click()
@@ -56,13 +69,23 @@ export default function ConfirmTransactionModal({
                 <span suppressHydrationWarning className="font-bold">
                   {t("product.user")}
                 </span>
-                {userPendingBuyOrder?.username}
+                : {userPendingBuyOrder?.username}
               </li>
-              <li className="list-disc ml-4 marker:text-cyan-600">
+              <li className="list-disc ml-4 marker:text-cyan-600 flex items-center">
                 <span suppressHydrationWarning className="font-bold">
                   {t("product.wallet")}
                 </span>
-                {userPendingBuyOrder?.wallet}
+                : {userPendingBuyOrder?.wallet}
+                <CopyToClipboard text={userPendingBuyOrder?.wallet || ""}>
+                  <button
+                    ref={tooltipFromRef}
+                    className="ml-2 tooltip tooltip-top"
+                    data-tip={t("profile.copy")}
+                    onClick={(e) => changeTooltipText(e, true)}
+                  >
+                    <ClipboardIcon className="h-5 w-5 text-cyan-700" />
+                  </button>
+                </CopyToClipboard>
               </li>
             </ModalSection>
             <ModalSection title={t("product.transactionTo")}>
@@ -72,11 +95,21 @@ export default function ConfirmTransactionModal({
                 </span>
                 : {owner?.username}
               </li>
-              <li className="list-disc ml-4 marker:text-cyan-600">
+              <li className="list-disc ml-4 marker:text-cyan-600 flex items-center">
                 <span suppressHydrationWarning className="font-bold">
                   {t("product.wallet")}
                 </span>
                 : {owner?.wallet}
+                <CopyToClipboard text={owner?.wallet || ""}>
+                  <button
+                    ref={tooltipToRef}
+                    className="ml-2 tooltip tooltip-top"
+                    data-tip={t("profile.copy")}
+                    onClick={changeTooltipText}
+                  >
+                    <ClipboardIcon className="h-5 w-5 text-cyan-700" />
+                  </button>
+                </CopyToClipboard>
               </li>
             </ModalSection>
             <ModalSection title={t("product.transactionNft")}>
@@ -100,13 +133,14 @@ export default function ConfirmTransactionModal({
               <p suppressHydrationWarning className="font-bold text-lg">
                 {t("product.transactionHash")}
               </p>
-              <input ref={txHashRef} className="input input-bordered input-md w-full" />
+              <input value={txHash} onChange={(e) => setTxHash(e.target.value)} className="input input-bordered input-md w-full" />
             </div>
           </div>
           <div className="modal-action">
             <button
               suppressHydrationWarning
               onClick={confirm}
+              disabled={!txHash}
               className="btn normal-case border-none bg-cyan-600 hover:bg-cyan-800"
             >
               {t("product.confirmTransaction")}

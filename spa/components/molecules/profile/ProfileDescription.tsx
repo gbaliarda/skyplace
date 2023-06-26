@@ -40,7 +40,7 @@ export default function ProfileDescription({ userId }: Props) {
       walletTooltipRef.current.setAttribute("data-tip", walletCopiedMessage)
       setTimeout(() => {
         walletTooltipRef.current.setAttribute("data-tip", walletCopyMessage)
-      }, 1000)
+      }, 2000)
     }
   }
 
