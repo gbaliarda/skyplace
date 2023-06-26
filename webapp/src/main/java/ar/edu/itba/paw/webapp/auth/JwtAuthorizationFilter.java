@@ -12,19 +12,13 @@ import com.google.gson.Gson;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.context.i18n.SimpleLocaleContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-import org.springframework.web.servlet.support.RequestContext;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.FilterChain;
@@ -107,7 +101,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 try {
                     token = userDetailsService.restLogin(userPass[0], userPass[1]);
                 } catch (UsernameNotFoundException e) {
-                    setErrorResponse(response, e, HttpServletResponse.SC_BAD_REQUEST, ApiReturnCodes.INVALID_USER_PASSWORD.getCode());
+                    setErrorResponse(response, e, HttpServletResponse.SC_UNAUTHORIZED, ApiReturnCodes.INVALID_USER_PASSWORD.getCode());
                     return;
                 }
 
@@ -136,7 +130,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     setErrorResponse(response, new SkyplaceMalformedJwtException(), HttpServletResponse.SC_BAD_REQUEST, ApiReturnCodes.MALFORMED_JWT.getCode());
                     return;
                 } catch (UsernameNotFoundException e) {
-                    setErrorResponse(response, e, HttpServletResponse.SC_BAD_REQUEST, ApiReturnCodes.INVALID_USER_PASSWORD.getCode());
+                    setErrorResponse(response, e, HttpServletResponse.SC_UNAUTHORIZED, ApiReturnCodes.INVALID_USER_PASSWORD.getCode());
                     return;
                 }
                 break;
