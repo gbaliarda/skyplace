@@ -22,6 +22,7 @@ public class NftDto {
     private URI image;
     private URI owner;
     private URI sellorder;
+    private URI recommendations;
 
     // returns the DTO representation of the Nft
     public static NftDto fromNft(final UriInfo uriInfo, final Nft nft, final Integer nftFavorites) {
@@ -33,12 +34,15 @@ public class NftDto {
                 .path(String.valueOf(nft.getOwner().getId()));
         final UriBuilder imageUriBuilder = uriInfo.getBaseUriBuilder().path("images")
                 .path(String.valueOf(nft.getIdImage()));
+        final UriBuilder recommendationsUriBuilder = uriInfo.getBaseUriBuilder().path("nfts")
+                .path(String.valueOf(nft.getId())).path("recommendations");
 
         if(!nft.isDeleted()) {
             dto.self = nftUriBuilder.build();
             dto.id = nft.getId();
             dto.favorites = nftFavorites;
             dto.owner = userUriBuilder.build();
+            dto.recommendations = recommendationsUriBuilder.build();
 
             if (nft.getSellOrder() != null) {
                 final UriBuilder sellorderUriBuilder = uriInfo.getBaseUriBuilder().path("sellorders")
@@ -159,4 +163,11 @@ public class NftDto {
         this.owner = owner;
     }
 
+    public URI getRecommendations() {
+        return recommendations;
+    }
+
+    public void setRecommendations(URI recommendations) {
+        this.recommendations = recommendations;
+    }
 }
