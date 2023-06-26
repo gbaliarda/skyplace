@@ -80,6 +80,7 @@ export default function ConfirmTransactionModal({
                   <button
                     ref={tooltipFromRef}
                     className="ml-2 tooltip tooltip-top"
+                    suppressHydrationWarning
                     data-tip={t("profile.copy")}
                     onClick={(e) => changeTooltipText(e, true)}
                   >
@@ -104,6 +105,7 @@ export default function ConfirmTransactionModal({
                   <button
                     ref={tooltipToRef}
                     className="ml-2 tooltip tooltip-top"
+                    suppressHydrationWarning
                     data-tip={t("profile.copy")}
                     onClick={changeTooltipText}
                   >

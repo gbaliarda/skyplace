@@ -42,6 +42,7 @@ const INITIAL_DATA: FormData = {
 
 export default function Register() {
   const router = useRouter()
+  const { from } = router.query as { from: string | undefined }
   const [data, updateFields] = useForm<FormData>(INITIAL_DATA)
   const [emailError, updateEmailError] = useState("")
   const [walletError, updateWalletError] = useState("")
@@ -54,7 +55,7 @@ export default function Register() {
   const homeRedirect = async () => {
     try {
       await loginUser(data.email, data.password)
-      router.push("/")
+      router.replace(from === undefined ? "/" : from)
     } catch (errs: any) {
       Swal.fire({ title: t("login.signInError"), text: errs[0].message, icon: "error" })
     }

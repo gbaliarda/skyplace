@@ -82,7 +82,7 @@ export default function Login() {
                   {t("login.rememberMe")}
                 </label>
               </div>
-              <Link href="/register" passHref>
+              <Link href={{ pathname: "/register", query: { from } }} passHref>
                 <a
                   suppressHydrationWarning
                   className="font-medium text-sm text-cyan-600 hover:text-cyan-500"

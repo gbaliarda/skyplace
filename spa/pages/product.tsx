@@ -279,9 +279,8 @@ const Product = () => {
                     )}
 
                     {sellorder &&
-                      currentUserId &&
                       currentUserId !== owner?.id &&
-                      userPendingBuyOrder?.id !== currentUserId && (
+                      currentUserId !== userPendingBuyOrder?.id && (
                         <ProductBuyOfferBox sellOrder={sellorder} />
                       )}
                   </div>

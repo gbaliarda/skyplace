@@ -2,6 +2,8 @@ import { BaseSyntheticEvent, useState, useRef } from "react"
 import { useTranslation } from "next-export-i18n"
 import { TagIcon } from "@heroicons/react/24/outline"
 import Swal from "sweetalert2"
+import { useRouter } from "next/router"
+
 import { sendJson, getResourceUrl } from "../../../services/endpoints"
 import useSession from "../../../hooks/useSession"
 import Sellorder from "../../../types/Sellorder"
@@ -9,6 +11,7 @@ import { useCryptoPrice } from "../../../hooks/useCryptoPrice"
 
 const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
   const { t } = useTranslation()
+  const router = useRouter()
   const { accessToken } = useSession()
   const priceRef = useRef<HTMLInputElement>(null)
   const [offer, setOffer] = useState(0)
@@ -17,7 +20,8 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
   const { price: ethPriceUsd } = useCryptoPrice("ethereum")
 
   const handleMakeOffer = async () => {
-    if (!accessToken) return Swal.fire({ title: t("errors.notLoggedIn"), icon: "error" })
+    if (!accessToken)
+      return router.push({ pathname: "/login", query: { from: router.asPath } })
 
     setLoading(true)
     try {
