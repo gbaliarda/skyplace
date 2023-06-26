@@ -18,13 +18,13 @@ interface FormData {
   comments: string
 }
 
+const STARS = ["1", "2", "3", "4", "5"]
+
 const INITIAL_DATA: FormData = {
-  score: "1",
+  score: STARS.at(-1)!!,
   title: "",
   comments: "",
 }
-
-const STARS = [{ key: "1" }, { key: "2" }, { key: "3" }, { key: "4" }, { key: "5" }]
 
 export default function CreateReview() {
   const { t } = useTranslation()
@@ -64,7 +64,7 @@ export default function CreateReview() {
 
   return (
     <Layout>
-      <h1 suppressHydrationWarning className="text-3xl text-center mb-12">
+      <h1 suppressHydrationWarning className="text-3xl text-center mb-12 mt-16">
         {t("reviews.create")}
       </h1>
       <form className="flex flex-col justify-center items-center gap-4" onSubmit={handleSubmit}>
@@ -93,28 +93,16 @@ export default function CreateReview() {
                 {t("reviews.rating")}
               </span>
               <div className="rating rating-lg">
-                {STARS.map((value, i) => {
-                  if (value.key === "1")
-                    return (
-                      <input
-                        key={i}
-                        type="radio"
-                        name="rating-2"
-                        className="mask mask-star-2 bg-amber-400 checked:hover:bg-amber-400 checked:bg-amber-400 checked:focus:bg-amber-400 rounded-xl checked:bg-none"
-                        defaultChecked
-                        onClick={() => updateFields({ score: value.key })}
-                      />
-                    )
-                  return (
+                {STARS.map((score, i) => (
                     <input
                       key={i}
                       type="radio"
                       name="rating-2"
+                      defaultChecked
                       className="mask mask-star-2 bg-amber-400 checked:bg-amber-400 checked:focus:bg-amber-400 rounded-xl checked:bg-none"
-                      onClick={() => updateFields({ score: value.key })}
+                      onClick={() => updateFields({ score })}
                     />
-                  )
-                })}
+                ))}
               </div>
             </label>
           </div>
