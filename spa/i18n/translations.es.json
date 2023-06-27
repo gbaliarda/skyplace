@@ -85,6 +85,7 @@
     "updateSellorder": "Error al actualizar la orden de venta",
     "createNft": "Error al crear NFT",
     "createReview": "Error al crear la reseña",
+    "incompleteReview": "Por favor, seleccione una calificación.",
     "invalidField": "El campo {{ field }} es inválido",
     "invalidFields": "Los campos {{ fields }} son inválidos"
   },
@@ -230,8 +231,11 @@
     "transactionValue": "Monto",
     "transactionHash": "Hash de la transacción",
     "confirmTransaction": "Confirmar transacción",
-    "transactionSuccess": "La transacción ha sido confirmada exitosamente.",
+    "transactionSuccess": "Transacción confirmada exitosamente.",
     "transactionFailure": "No se pudo confirmar la transacción.",
+    "requestReview": "Quieres dejar una reseña sobre el vendedor? Hazle saber a todos cómo fue tu experiencia.",
+    "requestReviewConfirm": "Reseñar",
+    "requestReviewCancel": "Quizás después",
     "recommended": "NFTs recomendados",
     "loadingOffers": "Cargando ofertas...",
     "user": "Usuario",
@@ -303,7 +307,9 @@
     "delete": "Borrar reseña",
     "deleteDesc": "¿Está seguro que desea borrar esta reseña? Esta acción NO puede ser deshecha",
     "confirmDelete": "Sí, borrarla",
-    "cancelDelete": "Cancelar"
+    "cancelDelete": "Cancelar",
+    "reviewSeller": "Reseñar vendedor",
+    "reviewBuyer": "Reseñar comprador"
   },
   "404": {
     "check": "Verifique la URL e intente nuevamente",

@@ -21,7 +21,7 @@ interface FormData {
 const STARS = ["1", "2", "3", "4", "5"]
 
 const INITIAL_DATA: FormData = {
-  score: STARS.at(-1)!!,
+  score: "",
   title: "",
   comments: "",
 }
@@ -48,13 +48,14 @@ export default function CreateReview() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!accessToken) return Swal.fire({ title: t("errors.notLoggedIn"), icon: "error" })
+    if (!data.score) return Swal.fire({ title: t("errors.createReview"), text: t("errors.incompleteReview"), icon: "error" })
 
     try {
       await sendJson("POST", `/users/${parsedId}/reviews`, { ...data }, accessToken)
       await Swal.fire({ title: t("reviews.createSuccess"), icon: "success" })
       router.replace(`/profile?id=${parsedId}&tab=reviews`)
     } catch (errs: any) {
-      await Swal.fire({
+      Swal.fire({
         title: t("errors.createReview"),
         text: t("errors.invalidField", { field: errs[0].cause.field }),
         icon: "error",
@@ -93,12 +94,12 @@ export default function CreateReview() {
                 {t("reviews.rating")}
               </span>
               <div className="rating rating-lg">
+                <input type="radio" name="rating-9" className="rating-hidden hidden" defaultChecked readOnly />
                 {STARS.map((score, i) => (
                     <input
                       key={i}
                       type="radio"
-                      name="rating-2"
-                      defaultChecked
+                      name="rating-9"
                       className="mask mask-star-2 bg-amber-400 checked:bg-amber-400 checked:focus:bg-amber-400 rounded-xl checked:bg-none"
                       onClick={() => updateFields({ score })}
                     />

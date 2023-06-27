@@ -15,7 +15,7 @@ export const Paginator = ({ links, updateUrl, amountPages }: Props) => {
       {links.prev ? (
         <button
           suppressHydrationWarning
-          className="text-cyan-400 cursor-pointer mr-2"
+          className="text-cyan-500 cursor-pointer mr-2"
           onClick={() => links.prev !== undefined && updateUrl(links.prev.url)}
         >
           {t("explore.previous")}
@@ -34,7 +34,7 @@ export const Paginator = ({ links, updateUrl, amountPages }: Props) => {
       {links.next ? (
         <button
           suppressHydrationWarning
-          className="text-cyan-400 cursor-pointer ml-2"
+          className="text-cyan-500 cursor-pointer ml-2"
           onClick={() => links.next !== undefined && updateUrl(links.next.url)}
         >
           {t("explore.next")}

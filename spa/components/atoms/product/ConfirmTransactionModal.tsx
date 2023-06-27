@@ -3,6 +3,7 @@ import { useRef, useState, MouseEvent } from "react"
 import Swal from "sweetalert2"
 import { ClipboardIcon } from "@heroicons/react/24/outline"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+import { useRouter } from "next/router"
 
 import User from "../../../types/User"
 import Nft from "../../../types/Nft"
@@ -23,6 +24,7 @@ export default function ConfirmTransactionModal({
   product,
   handleConfirm,
 }: Props) {
+  const router = useRouter()
   const { t } = useTranslation()
   const toggleRef = useRef<HTMLLabelElement>(null)
   const tooltipFromRef = useRef<HTMLButtonElement>(null)
@@ -41,8 +43,16 @@ export default function ConfirmTransactionModal({
     try {
       await handleConfirm(txHash)
       setTxHash("")
-      // close modal on success
-      await Swal.fire({ title: t("product.transactionSuccess"), icon: "success" })
+      const { isConfirmed } = await Swal.fire({
+        title: t("product.transactionSuccess"),
+        text: t("product.requestReview"),
+        icon: "success",
+        showCancelButton: true,
+        confirmButtonText: t("product.requestReviewConfirm"),
+        cancelButtonText: t("product.requestReviewCancel"),
+      })
+      if (isConfirmed) router.push(`/review?id=${owner?.id}`)
+      // Close modal on success
       toggleRef.current?.click()
     } catch (e: any) {
       console.log(e.name, e.message)
