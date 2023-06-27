@@ -5,10 +5,11 @@ import { FilterType } from "../../types/Filters"
 import { Category } from "../../types/Nft"
 
 interface Props {
-  changeValueFilters: (filterType: FilterType, toAdd: boolean, category: Category) => void
+  changeValueFilters: (filterType: FilterType, toAdd: boolean, category: Category) => void,
+  categories: Category[] | undefined
 }
 
-const CategoryFilter = ({ changeValueFilters }: Props) => {
+const CategoryFilter = ({ changeValueFilters, categories }: Props) => {
   const { t } = useTranslation()
   const [isClosed, setIsClosed] = useState(false)
 
@@ -31,6 +32,7 @@ const CategoryFilter = ({ changeValueFilters }: Props) => {
                 type="checkbox"
                 className="w-5 h-5 border-gray-300 rounded mr-2 cursor-pointer"
                 value={category}
+                checked={categories !== undefined && categories.includes(category as Category)}
                 onChange={(e) =>
                   changeValueFilters(
                     FilterType.CATEGORY,

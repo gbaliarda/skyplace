@@ -1,16 +1,18 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { ArrowSmallDownIcon } from "@heroicons/react/24/outline"
 import { useTranslation } from "next-export-i18n"
 
 interface Props {
   applyPriceFilter: (minPrice: number, maxPrice: number) => void
+  minPrice: number | undefined,
+  maxPrice: number | undefined,
 }
 
-const PriceFilter = ({ applyPriceFilter }: Props) => {
+const PriceFilter = ({ applyPriceFilter, minPrice, maxPrice }: Props) => {
   const { t } = useTranslation()
   const [isClosed, setIsClosed] = useState(false)
-  const [minPrice, setMinPrice] = useState(0)
-  const [maxPrice, setMaxPrice] = useState(0)
+  const filterMinPriceRef = useRef<HTMLInputElement>(null);
+  const filterMaxPriceRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className={isClosed ? "text-gray-500" : ""}>
@@ -35,9 +37,8 @@ const PriceFilter = ({ applyPriceFilter }: Props) => {
               step=".000000000000000001"
               className="h-8 text-10  bg-gray-50 border py-55-rem border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="Min"
-              onChange={(e) =>
-                Number(e.target.value) >= 0 ? setMinPrice(Number(e.target.value)) : setMinPrice(0)
-              }
+              defaultValue={minPrice}
+              ref={filterMinPriceRef}
             />
           </div>
           <span suppressHydrationWarning className="pb-1">
@@ -53,9 +54,8 @@ const PriceFilter = ({ applyPriceFilter }: Props) => {
               step=".000000000000000001"
               className="h-8 text-10  bg-gray-50 border py-55-rem border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="Max"
-              onChange={(e) =>
-                Number(e.target.value) >= 0 ? setMaxPrice(Number(e.target.value)) : setMaxPrice(0)
-              }
+              defaultValue={maxPrice}
+              ref={filterMaxPriceRef}
             />
           </div>
         </div>
@@ -63,7 +63,7 @@ const PriceFilter = ({ applyPriceFilter }: Props) => {
           suppressHydrationWarning
           type="submit"
           className="rounded-lg flex px-4 py-1 mx-auto mt-4 cursor-pointer text-white bg-cyan-600 hover:bg-cyan-700"
-          onClick={() => applyPriceFilter(minPrice, maxPrice)}
+          onClick={() => applyPriceFilter(parseInt(filterMinPriceRef.current?.value ?? "0") , parseInt(filterMaxPriceRef.current?.value ?? "0"))}
         >
           {t("explore.apply")}
         </button>

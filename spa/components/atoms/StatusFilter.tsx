@@ -4,10 +4,11 @@ import { useTranslation } from "next-export-i18n"
 import { FilterType, SaleStatus } from "../../types/Filters"
 
 interface Props {
-  changeValueFilters: (filterType: FilterType, toAdd: boolean, saleStatus: SaleStatus) => void
+  changeValueFilters: (filterType: FilterType, toAdd: boolean, saleStatus: SaleStatus) => void,
+  status: SaleStatus[] | undefined
 }
 
-const StatusFilter = ({ changeValueFilters }: Props) => {
+const StatusFilter = ({ changeValueFilters, status }: Props) => {
   const { t } = useTranslation()
   const [isClosed, setIsClosed] = useState(false)
 
@@ -29,6 +30,7 @@ const StatusFilter = ({ changeValueFilters }: Props) => {
               type="checkbox"
               className="w-5 h-5 border-gray-300 rounded mr-2 cursor-pointer"
               value="onSale"
+              checked={status !== undefined && status.includes(SaleStatus.ONSALE)}
               onChange={(e) =>
                 changeValueFilters(FilterType.STATUS, e.target.checked, SaleStatus.ONSALE)
               }
@@ -40,6 +42,7 @@ const StatusFilter = ({ changeValueFilters }: Props) => {
               type="checkbox"
               className="w-5 h-5 border-gray-300 rounded mr-2 cursor-pointer"
               value="notSale"
+              checked={status !== undefined && status.includes(SaleStatus.NOTSALE)}
               onChange={(e) =>
                 changeValueFilters(FilterType.STATUS, e.target.checked, SaleStatus.NOTSALE)
               }

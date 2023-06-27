@@ -4,10 +4,11 @@ import { FilterType } from "../../types/Filters"
 import { Chain } from "../../types/Nft"
 
 interface Props {
-  changeValueFilters: (filterType: FilterType, toAdd: boolean, category: Chain) => void
+  changeValueFilters: (filterType: FilterType, toAdd: boolean, category: Chain) => void,
+  chains: Chain[] | undefined
 }
 
-const ChainFilter = ({ changeValueFilters }: Props) => {
+const ChainFilter = ({ changeValueFilters, chains }: Props) => {
   const [isClosed, setIsClosed] = useState(false)
 
   return (
@@ -29,6 +30,7 @@ const ChainFilter = ({ changeValueFilters }: Props) => {
                 type="checkbox"
                 className="w-5 h-5 border-gray-300 rounded mr-2 cursor-pointer"
                 value={chain}
+                checked={chains !== undefined && chains.includes(chain as Chain)}
                 onChange={(e) =>
                   changeValueFilters(
                     FilterType.CHAIN,
