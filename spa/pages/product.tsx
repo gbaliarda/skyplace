@@ -90,7 +90,6 @@ const Product = () => {
 
   return (
     <Layout>
-      <p>{nft?.recommendations.toString()}</p>
       <ConfirmTransactionModal
         userPendingBuyOrder={userPendingBuyOrder}
         owner={owner}
