@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import { useTranslation } from "next-export-i18n"
+import queryString from 'query-string'
 import FilterSideBar from "../components/molecules/FilterSideBar"
 import ExploreContent from "../components/molecules/ExploreContent"
 import Layout from "../components/Layout"
@@ -16,6 +17,7 @@ const Explore = () => {
 
   const [search, setSearch] = useState<SearchFilter>()
   const [filters, setFilters] = useState<NftsFilter>({})
+  const [page, setPage] = useState<number>()
 
   useEffect(() => {
     const querySearch = router.query.search
@@ -30,31 +32,33 @@ const Explore = () => {
     setFilters((prevFilters) => {
       const newFilters = {...prevFilters}
 
-      if (router.query.status !== undefined)
-        newFilters.status = router.query.status as SaleStatus[];
-  
-      if (router.query.category !== undefined)
-        newFilters.category = router.query.category as Category[];
-    
-      if (router.query.chain !== undefined)
-        newFilters.chain = router.query.chain as Chain[];
+      newFilters.status = router.query.status as SaleStatus[]
+      newFilters.category = router.query.category as Category[]
+      newFilters.chain = router.query.chain as Chain[]
 
-      
       const queryMinPrice = router.query.minPrice
       const queryMaxPrice = router.query.maxPrice
 
-      if (queryMinPrice !== undefined)
-        newFilters.minPrice = Array.isArray(queryMinPrice) ? parseInt(queryMinPrice[0]) : parseInt(queryMinPrice ?? "0")
-
-      if (queryMaxPrice !== undefined)
-        newFilters.maxPrice = Array.isArray(queryMaxPrice) ? parseInt(queryMaxPrice[0]) : parseInt(queryMaxPrice ?? "0")
+      newFilters.minPrice = Array.isArray(queryMinPrice) ? parseInt(queryMinPrice[0]) : parseInt(queryMinPrice ?? "0")
+      newFilters.maxPrice = Array.isArray(queryMaxPrice) ? parseInt(queryMaxPrice[0]) : parseInt(queryMaxPrice ?? "0")
       
       return newFilters
     })
   }, [router.query.status, router.query.category, router.query.chain, router.query.minPrice, router.query.maxPrice])
 
+  useEffect(() => {
+    setSort(Array.isArray(router.query.sort) ? router.query.sort[0] : router.query.sort ?? "")
+  }, [router.query.sort])
+
+  useEffect(() => {
+    if (!router.isReady) return
+
+    if (router.query.page)
+      setPage(Array.isArray(router.query.page) ? parseInt(router.query.page[0]) : parseInt(router.query.page))
+  }, [router.query.page])
+
   const defaultURL: NftsURL = {
-    baseUrl: `${api}/nfts?page=1`,
+    baseUrl: `${api}/nfts?page=${page}`,
     filters: filters,
     sort: "",
   }
@@ -66,6 +70,10 @@ const Explore = () => {
 
   const updateUrl = useCallback(
     (_url: string) => {
+      const params = new URLSearchParams(new URL(_url).search)
+      const pageNumber = params.get('page') ?? "1"
+      updatePage(pageNumber)
+
       setUrl({
         ...url,
         baseUrl: _url,
@@ -77,13 +85,40 @@ const Explore = () => {
   useEffect(() => {
     setUrl({
       ...url,
-      baseUrl: `${api}/nfts?page=1`,
+      baseUrl: `${api}/nfts?page=${page}`,
       filters,
       sort,
       search,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, sort, search])
+  }, [filters, sort, search, page])
+
+  const updatePage = (pageNumber: string) => {
+    const queryParams = new URLSearchParams(queryString.stringify(router.query))
+
+    setPage(parseInt(pageNumber))
+    queryParams.set("page", pageNumber)
+
+    const newURL = `${router.pathname}?${queryParams.toString()}`
+
+    router.push(newURL)
+  }
+
+  const applySort = (sort: string) => {
+    const queryParams = new URLSearchParams(queryString.stringify(router.query))
+
+    queryParams.set("sort", sort)
+    
+    if (!queryParams.getAll("status").includes(SaleStatus.ONSALE) && (sort === "priceDsc" || sort === "priceAsc")) {
+      queryParams.append("status", SaleStatus.ONSALE)
+      queryParams.set("page", "1")
+    }
+
+    const newURL = `${router.pathname}?${queryParams.toString()}`
+    
+    router.push(newURL)
+    setSort(sort)
+  }
 
   return (
     <Layout>
@@ -107,7 +142,7 @@ const Explore = () => {
             links={links ?? undefined}
             updateUrl={updateUrl}
             sortDefaultValue={sort}
-            setSort={setSort}
+            setSort={applySort}
             amountPages={totalPages}
           />
         )}

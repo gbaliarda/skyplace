@@ -28,6 +28,12 @@ export const useNfts = (url: NftsURL) => {
 
   const refetchData = (_url: NftsURL) => {
     if (_url.search === undefined) return
+    if (_url.filters.category === undefined) delete _url.filters.category
+    if (_url.filters.chain === undefined) delete _url.filters.chain
+    if (_url.filters.status === undefined) delete _url.filters.status
+    const params = new URLSearchParams(new URL(_url.baseUrl).search)
+    if (params.get('page') === "undefined") return
+    
     const filterParams = encodeQueryParam(_url.filters)
     const searchParams = encodeQueryParam(_url.search)
     const sort = _url.sort ? `&sort=${_url.sort}` : ""

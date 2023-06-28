@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import { useTranslation } from "next-export-i18n"
-import queryString from 'query-string';
+import queryString from 'query-string'
 import { FunnelIcon, ArrowSmallLeftIcon, ArrowSmallRightIcon } from "@heroicons/react/24/outline"
 import { Category, Chain } from "../../types/Nft"
 import { FilterType, NftsFilter, SaleStatus } from "../../types/Filters"
@@ -30,30 +30,41 @@ const FilterSideBar = ({
   const { t } = useTranslation()
 
   const addQueryParam = (name: string, value: string) => {
-    const queryParams = new URLSearchParams(queryString.stringify(router.query));
+    const queryParams = new URLSearchParams(queryString.stringify(router.query))
 
-    queryParams.append(name, value);
+    if (name === "category" &&  !queryParams.getAll("status").includes(SaleStatus.ONSALE))
+      queryParams.append("status", SaleStatus.ONSALE)
+    queryParams.set("page", "1")
+    queryParams.append(name, value)
 
-    const newURL = `${router.pathname}?${queryParams.toString()}`;
+    const newURL = `${router.pathname}?${queryParams.toString()}`
     
-    router.push(newURL);
-  };
+    router.push(newURL)
+  }
 
   const setPriceParam = (minPrice: number, maxPrice: number) => {
-    const queryParams = new URLSearchParams(queryString.stringify(router.query));
+    const queryParams = new URLSearchParams(queryString.stringify(router.query))
 
-    queryParams.set("minPrice", isNaN(minPrice) ? "0" : minPrice.toString());
-    queryParams.set("maxPrice", isNaN(maxPrice) ? "0" : maxPrice.toString());
+    queryParams.set("minPrice", isNaN(minPrice) ? "0" : minPrice.toString())
+    queryParams.set("maxPrice", isNaN(maxPrice) ? "0" : maxPrice.toString())
 
-    const newURL = `${router.pathname}?${queryParams.toString()}`;
+    const newURL = `${router.pathname}?${queryParams.toString()}`
     
-    router.push(newURL);
-  };
+    router.push(newURL)
+  }
 
   const removeQueryParam = (name: string, value: string) => {
-    const queryParams = new URLSearchParams(queryString.stringify(router.query));
+    const queryParams = new URLSearchParams(queryString.stringify(router.query))
   
     if (queryParams.has(name)) {
+      if (name === "status" && value === SaleStatus.ONSALE) {
+        if (queryParams.get("sort") === "priceAsc" || queryParams.get("sort") === "priceDsc")
+          queryParams.delete("sort")
+        
+        if (queryParams.get("category"))
+          queryParams.delete("category")
+      }
+
       const values = queryParams.getAll(name)
       const filteredValues = values.filter((val: string) => val !== value)
   
@@ -62,10 +73,10 @@ const FilterSideBar = ({
       filteredValues.forEach((val) => queryParams.append(name, val))
     }
   
-    const newURL = `${router.pathname}?${queryParams.toString()}`;
+    const newURL = `${router.pathname}?${queryParams.toString()}`
   
-    router.push(newURL);
-  };
+    router.push(newURL)
+  }
 
   const changeValueFilters = (
     filterType: FilterType,
