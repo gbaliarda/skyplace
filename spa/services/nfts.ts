@@ -42,13 +42,13 @@ export const useNfts = (url: NftsURL) => {
   return { nfts, total, totalPages, links, loading, error, refetchData }
 }
 
-export const useRecommendedNfts = (nftId: number | undefined) => {
+export const useRecommendedNfts = (nftUrl: string | undefined) => {
   const {
     data: recommendations,
     isLoading: loading,
     error: errors,
     mutate,
-  } = useSWR<Nft[], FetchError[]>(nftId ? `/nfts/${nftId}/recommendations` : null, fetcher)
+  } = useSWR<Nft[], FetchError[]>(nftUrl ? [nftUrl, ""] : null, genericFetcher)
   return { recommendations, loading, errors, mutate }
 }
 

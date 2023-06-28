@@ -49,7 +49,7 @@ const Product = () => {
     recommendations,
     loading: loadingRecommendations,
     errors: errorsRecommendations,
-  } = useRecommendedNfts(nft?.id)
+  } = useRecommendedNfts(nft?.recommendations.toString())
   const { userId: currentUserId, roles, accessToken } = useSession()
   const {
     favorite,
@@ -90,6 +90,7 @@ const Product = () => {
 
   return (
     <Layout>
+      <p>{nft?.recommendations.toString()}</p>
       <ConfirmTransactionModal
         userPendingBuyOrder={userPendingBuyOrder}
         owner={owner}

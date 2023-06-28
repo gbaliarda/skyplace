@@ -12,6 +12,7 @@ export default interface Nft {
   purchases: URL
   favorites: number
   isDeleted: boolean
+  recommendations: URL
 }
 
 export enum Category {
