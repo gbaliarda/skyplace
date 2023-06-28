@@ -83,6 +83,8 @@ const Explore = () => {
   )
 
   useEffect(() => {
+    if (router.isReady && page === undefined)
+      setPage(1)
     setUrl({
       ...url,
       baseUrl: `${api}/nfts?page=${page}`,
