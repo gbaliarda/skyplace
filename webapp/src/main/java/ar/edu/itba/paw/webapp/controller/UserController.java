@@ -24,9 +24,7 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -92,9 +90,12 @@ public class UserController {
 
         List<BuyOrderDto> buyOffers = buyOrderService.getBuyOrdersForUser(maybeUser.get(), page, status).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
 
+        Map<String, Object[]> queryParams = new HashMap<>();
+        if (status != null)
+            queryParams.put("status", new Object[]{status});
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<BuyOrderDto>>(buyOffers) {});
         ResponseHelpers.addTotalPagesHeader(responseBuilder, amountOfferPages);
-        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, amountOfferPages).build();
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, amountOfferPages, queryParams).build();
     }
 
     @GET
@@ -117,10 +118,16 @@ public class UserController {
         int amountPages = favoriteService.getUserFavoritesPages(amountFavorites);
         int lastPage = nftService.getAmountPublicationPagesByUser(currentUser, currentUser, "favorited");
 
+        Map<String, Object[]> queryParams = new HashMap<>();
+        if (sort != null)
+            queryParams.put("sort", new Object[]{sort});
+        if (nftId != null && nftId.size() > 0)
+            queryParams.put("nftId", nftId.toArray());
+
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(userFavorites) {});
         ResponseHelpers.addTotalCountHeader(responseBuilder, amountFavorites);
         ResponseHelpers.addTotalPagesHeader(responseBuilder, amountPages);
-        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, lastPage).build();
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, lastPage, queryParams).build();
     }
 
     @PUT
@@ -192,9 +199,11 @@ public class UserController {
             historyPurchases = purchaseService.getAllTransactions(userId, page).stream().map(n -> PurchaseDto.fromPurchase(uriInfo, n)).collect(Collectors.toList());
         }
 
+        Map<String, Object[]> queryParams = new HashMap<>();
+        queryParams.put("purchaser", new Object[]{purchaser});
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<PurchaseDto>>(historyPurchases) {});
         ResponseHelpers.addTotalPagesHeader(responseBuilder, amountPurchasesPages);
-        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, amountPurchasesPages).build();
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, amountPurchasesPages, queryParams).build();
     }
 
     @GET
@@ -239,10 +248,13 @@ public class UserController {
         int reviewsPageAmount = reviewService.getUserReviewsPageAmount(revieweeId);
         int reviewsAmount = reviewService.getUserReviewsAmount(revieweeId);
 
+        Map<String, Object[]> queryParams = new HashMap<>();
+        queryParams.put("reviewer", new Object[]{reviewerId});
+
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<ReviewsDto>(reviewsInfo) {});
         ResponseHelpers.addTotalPagesHeader(responseBuilder, reviewsPageAmount);
         ResponseHelpers.addTotalCountHeader(responseBuilder, reviewsAmount);
-        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, reviewsPageAmount).build();
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, reviewsPageAmount, queryParams).build();
     }
 
     @POST

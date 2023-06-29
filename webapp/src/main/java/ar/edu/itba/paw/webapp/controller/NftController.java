@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,10 +54,13 @@ public class NftController {
         int amountPublications = nftService.getAmountPublicationsByUser(nftFiltersDto.getStatus(), nftFiltersDto.getCategory(), nftFiltersDto.getChain(), nftFiltersDto.getMinPrice(), nftFiltersDto.getMaxPrice(), nftFiltersDto.getSort(), nftFiltersDto.getSearch(), nftFiltersDto.getSearchFor(), nftFiltersDto.getOwnerId());
         int amountPages = nftService.getAmountPages(amountPublications);
 
+        Map<String, Object[]> queryParams = ResponseHelpers.buildQueryParams(nftFiltersDto);
+
+
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(nftList) {});
         ResponseHelpers.addTotalPagesHeader(responseBuilder, amountPages);
         ResponseHelpers.addTotalCountHeader(responseBuilder, amountPublications);
-        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, amountPages).build();
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, page, amountPages, queryParams).build();
     }
 
     @Consumes({ MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON })

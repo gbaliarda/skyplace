@@ -17,6 +17,7 @@ const Explore = () => {
 
   const [search, setSearch] = useState<SearchFilter>()
   const [filters, setFilters] = useState<NftsFilter>({})
+  const [sort, setSort] = useState("")
   const [page, setPage] = useState<number>()
 
   useEffect(() => {
@@ -63,21 +64,52 @@ const Explore = () => {
     sort: "",
   }
   const [isFilterClosed, setIsFilterClosed] = useState(false)
-  const [sort, setSort] = useState("")
   const [url, setUrl] = useState(defaultURL)
   const { nfts, total, totalPages, links, loading, error, refetchData } = useNfts(url)
   const { t } = useTranslation()
 
+  const buildNftsUrlFromUrl = (_url: string) => {
+    const urlAux = new URL(_url)
+    const params = urlAux.searchParams
+    const minPrice = params.get("minPrice")
+    const maxPrice = params.get("maxPrice")
+    const status = params.getAll("status")
+    const category = params.getAll("category")
+    const chain = params.getAll("chain")
+    const sortParam = params.get("sort")
+    const searchParam = params.get("search")
+    const searchForParam = params.get("searchFor")
+
+    const nftsUrl:NftsURL = {
+      baseUrl: `${urlAux.origin}${urlAux.pathname}?page=${params.get("page")}`,
+      filters: {
+        minPrice: minPrice != null ? parseInt(minPrice) : filters.minPrice,
+        maxPrice: maxPrice != null ? parseInt(maxPrice) : filters.maxPrice,
+        status: status != null ? status as SaleStatus[] : filters.status,
+        category: category != null ? category as Category[] : filters.category,
+        chain: chain != null ? chain as Chain[] : filters.chain
+      },
+      sort: sortParam != null ? sortParam : sort,
+    }
+
+    if (search != undefined || (searchParam != null && searchForParam != null)) {
+      nftsUrl.search = {
+        searchFor: searchForParam != null ? searchForParam as SearchType : search!!.searchFor,
+        search: searchParam != null ? searchParam : search!!.search
+      }
+    }
+
+    return nftsUrl
+  }
+
   const updateUrl = useCallback(
     (_url: string) => {
-      const params = new URLSearchParams(new URL(_url).search)
+      const params = new URL(_url).searchParams
       const pageNumber = params.get('page') ?? "1"
       updatePage(pageNumber)
-
-      setUrl({
-        ...url,
-        baseUrl: _url,
-      })
+      
+      const nftsUrl = buildNftsUrlFromUrl(_url)
+      setUrl(nftsUrl)
     },
     [url],
   )
@@ -129,7 +161,6 @@ const Explore = () => {
           isClosed={isFilterClosed}
           setIsClosed={setIsFilterClosed}
           filters={filters}
-          setFilters={setFilters}
           totalResults={total}
         />
         {error ? (

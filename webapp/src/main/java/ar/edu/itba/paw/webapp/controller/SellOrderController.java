@@ -21,7 +21,9 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -121,9 +123,11 @@ public class SellOrderController {
 
         List<BuyOrderDto> buyOrdersList = buyOrderService.getOrdersBySellOrderId(offerPage, maybeSellOrder.get().getId(), status).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
 
+        Map<String, Object[]> queryParams = new HashMap<>();
+        queryParams.put("status", new Object[]{status});
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<BuyOrderDto>>(buyOrdersList) {});
         ResponseHelpers.addTotalPagesHeader(responseBuilder, amountOfferPages);
-        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, offerPage, amountOfferPages).build();
+        return ResponseHelpers.addLinkAttributes(responseBuilder, uriInfo, offerPage, amountOfferPages, queryParams).build();
     }
 
     @DELETE

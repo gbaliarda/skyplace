@@ -13,7 +13,6 @@ interface Props {
   isClosed?: boolean
   setIsClosed?: (isClosed: boolean) => void
   filters: NftsFilter
-  setFilters: (filter: NftsFilter) => void
   totalResults?: number
 }
 
@@ -23,7 +22,6 @@ const FilterSideBar = ({
   isClosed = false,
   setIsClosed,
   filters,
-  setFilters,
   totalResults,
 }: Props) => {
   const router = useRouter()
