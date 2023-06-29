@@ -14,7 +14,7 @@ export default function mockHTTPResponse(
   status: number,
   body?: Object,
   // @ts-ignore
-  headers?: HeadersMock = new HeadersMock(),
+  headers: HeadersMock = new HeadersMock(),
 ) {
   return (global.fetch = jest.fn().mockImplementationOnce(
     () =>

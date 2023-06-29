@@ -1,17 +1,10 @@
 import { describe, expect } from "@jest/globals"
+
 import { genericFetcher } from "../services/endpoints"
-import mockHTTPResponse, { HeadersMock } from "./mocks/HTTPResponseMock"
+import mockHTTPResponse, { HeadersMock } from "../__mocks__/HTTPResponseMock"
 
 describe("GenericFetcher", () => {
   const endpoint = ["https://myapi.com", "/endpoint"] as [string, string]
-
-  beforeAll(() => {
-    const LocalStorageMock = require("./mocks/LocalStorageMock").default
-    global.localStorage = new LocalStorageMock() // mock localStorage
-    global.sessionStorage = new LocalStorageMock() // mock sessionStorage
-    // @ts-ignore
-    global.navigator = { language: "en" } // mock navigator
-  })
 
   it("Should return nothing from a 204 response", async () => {
     mockHTTPResponse(204)
