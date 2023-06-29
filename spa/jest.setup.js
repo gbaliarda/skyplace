@@ -1,4 +1,4 @@
-// Mock hooks
+// Mock hooks and libs
 
 jest.mock("next-export-i18n", () => ({
     useTranslation: () => ({
@@ -9,9 +9,14 @@ jest.mock("next-export-i18n", () => ({
 
 jest.mock("next/router", () => ({
     useRouter: () => ({
-        // Mock the router to return an empty query object
         query: {},
+        replace: jest.fn(),
+        push: jest.fn(),
     }),
+}));
+
+jest.mock('sweetalert2', () => ({
+    fire: jest.fn(),
 }));
 
 // Mock browser APIs

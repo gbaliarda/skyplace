@@ -34,11 +34,12 @@ export default function Login() {
     try {
       setLoggingIn(true)
       await loginUser(data.email, data.password, data.rememberMe)
-      await router.replace(from === undefined ? "/" : from)
-      setLoggingIn(false)
+      router.replace(from === undefined ? "/" : from)
     } catch (errs: any) {
+      const description = errs[0] ? errs[0].cause.description : ""
+      Swal.fire({ title: t("login.signInError"), text: description, icon: "error" })
+    } finally {
       setLoggingIn(false)
-      Swal.fire({ title: t("login.signInError"), text: errs[0].cause.description, icon: "error" })
     }
   }
 
@@ -106,6 +107,7 @@ export default function Login() {
             ) : (
               <button
                 type="button"
+                data-testid="spinner"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md bg-cyan-700 cursor-wait"
               >
                 <Spinner />
