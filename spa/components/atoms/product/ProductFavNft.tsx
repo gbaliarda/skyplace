@@ -1,5 +1,6 @@
 import { HeartIcon } from "@heroicons/react/24/outline"
-import { BaseSyntheticEvent, useState } from "react"
+import { BaseSyntheticEvent, useState, useEffect } from "react"
+
 import { fetcher } from "../../../services/endpoints"
 import useSession from "../../../hooks/useSession"
 
@@ -13,6 +14,10 @@ interface Props {
 const ProductFavNft = ({ isFaved, nftId, mutateFavs, amountFavourites = 0 }: Props) => {
   const { userId, accessToken } = useSession()
   const [amountFavs, setAmountFavs] = useState(amountFavourites)
+
+  useEffect(() => {
+    setAmountFavs(amountFavourites);
+  }, [amountFavourites]);
 
   const handleFavNft = (ev: BaseSyntheticEvent) => {
     ev.preventDefault()

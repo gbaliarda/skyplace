@@ -48,6 +48,7 @@ export const usePendingBuyOrder = (sellOrderId: number | undefined) => {
   } = useSWR<Buyorder[], FetchError[]>(
     sellOrderId ? `/sellorders/${sellOrderId}/buyorders?status=PENDING` : null,
     fetcher,
+    { revalidateIfStale: true }
   )
   const pendingBuyOrder = data !== undefined && data.length > 0 ? data[0] : undefined
   return { pendingBuyOrder, isLoading, errors, mutate }

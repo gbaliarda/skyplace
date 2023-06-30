@@ -17,6 +17,7 @@ export const useFavoritedNfts = (
   } = useSWR<Nft[], FetchError[]>(
     userId ? `/users/${userId}/favorites?${nftIdToString}` : null,
     (url) => fetcherWithAuth(url, accessToken ?? ""),
+    { revalidateIfStale: true }
   )
   return { favorites, loading, errors, mutate }
 }
@@ -34,6 +35,7 @@ export const useFavoritedNft = (
   } = useSWR<Nft[], FetchError[]>(
     userId && nftId ? `/users/${userId}/favorites?nftId=${nftId}` : null,
     (url) => fetcherWithAuth(url, accessToken ?? ""),
+    { revalidateIfStale: true }
   )
   return { favorite, loading, errors, mutate }
 }

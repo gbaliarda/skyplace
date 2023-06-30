@@ -3,6 +3,8 @@ import Error from "next/error"
 import { FormEvent, useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import { useTranslation } from "next-export-i18n"
+
+import { useSellorderUrl } from "../services/sellorders"
 import { useNft } from "../services/nfts"
 import Layout from "../components/Layout"
 import useForm from "../hooks/useForm"
@@ -10,7 +12,7 @@ import FormSelect from "../components/atoms/forms/FormSelect"
 import FormNumber from "../components/atoms/forms/FormNumber"
 import FormSubmit from "../components/atoms/forms/FormSubmit"
 import Navbar from "../components/molecules/Navbar"
-import { sendJson } from "../services/endpoints"
+import { sendJson, api } from "../services/endpoints"
 import useSession from "../hooks/useSession"
 import { FetchError } from "../types/FetchError"
 import { Category } from "../types/Nft"
@@ -46,6 +48,7 @@ export default function Sell() {
   const { t } = useTranslation()
   const { id } = router.query as { id: string }
   const { nft, errors } = useNft(id)
+  const { mutate } = useSellorderUrl(update ? `${api}/sellorders/${update}` : undefined)
   const [data, updateFields] = useForm<FormData>(INITIAL_DATA)
   const { accessToken } = useSession()
   const [loading, setLoading] = useState(false)
@@ -88,6 +91,7 @@ export default function Sell() {
       const method = update ? "PUT" : "POST"
       const endpoint = update ? `/sellorders/${update}` : "/sellorders"
       await sendJson(method, endpoint, { ...data, nftId: id }, accessToken)
+      mutate() // update sellorder cached data
       router.push(`/product?id=${id}`)
     } catch (errs: any) {
       const errorTitle = update ? t("errors.updateSellorder") : t("errors.sellNft")

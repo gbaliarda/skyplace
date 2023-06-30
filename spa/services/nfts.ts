@@ -66,7 +66,7 @@ export const useNft = (id: string | number) => {
     isLoading: loading,
     error: errors,
     mutate,
-  } = useSWR<Nft, FetchError[]>(id && !Number.isNaN(id) ? `/nfts/${id}` : null, fetcher)
+  } = useSWR<Nft, FetchError[]>(id && !Number.isNaN(id) ? `/nfts/${id}` : null, fetcher, { revalidateIfStale: true })
   return { nft, loading, errors, mutate }
 }
 
