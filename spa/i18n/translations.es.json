@@ -298,6 +298,8 @@
     "login": "Iniciar sesión"
   },
   "reviews": {
+    "loadingReviewee": "Cargando perfil de usuario...",
+    "errorReviewee": "Error al cargar el perfil de usuario",
     "create": "Crear reseña",
     "createSuccess": "Se creó la reseña",
     "userReviewed": "Usuario reseñado",

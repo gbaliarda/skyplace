@@ -42,8 +42,8 @@ export default function CreateReview() {
     )
   }
 
-  if (loadingReviewee) return <span>LOADING REVIEWEE</span>
-  if (errorsReviewee) return <span>ERROR REVIEWEE</span>
+  if (loadingReviewee) return <span>{t("reviews.loadingReviewee")}</span>
+  if (errorsReviewee) return <span>{t("reviews.errorReviewee")}</span>
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()

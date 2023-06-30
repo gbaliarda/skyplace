@@ -298,6 +298,8 @@
     "login": "Log in"
   },
    "reviews": {
+    "loadingReviewee": "Loading user profile...",
+    "errorReviewee": "Error loading user profile",
     "create": "Create review",
     "createSuccess": "Review has been created",
     "userReviewed": "User reviewed",
