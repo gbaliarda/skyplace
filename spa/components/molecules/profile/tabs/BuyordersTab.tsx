@@ -32,7 +32,7 @@ export default function BuyordersTab({ userId }: Props) {
   }, [router.query.page])
 
   useEffect(() => {
-    setStatus(Array.isArray(router.query.status) ? router.query.status[0] : router.query.status ?? "")
+    setStatus(Array.isArray(router.query.status) ? router.query.status[0] : router.query.status ?? "ALL")
   }, [router.query.status])
 
   const updatePage = (pageNumber: string) => {

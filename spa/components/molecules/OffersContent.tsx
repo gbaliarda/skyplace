@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "next-export-i18n"
+import queryString from "query-string"
 import parse from "parse-link-header"
 import Skeleton from "react-loading-skeleton"
 import { QueueListIcon, ArrowPathIcon } from "@heroicons/react/24/outline"
@@ -11,6 +12,7 @@ import ErrorBox from "../atoms/ErrorBox"
 import User from "../../types/User"
 import Buyorder from "../../types/Buyorder"
 import { BuyordersURL } from "../../services/users"
+import { useRouter } from "next/router"
 
 interface Props {
   buyOrdersUrl: string | undefined
@@ -19,28 +21,74 @@ interface Props {
 }
 
 const OffersContent = ({ buyOrdersUrl, loadingData, owner }: Props) => {
+  const router = useRouter()
+  const [page, setPage] = useState<number>()
   const defaultURL = {
-    baseUrl: buyOrdersUrl ? `${buyOrdersUrl}?page=1` : "",
+    baseUrl: buyOrdersUrl ? `${buyOrdersUrl}?page=${page}` : "",
   } as BuyordersURL
+  
+  useEffect(() => {
+    if (!router.isReady) return
+
+    if (router.query.page)
+      setPage(Array.isArray(router.query.page) ? parseInt(router.query.page[0]) : parseInt(router.query.page))
+  }, [router.query.page])
 
   const [url, setUrl] = useState(defaultURL)
   const { buyorders, totalPages, links, loading, error, refetchData } = useBuyOrders(url)
   const { t } = useTranslation()
+
+  const updatePage = (pageNumber: string) => {
+    const queryParams = new URLSearchParams(queryString.stringify(router.query))
+
+    setPage(parseInt(pageNumber))
+    queryParams.set("page", pageNumber)
+
+    const newURL = `${router.pathname}?${queryParams.toString()}`
+
+    router.push(newURL)
+  }
+
+  const buildBuyordersUrlFromUrl = (_url: string) => {
+    const urlAux = new URL(_url)
+
+    const buyordersUrl:BuyordersURL = {
+      baseUrl: `${urlAux.origin}${urlAux.pathname}?page=${urlAux.searchParams.get("page")}`,
+      status: 'ALL'
+    }
+
+    return buyordersUrl
+  }
+
   const updateUrl = useCallback(
     (_url: string) => {
-      setUrl({
-        ...url,
-        baseUrl: _url,
-      })
+      const params = new URL(_url).searchParams
+      const pageNumber = params.get('page') ?? "1"
+      updatePage(pageNumber)
+      
+      const buyordersUrl = buildBuyordersUrlFromUrl(_url)
+      setUrl(buyordersUrl)
     },
     [url],
   )
 
   useEffect(() => {
     if (!buyOrdersUrl) return
-    updateUrl(buyOrdersUrl)
+    setUrl({...url, baseUrl: `${buyOrdersUrl}?page=${page}`})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buyOrdersUrl])
+
+  useEffect(() => {
+    if (router.isReady && page === undefined && router.query.page === undefined)
+      setPage(1)
+
+    if (!buyOrdersUrl) return
+
+    setUrl({
+      ...url,
+      baseUrl: `${buyOrdersUrl}?page=${page}`,
+    })
+  }, [page])
 
   return (
     <div className="border-gray-200 rounded-2xl border pb-4 flex-col justify-between mb-8 bg-slate-50">

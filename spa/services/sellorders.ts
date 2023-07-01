@@ -28,6 +28,9 @@ export const useBuyOrders = (url: BuyordersURL) => {
   } = usePagination<Buyorder[]>()
 
   const refetchData = (_url: BuyordersURL) => {
+    if (_url.baseUrl === '') return
+    const params = new URL(_url.baseUrl).searchParams
+    if (params.get('page') === "undefined") return
     fetchData(`${_url.baseUrl}`)
   }
 
