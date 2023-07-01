@@ -132,7 +132,8 @@
     "retry": "Reintentar",
     "name": "Nombre",
     "priceAsc": "Precio: Menor a mayor",
-    "priceDsc": "Precio: Mayor a menor"
+    "priceDsc": "Precio: Mayor a menor",
+    "collection": "Colección"
   },
   "errorCodes": {
     "10": "Falta un parámetro en la petición",

@@ -132,7 +132,8 @@
     "retry": "Retry",
     "name": "Name",
     "priceAsc": "Price: Low to high",
-    "priceDsc": "Price: High to low"
+    "priceDsc": "Price: High to low",
+    "collection": "Collection"
   },
   "errorCodes": {
     "10": "Missing request parameter",

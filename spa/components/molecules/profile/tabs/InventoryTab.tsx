@@ -1,10 +1,13 @@
 import { useTranslation } from "next-export-i18n"
+import queryString from "query-string"
 import { useCallback, useEffect, useState } from "react"
 import { NftsURL, useNfts } from "../../../../services/nfts"
 import ErrorBox from "../../../atoms/ErrorBox"
 import Loader from "../../../atoms/Loader"
 import ProfileNftTab from "../ProfileNftTab"
 import { api } from "../../../../services/endpoints"
+import { useRouter } from "next/router"
+import { SearchFilter } from "../../../../types/Filters"
 
 interface Props {
   userId: number
@@ -12,33 +15,94 @@ interface Props {
 
 export default function InventoryTab({ userId }: Props) {
   const { t } = useTranslation()
+  const router = useRouter()
+  const [page, setPage] = useState<number>()
   const defaultURL = {
-    baseUrl: `${api}/nfts?page=1`,
+    baseUrl: `${api}/nfts?page=${page}`,
     filters: { owner: userId },
     search: {},
     sort: "",
   } as NftsURL
+
+  useEffect(() => {
+    if (!router.isReady) return
+
+    if (router.query.page)
+      setPage(Array.isArray(router.query.page) ? parseInt(router.query.page[0]) : parseInt(router.query.page))
+  }, [router.query.page])
+
+  useEffect(() => {
+    setSort(Array.isArray(router.query.sort) ? router.query.sort[0] : router.query.sort ?? "")
+  }, [router.query.sort])
+
   const [sort, setSort] = useState("")
   const [url, setUrl] = useState<NftsURL>(defaultURL)
   const { nfts, links, totalPages, loading, error, refetchData } = useNfts(url)
+
+  const updatePage = (pageNumber: string) => {
+    const queryParams = new URLSearchParams(queryString.stringify(router.query))
+
+    setPage(parseInt(pageNumber))
+    queryParams.set("page", pageNumber)
+
+    const newURL = `${router.pathname}?${queryParams.toString()}`
+
+    router.push(newURL)
+  }
+
+  const buildNftsUrlFromUrl = (_url: string) => {
+    const urlAux = new URL(_url)
+    const params = urlAux.searchParams
+    const sortParam = params.get("sort")
+
+    const nftsUrl:NftsURL = {
+      baseUrl: `${urlAux.origin}${urlAux.pathname}?page=${params.get("page")}`,
+      filters: {
+        owner: userId
+      },
+      sort: sortParam != null ? sortParam : sort,
+      search: {} as SearchFilter,
+    }
+
+    return nftsUrl
+  }
+
+  const applySort = (sort: string) => {
+    const queryParams = new URLSearchParams(queryString.stringify(router.query))
+
+    queryParams.set("sort", sort)
+    
+    if (sort === "priceDsc" || sort === "priceAsc")
+      queryParams.set("page", "1")
+
+    const newURL = `${router.pathname}?${queryParams.toString()}`
+    
+    router.push(newURL)
+    setSort(sort)
+  }
+
   const updateUrl = useCallback(
     (_url: string) => {
-      setUrl({
-        ...url,
-        baseUrl: _url,
-      })
+      const params = new URL(_url).searchParams
+      const pageNumber = params.get('page') ?? "1"
+      updatePage(pageNumber)
+      
+      const nftsUrl = buildNftsUrlFromUrl(_url)
+      setUrl(nftsUrl)
     },
     [url],
   )
 
   useEffect(() => {
+    if (router.isReady && page === undefined && router.query.page === undefined)
+      setPage(1)
     setUrl({
       ...url,
-      baseUrl: `${api}/nfts?page=1`,
+      baseUrl: `${api}/nfts?page=${page}`,
       sort,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort])
+  }, [sort, page])
 
   if (error)
     return (
@@ -52,7 +116,7 @@ export default function InventoryTab({ userId }: Props) {
       links={links ?? undefined}
       updateUrl={updateUrl}
       sort={sort}
-      setSort={setSort}
+      setSort={applySort}
       nfts={nfts}
       totalPages={totalPages}
     />

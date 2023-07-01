@@ -36,6 +36,7 @@ export default function ProfileNftTab({
     { key: "name", value: t("common.name") },
     { key: "priceAsc", value: t("common.priceAsc") },
     { key: "priceDsc", value: t("common.priceDsc") },
+    { key: "collection", value: t("common.collection") },
   ]
 
   return (

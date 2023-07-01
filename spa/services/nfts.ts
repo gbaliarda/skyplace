@@ -31,7 +31,7 @@ export const useNfts = (url: NftsURL) => {
     if (_url.filters.category === undefined) delete _url.filters.category
     if (_url.filters.chain === undefined) delete _url.filters.chain
     if (_url.filters.status === undefined) delete _url.filters.status
-    const params = new URLSearchParams(new URL(_url.baseUrl).search)
+    const params = new URL(_url.baseUrl).searchParams
     if (params.get('page') === "undefined") return
     
     const filterParams = encodeQueryParam(_url.filters)

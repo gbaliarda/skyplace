@@ -48,6 +48,8 @@ export const useFavorites = (url: FavoritesURL) => {
   } = usePagination<Nft[]>(true)
 
   const refetchData = (_url: FavoritesURL) => {
+    const params = new URL(_url.baseUrl).searchParams
+    if (params.get('page') === "undefined") return
     fetchData(`${_url.baseUrl}&sort=${_url.sort}`)
   }
 
@@ -70,6 +72,8 @@ export const useUserBuyorders = (url: BuyordersURL) => {
   } = usePagination<Buyorder[]>(true)
 
   const refetchData = (_url: BuyordersURL) => {
+    const params = new URL(_url.baseUrl).searchParams
+    if (params.get('page') === "undefined") return
     fetchData(`${_url.baseUrl}&status=${_url.status}`)
   }
 
