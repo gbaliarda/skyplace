@@ -5,7 +5,6 @@ import Swal from "sweetalert2"
 import Buyorder from "../../types/Buyorder"
 import { useSellorderUrl } from "../../services/sellorders"
 import { useNftUrl } from "../../services/nfts"
-import { useImageUrl } from "../../services/images"
 import { useUserUrl } from "../../services/users"
 import useSession from "../../hooks/useSession"
 import ErrorBox from "./ErrorBox"
@@ -39,16 +38,9 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
     mutate: mutateNft,
   } = useNftUrl(sellorder?.nft.toString())
   const { mutate: mutateSeller } = useUserUrl(nft?.owner.toString())
-  const {
-    img,
-    loading: loadingImage,
-    errors: errorsImage,
-    mutate: mutateImage,
-  } = useImageUrl(nft?.image.toString())
 
   const reloadContent = () => {
     mutateBidder()
-    mutateImage()
     mutateNft()
     mutateSeller()
     mutateSellorder()
@@ -83,7 +75,7 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
     }
   }
 
-  const imageSrc = img !== undefined ? `data:image/jpg;base64,${img.image.toString()}` : undefined
+  const imageSrc = nft?.image.toString()
   const nftName = `${nft?.nftName} #${nft?.nftId}`
   const userIsBidder = bidder?.id === userId
 
@@ -93,20 +85,12 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
         <div className="border-jacarta-100 rounded-2.5xl h-32 relative flex items-center border bg-white p-4 transition-shadow hover:shadow-lg z-0 cursor-pointer">
           <div className="flex flex-row grow items-center ml-4">
             <figure className="mr-5">
-              {loadingImage ? (
-                <Skeleton className="w-[6rem] h-[6rem] rounded-lg" />
-              ) : errorsImage ? (
-                <div className="w-[6rem] h-[6rem] flex justify-center items-center rounded-lg border border-gray-300">
-                  <ErrorBox errorMessage={""} />
-                </div>
-              ) : (
-                <img
-                  src={imageSrc}
-                  className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
-                  alt="avatar 2"
-                  loading="lazy"
-                />
-              )}
+              <img
+                src={imageSrc}
+                className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
+                alt="avatar 2"
+                loading="lazy"
+              />
             </figure>
 
             {errorsBidder || errorsSellorder || errorsNft ? (

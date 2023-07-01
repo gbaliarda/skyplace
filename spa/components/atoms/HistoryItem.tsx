@@ -3,21 +3,13 @@ import Skeleton from "react-loading-skeleton"
 import Link from "next/link"
 
 import Purchase from "../../types/Purchase"
-import { useImageUrl } from "../../services/images"
 import { useUserUrl } from "../../services/users"
 import { epochToIntlDate } from "../../utils/epochToIntlDate"
-import ErrorBox from "./ErrorBox"
 
 export default function HistoryItem({ purchase, userId }: { purchase: Purchase; userId: number }) {
   const { t } = useTranslation()
 
   const purchaseDate = epochToIntlDate(new Date(purchase.buyDate).getTime() / 1000)
-
-  const {
-    img: image,
-    loading: loadingImage,
-    errors: errorsImage,
-  } = useImageUrl(purchase?.nft.image.toString())
 
   const { user: seller } = useUserUrl(purchase.seller.toString())
   const { user: buyer } = useUserUrl(purchase.buyer.toString())
@@ -40,7 +32,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
     return ""
   }
 
-  const imageSrc = `data:image/jpg;base64,${image?.image.toString()}`
+  const imageSrc = purchase.nft.image.toString()
 
   return (
     <Link href={productLink()}>
@@ -48,20 +40,12 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
         className={`border-jacarta-100 rounded-2.5xl relative flex items-center border bg-white p-4 transition-shadow hover:shadow-lg ${linkClasses()}`}
       >
         <figure className="mr-5 self-start">
-          {loadingImage ? (
-            <Skeleton className="w-[6rem] h-[6rem] rounded-lg" />
-          ) : errorsImage ? (
-            <div className="w-[6rem] h-[6rem] flex justify-center items-center rounded-lg border border-gray-300">
-              <ErrorBox errorMessage={""} />
-            </div>
-          ) : (
-            <img
-              src={imageSrc}
-              className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
-              alt="avatar 2"
-              loading="lazy"
-            />
-          )}
+          <img
+            src={imageSrc}
+            className="w-[6rem] h-[6rem] rounded-lg aspect-square object-cover border border-gray-300"
+            alt="avatar 2"
+            loading="lazy"
+          />
         </figure>
         <div className="max-w-[34rem]">
           <h3 className="font-display text-jacarta-700 mb-1 text-base flex items-center font-semibold truncate">
@@ -119,7 +103,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
               {sold ? t("Review buyer") : t("Review seller")}
             </a>
           </Link>
-        :
+          :
           <div className="border-jacarta-100 ml-auto rounded-full border p-3">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
