@@ -80,9 +80,17 @@ public class BuyOrderJpaDao implements BuyOrderDao {
      */
     @Override
     public int getAmountBuyOrders(SellOrder sellOrder, String status) {
-        final Query query = em.createNativeQuery("SELECT count(*) FROM buyorders WHERE id_sellorder = :sellOrderId AND status = :status");
+        StringBuilder queryString = new StringBuilder("SELECT count(*) FROM buyorders WHERE id_sellorder = :sellOrderId");
+        boolean addStatusFilter = StatusBuyOrder.hasStatus(status);
+        if (addStatusFilter)
+            queryString.append(" AND status = :status");
+
+        final Query query = em.createNativeQuery(queryString.toString());
+
         query.setParameter("sellOrderId", sellOrder.getId());
-        query.setParameter("status", status);
+        if (addStatusFilter)
+            query.setParameter("status", status);
+
         return ((BigInteger)query.getSingleResult()).intValue();
     }
 
