@@ -29,12 +29,14 @@ public class ImageController {
 
     @GET
     @Path("/{id}")
-    @Produces({ MediaType.APPLICATION_JSON, })
     public Response getImage(@PathParam("id") int id) {
         Optional<Image> maybeImage = imageService.getImage(id);
         if(!maybeImage.isPresent())
             throw new NotFoundException("Image not found");
-        return Response.ok(ImageDto.fromImage(uriInfo, maybeImage.get())).build();
+
+        return Response.ok(maybeImage.get().getImage())
+                .type("image/jpeg") // Set the type of the response to image/jpeg
+                .build();
     }
 
 }

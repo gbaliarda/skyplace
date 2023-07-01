@@ -5,7 +5,6 @@ import Skeleton from "react-loading-skeleton"
 import Layout from "../components/Layout"
 import { useNft, useRecommendedNfts } from "../services/nfts"
 import { useUserUrl } from "../services/users"
-import { useImageUrl } from "../services/images"
 import { useSellorderUrl, usePendingBuyOrder } from "../services/sellorders"
 import OffersContent from "../components/molecules/OffersContent"
 import Card from "../components/atoms/Card"
@@ -40,12 +39,6 @@ const Product = () => {
     mutate: mutateSellorder,
   } = useSellorderUrl(nft?.sellorder?.toString())
   const {
-    img,
-    loading: loadingImage,
-    errors: errorsImage,
-    mutate: mutateImage,
-  } = useImageUrl(nft?.image?.toString())
-  const {
     recommendations,
     loading: loadingRecommendations,
     errors: errorsRecommendations,
@@ -64,7 +57,7 @@ const Product = () => {
   const { pendingBuyOrder } = usePendingBuyOrder(sellorder?.id)
   const { user: userPendingBuyOrder } = useUserUrl(pendingBuyOrder?.offeredBy?.toString())
 
-  const imageSrc = img !== undefined ? `data:image/jpg;base64,${img.image.toString()}` : undefined
+  const imageSrc = nft?.image.toString()
   const ownerUrl = `/profile?id=${owner?.id}`
   const collectionUrl = `/explore?searchFor=collection&search=${nft?.collection}`
 
@@ -103,13 +96,12 @@ const Product = () => {
             <div className="container flex flex-col">
               <div className="flex flex-row ">
                 <div className="flex-col w-1/2">
-                  {loadingImage || errorsImage || errorsNft ? (
+                  {errorsNft ? (
                     <div className="w-[95%] h-1/2 m-auto mb-8">
-                      {errorsImage || (errorsNft && errorsNft[0].cause.statusCode !== 404) ? (
+                      {(errorsNft && errorsNft[0].cause.statusCode !== 404) ? (
                         <div className="flex items-center justify-center h-full">
                           <ErrorBox
                             errorMessage={t("errors.errorLoadingImage")}
-                            retryAction={mutateImage}
                           />
                         </div>
                       ) : (

@@ -13,6 +13,7 @@ public class Image {
     private Integer idImage;
 
     @Column(name = "image", nullable = false)
+    @Basic(fetch = FetchType.LAZY)
     private byte[] image;
 
     /* default */ Image() {
