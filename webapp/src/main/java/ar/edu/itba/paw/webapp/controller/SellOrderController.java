@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Path("sellorders")
+@Path("/api/sellorders")
 @Component
 public class SellOrderController {
 

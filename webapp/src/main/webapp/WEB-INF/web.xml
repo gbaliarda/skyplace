@@ -6,20 +6,65 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
   <display-name>Skyplace</display-name>
 
-  <servlet>
-    <servlet-name>jersey</servlet-name>
-    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+  <context-param>
+    <param-name>contextClass</param-name>
+    <param-value>
+      org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+    </param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      ar.edu.itba.paw.webapp.config.WebConfig,
+      ar.edu.itba.paw.webapp.config.WebAuthConfig,
+    </param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>
+      org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+  </listener>
+
+  <listener>
+    <listener-class>
+      org.springframework.web.context.request.RequestContextListener
+    </listener-class>
+  </listener>
+
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/api/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+
+  <filter>
+    <filter-name>openEntityManagerInView</filter-name>
+    <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>openEntityManagerInView</filter-name>
+    <url-pattern>/api/*</url-pattern>
+  </filter-mapping>
+
+  <!-- JERSEY FILTER -->
+  <filter>
+    <filter-name>jersey</filter-name>
+    <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
     <init-param>
       <param-name>jersey.config.server.provider.packages</param-name>
       <param-value>
         ar.edu.itba.paw.webapp.controller,
         ar.edu.itba.paw.webapp.mappers,
       </param-value>
-    </init-param>
-
-    <init-param>
-      <param-name>jersey.config.server.provider.classnames</param-name>
-      <param-value>org.glassfish.jersey.media.multipart.MultiPartFeature, ar.edu.itba.paw.webapp.utility.LocalDateConverterProvider</param-value>
     </init-param>
     <init-param>
       <param-name>jersey.config.beanValidation.enableOutputValidationErrorEntity.server</param-name>
@@ -29,18 +74,21 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
       <param-name>jersey.config.servlet.filter.forwardOn404</param-name>
       <param-value>true</param-value>
     </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
+    <init-param>
+      <param-name>jersey.config.server.provider.classnames</param-name>
+      <param-value>org.glassfish.jersey.media.multipart.MultiPartFeature, ar.edu.itba.paw.webapp.utility.LocalDateConverterProvider</param-value>
+    </init-param>
+    <init-param>
+      <param-name>jersey.config.servlet.filter.contextPath</param-name>
+      <param-value>/</param-value>
+    </init-param>
+  </filter>
 
-  <servlet-mapping>
-    <servlet-name>jersey</servlet-name>
+
+  <filter-mapping>
+    <filter-name>jersey</filter-name>
     <url-pattern>/api/*</url-pattern>
-  </servlet-mapping>
-
-  <error-page>
-    <error-code>404</error-code>
-    <location>/404.html</location>
-  </error-page>
+  </filter-mapping>
 
   <filter>
     <filter-name>encoding-filter</filter-name>
@@ -59,49 +107,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
   <filter-mapping>
     <filter-name>encoding-filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/api/*</url-pattern>
   </filter-mapping>
-
-  <filter>
-    <filter-name>springSecurityFilterChain</filter-name>
-    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>springSecurityFilterChain</filter-name>
-    <url-pattern>/*</url-pattern>
-    <dispatcher>REQUEST</dispatcher>
-    <dispatcher>ERROR</dispatcher>
-  </filter-mapping>
-
-  <filter>
-    <filter-name>openEntityManagerInView</filter-name>
-    <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>openEntityManagerInView</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <context-param>
-    <param-name>contextClass</param-name>
-    <param-value>
-      org.springframework.web.context.support.AnnotationConfigWebApplicationContext
-    </param-value>
-  </context-param>
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>
-      ar.edu.itba.paw.webapp.config.WebConfig,
-      ar.edu.itba.paw.webapp.config.WebAuthConfig,
-    </param-value>
-  </context-param>
-
-  <listener>
-    <listener-class>
-      org.springframework.web.context.ContextLoaderListener
-    </listener-class>
-  </listener>
 
 </web-app>

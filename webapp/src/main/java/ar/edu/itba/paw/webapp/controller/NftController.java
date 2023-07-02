@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Path("nfts")
+@Path("/api/nfts")
 @Component
 public class NftController {
 

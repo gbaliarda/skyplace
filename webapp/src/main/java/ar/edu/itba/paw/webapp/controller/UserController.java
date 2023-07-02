@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Path("users")
+@Path("/api/users")
 @Component
 public class UserController {
 
