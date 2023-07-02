@@ -7,16 +7,16 @@ import ar.edu.itba.paw.service.NftService;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.dto.NftFiltersDto;
 import ar.edu.itba.paw.webapp.dto.NftDto;
+import ar.edu.itba.paw.webapp.exceptions.FileSentNotAnImageException;
 import ar.edu.itba.paw.webapp.exceptions.NoBodyException;
 import ar.edu.itba.paw.webapp.form.CreateNftForm;
 import ar.edu.itba.paw.webapp.helpers.ResponseHelpers;
 import org.apache.commons.io.IOUtils;
+import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import javax.imageio.ImageIO;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.Path;
@@ -58,7 +58,6 @@ public class NftController {
 
         Map<String, Object[]> queryParams = ResponseHelpers.buildQueryParams(nftFiltersDto);
 
-
         Response.ResponseBuilder responseBuilder = Response.ok(new GenericEntity<List<NftDto>>(nftList) {});
         ResponseHelpers.addTotalPagesHeader(responseBuilder, amountPages);
         ResponseHelpers.addTotalCountHeader(responseBuilder, amountPublications);
@@ -75,9 +74,12 @@ public class NftController {
         if(!currentUser.isPresent())
             return Response.status(Response.Status.UNAUTHORIZED).build();
         try {
-            if (ImageIO.read(imageInput) == null)
-                throw new IOException();           // Reads if file sent is an image. Else raise exception
+            Tika tika = new Tika();
             byte[] image = IOUtils.toByteArray(imageInput);
+            // TODO: Check if this image checking should be done elsewhere
+            String mimeType = tika.detect(image);
+            if (!mimeType.startsWith("image/"))
+                throw new FileSentNotAnImageException();            // File sent is not an image exception
             final Nft newNft = nftService.create(nftForm.getNftId(), nftForm.getContractAddr(), nftForm.getName(), nftForm.getChain(), image, currentUser.get().getId(), nftForm.getCollection(), nftForm.getDescription());
 
             final URI location = uriInfo.getAbsolutePathBuilder()

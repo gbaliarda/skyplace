@@ -148,7 +148,8 @@ export default function Create() {
       let hasWholeFormError: boolean = false
       errs.forEach((err: FetchError) => {
         if (err.cause.field !== "/") {
-          FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].updateFunction(
+          // Only exception that doesn´t return a field is wrong image exception
+          FIELDS_DATA[err.cause.field === undefined ? "image" : err.cause.field].updateFunction(
             err.cause.description,
           )
           errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].name}`
