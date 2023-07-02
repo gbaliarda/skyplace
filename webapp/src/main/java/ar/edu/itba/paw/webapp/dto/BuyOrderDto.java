@@ -22,7 +22,7 @@ public class BuyOrderDto {
 
         buyOrderDto.self = uriInfo.getBaseUriBuilder().path(UriPrefix.SELLORDERS_PREFIX.getUrl())
                 .path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId()))
-                .path(UriPrefix.BUYORDERS_PREFIX.getUrl()).path(String.valueOf(buyOrder.getOfferedBy().getId())).build();
+                .path("buyorders").path(String.valueOf(buyOrder.getOfferedBy().getId())).build();
 
         buyOrderDto.sellorder = uriInfo.getBaseUriBuilder().path(UriPrefix.SELLORDERS_PREFIX.getUrl())
                 .path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId())).build();

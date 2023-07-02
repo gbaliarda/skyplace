@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.helpers;
 
 public enum UriPrefix {
-    BUYORDERS_PREFIX("buyorders"),
     IMAGES_PREFIX("images"),
     NFTS_PREFIX("nfts"),
     PURCHASES_PREFIX("purchases"),

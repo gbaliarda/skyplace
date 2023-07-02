@@ -14,7 +14,9 @@ import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.Path;
@@ -73,6 +75,8 @@ public class NftController {
         if(!currentUser.isPresent())
             return Response.status(Response.Status.UNAUTHORIZED).build();
         try {
+            if (ImageIO.read(imageInput) == null)
+                throw new IOException();           // Reads if file sent is an image. Else raise exception
             byte[] image = IOUtils.toByteArray(imageInput);
             final Nft newNft = nftService.create(nftForm.getNftId(), nftForm.getContractAddr(), nftForm.getName(), nftForm.getChain(), image, currentUser.get().getId(), nftForm.getCollection(), nftForm.getDescription());
 

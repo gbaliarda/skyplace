@@ -18,6 +18,7 @@
     <node.version>v14.15.4</node.version>
     <npm.version>v6.14.12</npm.version>
     <maven.frontend.plugin.version>1.7.6</maven.frontend.plugin.version>
+    <apache-tika.version>2.4.1</apache-tika.version>
   </properties>
 
   <dependencies>
@@ -180,6 +181,11 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+      <version>${apache-tika.version}</version>
     </dependency>
   </dependencies>
 

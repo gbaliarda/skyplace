@@ -33,7 +33,7 @@ public class SellOrderDto {
         dto.category = sellOrder.getCategory();
         dto.nft = nftUriBuilder.build();
         dto.self = sellOrderUriBuilder.build();
-        dto.buyorders = sellOrderUriBuilder.path(UriPrefix.BUYORDERS_PREFIX.getUrl()).build();
+        dto.buyorders = sellOrderUriBuilder.path("buyorders").build();
 
         return dto;
     }

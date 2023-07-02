@@ -72,6 +72,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                         UriPrefix.IMAGES_PREFIX.getUrl() + "/*",
                         UriPrefix.NFTS_PREFIX.getUrl(),
                         UriPrefix.NFTS_PREFIX.getUrl() + "/*",
+                        UriPrefix.NFTS_PREFIX.getUrl() + "/*/recommendations",
                         UriPrefix.USERS_PREFIX.getUrl() + "/*",
                         UriPrefix.USERS_PREFIX.getUrl() + "/*/reviews",
                         UriPrefix.USERS_PREFIX.getUrl() + "/*/reviews/*",
