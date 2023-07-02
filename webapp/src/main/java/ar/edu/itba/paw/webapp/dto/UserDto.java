@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.webapp.helpers.UriPrefix;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -15,11 +16,10 @@ public class UserDto {
 
     private URI self;
 
-
     public static UserDto fromUser(final UriInfo uriInfo, final User user) {
         final UserDto userDto = new UserDto();
 
-        final UriBuilder userUriBuilder = uriInfo.getBaseUriBuilder().path("users")
+        final UriBuilder userUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.USERS_PREFIX.getUrl())
                 .path(String.valueOf(user.getId()));
 
         userDto.id = user.getId();

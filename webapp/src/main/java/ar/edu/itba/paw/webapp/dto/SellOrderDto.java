@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.Category;
 import ar.edu.itba.paw.model.SellOrder;
+import ar.edu.itba.paw.webapp.helpers.UriPrefix;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -18,17 +19,13 @@ public class SellOrderDto {
     private URI nft;
     private URI buyorders;
 
-    private final static String SELLORDERS_URI_PREFIX = "sellorders";
-    private final static String BUYORDERS_URI_PREFIX = "buyorders";
-    private final static String NFTS_URI_PREFIX = "nfts";
-
     public static SellOrderDto fromSellOrder(final UriInfo uriInfo, final SellOrder sellOrder){
         final SellOrderDto dto = new SellOrderDto();
 
-        final UriBuilder sellOrderUriBuilder = uriInfo.getBaseUriBuilder().path(SELLORDERS_URI_PREFIX)
+        final UriBuilder sellOrderUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.SELLORDERS_PREFIX.getUrl())
                 .path(String.valueOf(sellOrder.getId()));
 
-        final UriBuilder nftUriBuilder = uriInfo.getBaseUriBuilder().path(NFTS_URI_PREFIX)
+        final UriBuilder nftUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.NFTS_PREFIX.getUrl())
                 .path(String.valueOf(sellOrder.getNft().getId()));
 
         dto.id = sellOrder.getId();
@@ -36,7 +33,7 @@ public class SellOrderDto {
         dto.category = sellOrder.getCategory();
         dto.nft = nftUriBuilder.build();
         dto.self = sellOrderUriBuilder.build();
-        dto.buyorders = sellOrderUriBuilder.path(BUYORDERS_URI_PREFIX).build();
+        dto.buyorders = sellOrderUriBuilder.path(UriPrefix.BUYORDERS_PREFIX.getUrl()).build();
 
         return dto;
     }

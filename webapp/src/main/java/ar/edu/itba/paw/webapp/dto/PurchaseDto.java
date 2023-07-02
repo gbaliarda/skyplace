@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.Purchase;
 import ar.edu.itba.paw.model.StatusPurchase;
+import ar.edu.itba.paw.webapp.helpers.UriPrefix;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -21,19 +22,16 @@ public class PurchaseDto {
     private URI buyer;
     private URI seller;
 
-    private final static String USERS_URI_PREFIX = "users";
-    private final static String PURCHASES_URI_PREFIX = "purchases";
-
     public static PurchaseDto fromPurchase(UriInfo uriInfo, Purchase purchase) {
         final PurchaseDto purchaseDto = new PurchaseDto();
 
-        final UriBuilder purchasesUriBuilder = uriInfo.getBaseUriBuilder().path(PURCHASES_URI_PREFIX)
+        final UriBuilder purchasesUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.PURCHASES_PREFIX.getUrl())
                 .path(String.valueOf(purchase.getId()));
 
-        final UriBuilder buyerUriBuilder = uriInfo.getBaseUriBuilder().path(USERS_URI_PREFIX)
+        final UriBuilder buyerUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.USERS_PREFIX.getUrl())
                 .path(String.valueOf(purchase.getBuyer().getId()));
 
-        final UriBuilder sellerUriBuilder = uriInfo.getBaseUriBuilder().path(USERS_URI_PREFIX)
+        final UriBuilder sellerUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.USERS_PREFIX.getUrl())
                 .path(String.valueOf(purchase.getSeller().getId()));
 
         purchaseDto.id = purchase.getId();

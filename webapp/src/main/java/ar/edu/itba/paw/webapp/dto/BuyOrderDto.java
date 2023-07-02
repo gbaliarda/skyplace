@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.BuyOrder;
 import ar.edu.itba.paw.model.StatusBuyOrder;
+import ar.edu.itba.paw.webapp.helpers.UriPrefix;
 
 import javax.ws.rs.core.UriInfo;
 import java.math.BigDecimal;
@@ -15,21 +16,18 @@ public class BuyOrderDto {
     private URI offeredBy;
     private URI self;
     private StatusBuyOrder status;
-    private final static String USERS_URI_PREFIX = "users";
-    private final static String SELLORDERS_URI_PREFIX = "sellorders";
-    private final static String BUYORDERS_URI_PREFIX = "buyorders";
 
     public static BuyOrderDto fromBuyOrder(BuyOrder buyOrder, UriInfo uriInfo) {
         final BuyOrderDto buyOrderDto = new BuyOrderDto();
 
-        buyOrderDto.self = uriInfo.getBaseUriBuilder().path(SELLORDERS_URI_PREFIX)
+        buyOrderDto.self = uriInfo.getBaseUriBuilder().path(UriPrefix.SELLORDERS_PREFIX.getUrl())
                 .path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId()))
-                .path(BUYORDERS_URI_PREFIX).path(String.valueOf(buyOrder.getOfferedBy().getId())).build();
+                .path(UriPrefix.BUYORDERS_PREFIX.getUrl()).path(String.valueOf(buyOrder.getOfferedBy().getId())).build();
 
-        buyOrderDto.sellorder = uriInfo.getBaseUriBuilder().path(SELLORDERS_URI_PREFIX)
+        buyOrderDto.sellorder = uriInfo.getBaseUriBuilder().path(UriPrefix.SELLORDERS_PREFIX.getUrl())
                 .path(String.valueOf(buyOrder.getBuyOrderId().getSellOrderId())).build();
 
-        buyOrderDto.offeredBy = uriInfo.getBaseUriBuilder().path(USERS_URI_PREFIX)
+        buyOrderDto.offeredBy = uriInfo.getBaseUriBuilder().path(UriPrefix.USERS_PREFIX.getUrl())
                 .path(String.valueOf(buyOrder.getOfferedBy().getId())).build();
 
         buyOrderDto.amount = buyOrder.getAmount();

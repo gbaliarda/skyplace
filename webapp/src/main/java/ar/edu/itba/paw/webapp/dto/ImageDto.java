@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.Image;
+import ar.edu.itba.paw.webapp.helpers.UriPrefix;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -16,7 +17,7 @@ public class ImageDto {
     public static ImageDto fromImage(final UriInfo uriInfo, final Image image) {
         final ImageDto dto = new ImageDto();
 
-        final UriBuilder imageUriBuilder = uriInfo.getBaseUriBuilder().path("images")
+        final UriBuilder imageUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.IMAGES_PREFIX.getUrl())
                 .path(String.valueOf(image.getIdImage()));
 
         dto.self = imageUriBuilder.build();

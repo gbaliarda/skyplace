@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.config;
 
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.auth.*;
+import ar.edu.itba.paw.webapp.helpers.UriPrefix;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -62,18 +63,43 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().headers().cacheControl().disable()
              .and().authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/users/*/buyorders", "/api/users/*/purchases", "/api/users/*/purchases/*", "/api/users/*/favorites").hasAnyRole("USER","ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/images/*", "/api/nfts", "/api/nfts/*", "/api/users/*", "/api/users/*/reviews", "/api/users/*/reviews/*", "/api/sellorders", "/api/sellorders/*", "/api/sellorders/*/buyorders").permitAll()
-                .antMatchers(HttpMethod.PUT, "/api/users/*/favorites/*", "/api/sellorders/*", "/api/sellorders/*/buyorders/*").hasAnyRole("USER","ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/users").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/nfts", "/api/users/*/reviews", "/api/sellorders", "/api/sellorders/*/buyorders", "/api/sellorders/*/buyorders/*").hasAnyRole("USER","ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/api/nfts/*", "/api/users/*/favorites/*", "/api/sellorders/*", "/api/sellorders/*/buyorders/*").hasAnyRole("USER","ADMIN")
+                .antMatchers(HttpMethod.GET,
+                        UriPrefix.USERS_PREFIX.getUrl() + "/*/buyorders",
+                        UriPrefix.USERS_PREFIX.getUrl() + "/*/purchases",
+                        UriPrefix.USERS_PREFIX.getUrl() + "/*/purchases/*",
+                        UriPrefix.USERS_PREFIX.getUrl() + "/*/favorites").hasAnyRole("USER","ADMIN")
+                .antMatchers(HttpMethod.GET,
+                        UriPrefix.IMAGES_PREFIX.getUrl() + "/*",
+                        UriPrefix.NFTS_PREFIX.getUrl(),
+                        UriPrefix.NFTS_PREFIX.getUrl() + "/*",
+                        UriPrefix.USERS_PREFIX.getUrl() + "/*",
+                        UriPrefix.USERS_PREFIX.getUrl() + "/*/reviews",
+                        UriPrefix.USERS_PREFIX.getUrl() + "/*/reviews/*",
+                        UriPrefix.SELLORDERS_PREFIX.getUrl(),
+                        UriPrefix.SELLORDERS_PREFIX.getUrl() + "/*",
+                        UriPrefix.SELLORDERS_PREFIX.getUrl() + "/*/buyorders").permitAll()
+                .antMatchers(HttpMethod.PUT,
+                        UriPrefix.USERS_PREFIX.getUrl() + "/*/favorites/*",
+                        UriPrefix.SELLORDERS_PREFIX.getUrl() + "/*",
+                        UriPrefix.SELLORDERS_PREFIX.getUrl() + "/*/buyorders/*").hasAnyRole("USER","ADMIN")
+                .antMatchers(HttpMethod.POST,
+                        UriPrefix.USERS_PREFIX.getUrl()).permitAll()
+                .antMatchers(HttpMethod.POST,
+                        UriPrefix.NFTS_PREFIX.getUrl(),
+                        UriPrefix.USERS_PREFIX.getUrl() + "/*/reviews",
+                        UriPrefix.SELLORDERS_PREFIX.getUrl(),
+                        UriPrefix.SELLORDERS_PREFIX.getUrl() + "/*/buyorders",
+                        UriPrefix.SELLORDERS_PREFIX.getUrl() + "/*/buyorders/*").hasAnyRole("USER","ADMIN")
+                .antMatchers(HttpMethod.DELETE,
+                        UriPrefix.NFTS_PREFIX.getUrl() + "/*",
+                        UriPrefix.USERS_PREFIX.getUrl() + "/*/favorites/*",
+                        UriPrefix.SELLORDERS_PREFIX.getUrl() + "/*",
+                        UriPrefix.SELLORDERS_PREFIX.getUrl() + "/*/buyorders/*").hasAnyRole("USER","ADMIN")
             .and().exceptionHandling()
                 .authenticationEntryPoint(new SkyplaceAuthenticationEntryPoint())
                 .accessDeniedHandler(new SkyplaceAccessDeniedHandler())
             .and()
                 .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-                //.addFilterBefore(this.corsFilter, ChannelProcessingFilter.class)
             .csrf().disable();
 
     }

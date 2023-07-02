@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dto.reviews;
 
 import ar.edu.itba.paw.model.Review;
 import ar.edu.itba.paw.webapp.dto.UserDto;
+import ar.edu.itba.paw.webapp.helpers.UriPrefix;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -18,24 +19,21 @@ public class ReviewDto {
     private URI reviewer;
     private URI reviewee;
 
-    private final static String USERS_URI_PREFIX = "users";
-    private final static String REVIEWS_URI_PREFIX = "reviews";
-
     public static ReviewDto fromReview(final UriInfo uriInfo, final Review review) {
         final ReviewDto dto = new ReviewDto();
 
         final UriBuilder reviewUriBuilder = uriInfo.getAbsolutePathBuilder()
-                .replacePath(USERS_URI_PREFIX)
+                .replacePath(UriPrefix.USERS_PREFIX.getUrl())
                 .path(String.valueOf(review.getUsersByIdReviewee().getId()))
-                .path(REVIEWS_URI_PREFIX)
+                .path(UriPrefix.REVIEWS_PREFIX.getUrl())
                 .path(String.valueOf(review.getId()));
 
         final UriBuilder revieweeUriBuilder = uriInfo.getAbsolutePathBuilder()
-                .replacePath(USERS_URI_PREFIX)
+                .replacePath(UriPrefix.USERS_PREFIX.getUrl())
                 .path(String.valueOf(review.getUsersByIdReviewee().getId()));
 
         final UriBuilder reviewerUriBuilder = uriInfo.getAbsolutePathBuilder()
-                .replacePath(USERS_URI_PREFIX)
+                .replacePath(UriPrefix.USERS_PREFIX.getUrl())
                 .path(String.valueOf(review.getUsersByIdReviewer().getId()));
 
         dto.self = reviewUriBuilder.build();

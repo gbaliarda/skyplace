@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.model.Nft;
+import ar.edu.itba.paw.webapp.helpers.UriPrefix;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -28,13 +29,13 @@ public class NftDto {
     public static NftDto fromNft(final UriInfo uriInfo, final Nft nft, final Integer nftFavorites) {
         final NftDto dto = new NftDto();
 
-        final UriBuilder nftUriBuilder = uriInfo.getBaseUriBuilder().path("nfts")
+        final UriBuilder nftUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.NFTS_PREFIX.getUrl())
                 .path(String.valueOf(nft.getId()));
-        final UriBuilder userUriBuilder = uriInfo.getBaseUriBuilder().path("users")
+        final UriBuilder userUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.USERS_PREFIX.getUrl())
                 .path(String.valueOf(nft.getOwner().getId()));
-        final UriBuilder imageUriBuilder = uriInfo.getBaseUriBuilder().path("images")
+        final UriBuilder imageUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.IMAGES_PREFIX.getUrl())
                 .path(String.valueOf(nft.getIdImage()));
-        final UriBuilder recommendationsUriBuilder = uriInfo.getBaseUriBuilder().path("nfts")
+        final UriBuilder recommendationsUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.NFTS_PREFIX.getUrl())
                 .path(String.valueOf(nft.getId())).path("recommendations");
 
         if(!nft.isDeleted()) {
@@ -45,7 +46,7 @@ public class NftDto {
             dto.recommendations = recommendationsUriBuilder.build();
 
             if (nft.getSellOrder() != null) {
-                final UriBuilder sellorderUriBuilder = uriInfo.getBaseUriBuilder().path("sellorders")
+                final UriBuilder sellorderUriBuilder = uriInfo.getBaseUriBuilder().path(UriPrefix.SELLORDERS_PREFIX.getUrl())
                         .path(String.valueOf(nft.getSellOrder().getId()));
                 dto.sellorder = sellorderUriBuilder.build();
             }
