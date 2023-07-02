@@ -55,7 +55,7 @@ export default function Register() {
   const homeRedirect = async () => {
     try {
       await loginUser(data.email, data.password)
-      router.replace(from === undefined ? "/" : from)
+      await router.replace(from === undefined ? "/" : from)
     } catch (errs: any) {
       Swal.fire({ title: t("login.signInError"), text: errs[0].message, icon: "error" })
     }
