@@ -41,5 +41,7 @@ const mockStorage = {
     clear: jest.fn(),
 }
 
-global.localStorage = mockStorage
-global.sessionStorage = mockStorage
+Object.defineProperty(window, "localStorage", { value: mockStorage })
+Object.defineProperty(window, "sessionStorage", { value: mockStorage })
+// global.localStorage = mockStorage
+// global.sessionStorage = mockStorage

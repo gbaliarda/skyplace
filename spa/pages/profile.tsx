@@ -41,7 +41,7 @@ export default function Profile() {
   if (!router.isReady || loading)
     return (
       <Layout>
-        <div className="flex justify-center items-center h-full">
+        <div className="flex justify-center items-center h-full" data-testid="spinner">
           <Spinner className="w-12 h-12" />
         </div>
       </Layout>
@@ -69,22 +69,22 @@ export default function Profile() {
                   value.key
                 }.svg`
                 return (
-                  <li className={tabClasses} key={value.key}>
+                  <li className={tabClasses} key={value.key} data-testid={`tab.${value.key}`}>
                     <Link
-                      href={{
-                        pathname: "/profile",
-                        query: {
-                          id: router.query.id,
-                          tab: value.key,
-                        },
-                      }}
+                        href={{
+                          pathname: "/profile",
+                          query: {
+                            id: router.query.id,
+                            tab: value.key,
+                          },
+                        }}
                     >
                       <a>
                         <div className="flex flex-row cursor-pointer">
                           <img
                             className="h-6 w-6 mr-2"
                             src={getResourceUrl(tabImage)}
-                            alt="tab_icon"
+                            alt={`tab_${value.key}_icon`}
                           />
                           {t(`profile.${value.key}`)}
                         </div>
