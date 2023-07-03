@@ -85,9 +85,9 @@ public class UserController {
         Optional<User> maybeUser = userService.getUserById(userId);
         if (!maybeUser.isPresent())
             throw new UserNotFoundException();
-
+        System.out.println(status);
         int amountOfferPages = buyOrderService.getAmountPagesForUser(maybeUser.get(), status);
-
+        System.out.println(amountOfferPages);
         List<BuyOrderDto> buyOffers = buyOrderService.getBuyOrdersForUser(maybeUser.get(), page, status).stream().map(n -> BuyOrderDto.fromBuyOrder(n, uriInfo)).collect(Collectors.toList());
 
         Map<String, Object[]> queryParams = new HashMap<>();

@@ -92,8 +92,14 @@ public class BuyOrderServiceImpl implements BuyOrderService {
 
     @Override
     public int getAmountPagesForUser(User user, String status) {
-        int size = buyOrderDao.getAmountBuyOrdersForUser(user, status);
-        return (size - 1) / getPageSize() + 1;
+        switch(status) {
+            case "ALL":
+                return (buyOrderDao.getAllBuyOrdersAmountForUser(user) - 1) / getPageSize() + 1;
+            case "MYSALES":
+                return (buyOrderDao.getBuyOrdersAmountToUser(user) - 1) / getPageSize() + 1;
+            default:
+                return (buyOrderDao.getAmountBuyOrdersForUser(user, status) - 1) / getPageSize() + 1;
+        }
     }
 
     protected Optional<Integer> confirmBuyOrder(int sellOrderId, int buyerId, String txHash) {

@@ -11,6 +11,7 @@ const FormFile = forwardRef<HTMLInputElement, Props>(({ name, error }: Props, re
     <FormInput name={name} error={error}>
       <input
         type="file"
+        accept="image/*"
         ref={ref}
         required
         className={`mt-3 block text-sm text-slate-500 file:mr-4 file:py-2 file:px-4

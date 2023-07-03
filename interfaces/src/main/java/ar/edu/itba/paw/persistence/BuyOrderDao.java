@@ -38,4 +38,8 @@ public interface BuyOrderDao {
     int getAmountBuyOrdersForUser(User user, String status);
 
     void deleteBuyOrder(int sellOrderId, int buyerId);
+
+    int getAllBuyOrdersAmountForUser(User user);
+
+    int getBuyOrdersAmountToUser(User user);
 }
