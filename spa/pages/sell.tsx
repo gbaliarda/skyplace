@@ -58,11 +58,11 @@ export default function Sell() {
 
   const FIELDS_DATA: FieldsDataMap = {
     category: {
-      name: t("register.email"),
+      name: t("sell.category"),
       updateFunction: (error: string) => updateCategoryError(error),
     },
     price: {
-      name: t("register.walletAddress"),
+      name: t("sell.price"),
       updateFunction: (error: string) => updatePriceError(error),
     },
   }
