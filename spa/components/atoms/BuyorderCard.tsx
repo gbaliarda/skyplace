@@ -104,6 +104,7 @@ const BuyorderCard = ({ buyorder, owner, index, url, refetchData }: Props) => {
       Swal.fire({ title: t("errors.acceptOffer"), text: errs[0].message, icon: "error" })
     }
   }
+  
 
   return (
     <div className="flex items-center justify-between py-3">
@@ -128,7 +129,7 @@ const BuyorderCard = ({ buyorder, owner, index, url, refetchData }: Props) => {
       <div className="flex flex-col gap-1 items-end">
         <div className="flex">
           <img className="h-6 -ml-1" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
-          <span className="text-slate-700">{buyorder.amount}</span>
+          <span className="text-slate-700">{buyorder.amount.toLocaleString("en-US", { maximumFractionDigits: 20 })}</span>
         </div>
         {isUserOfferer && userPendingBuyOrder?.id !== userId && (
           <div className="flex gap-2">
