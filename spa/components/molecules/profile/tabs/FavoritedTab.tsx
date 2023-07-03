@@ -85,6 +85,7 @@ export default function FavoritedTab({ userId }: Props) {
       const favoritesUrl = buildFavoritesUrlFromUrl(_url)
       setUrl(favoritesUrl)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [url],
   )
 

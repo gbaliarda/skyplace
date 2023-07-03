@@ -70,7 +70,7 @@ const Explore = () => {
           ? parseInt(router.query.page[0])
           : parseInt(router.query.page),
       )
-  }, [router.query.page])
+  }, [router.isReady, router.query.page])
 
   const defaultURL: NftsURL = {
     baseUrl: `${api}/nfts?page=${page}`,
@@ -125,6 +125,7 @@ const Explore = () => {
       const nftsUrl = buildNftsUrlFromUrl(_url)
       setUrl(nftsUrl)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [url],
   )
 

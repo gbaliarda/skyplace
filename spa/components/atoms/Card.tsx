@@ -78,7 +78,9 @@ const Card = ({ nft, mutateFavs, isFaved }: Props) => {
               {sellorder !== undefined ? (
                 <div className="flex items-center max-w-[17ch]">
                   <img className="h-8" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
-                  <span className="truncate">{sellorder.price.toLocaleString("en-US", { maximumFractionDigits: 20 })}</span>
+                  <span className="truncate">
+                    {sellorder.price.toLocaleString("en-US", { maximumFractionDigits: 20 })}
+                  </span>
                 </div>
               ) : (
                 <div className="flex h-8 items-center">

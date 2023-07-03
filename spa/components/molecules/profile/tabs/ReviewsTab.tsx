@@ -70,6 +70,7 @@ export default function ReviewsTab({ userId, loggedInUser }: Props) {
       const revUrl = buildReviewsUrlFromUrl(_url)
       setReviewsUrl(revUrl)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [reviewsUrl],
   )
 

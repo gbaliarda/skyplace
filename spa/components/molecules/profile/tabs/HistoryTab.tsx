@@ -65,6 +65,7 @@ export default function HistoryTab({ userId }: Props) {
       const purchasesUrl = buildPurchasesUrlFromUrl(_url)
       setUrl(purchasesUrl)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [url],
   )
 

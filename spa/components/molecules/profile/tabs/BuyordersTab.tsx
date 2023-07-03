@@ -85,6 +85,7 @@ export default function BuyordersTab({ userId }: Props) {
       const buyordersUrl = buildBuyordersUrlFromUrl(_url)
       setUrl(buyordersUrl)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [url],
   )
 

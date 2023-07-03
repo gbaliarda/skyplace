@@ -93,6 +93,7 @@ export default function InventoryTab({ userId }: Props) {
       const nftsUrl = buildNftsUrlFromUrl(_url)
       setUrl(nftsUrl)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [url],
   )
 

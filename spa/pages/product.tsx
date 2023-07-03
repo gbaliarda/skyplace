@@ -204,7 +204,11 @@ const Product = () => {
                             alt="Eth icon"
                           />
                           <div>
-                            <span className="font-bold tracking-tight">{sellorder?.price.toLocaleString("en-US", { maximumFractionDigits: 20 })}</span>
+                            <span className="font-bold tracking-tight">
+                              {sellorder?.price.toLocaleString("en-US", {
+                                maximumFractionDigits: 20,
+                              })}
+                            </span>
                             {sellorder?.price && ethPriceUsd && (
                               <span className="ml-4 text-slate-500 text-base">
                                 ~ {(sellorder.price * ethPriceUsd).toFixed(2)} USD

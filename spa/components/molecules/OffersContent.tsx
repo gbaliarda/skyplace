@@ -73,6 +73,7 @@ const OffersContent = ({ buyOrdersUrl, loadingData, owner }: Props) => {
       const buyordersUrl = buildBuyordersUrlFromUrl(_url)
       setUrl(buyordersUrl)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [url],
   )
 
@@ -91,6 +92,7 @@ const OffersContent = ({ buyOrdersUrl, loadingData, owner }: Props) => {
       ...url,
       baseUrl: `${buyOrdersUrl}?page=${page}`,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, router.isReady])
 
   return (
