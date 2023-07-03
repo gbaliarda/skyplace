@@ -42,7 +42,9 @@ const ProductPendingOfferBox = ({ pendingBuyOrder }: Props) => {
         </div>
         <div className="flex items-center">
           <img className="h-8 -ml-1" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
-          <span className="text-slate-700">{pendingBuyOrder.amount}</span>
+          <span className="text-slate-700">{pendingBuyOrder.amount.toLocaleString("en-US", {
+                            maximumFractionDigits: 20,
+                          })}</span>
         </div>
       </div>
     </div>

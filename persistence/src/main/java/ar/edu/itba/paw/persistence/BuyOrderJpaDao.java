@@ -121,6 +121,22 @@ public class BuyOrderJpaDao implements BuyOrderDao {
         query.executeUpdate();
     }
 
+    @Override
+    public int getAllBuyOrdersAmountForUser(User user) {
+        final Query query = em.createNativeQuery("SELECT count(*) FROM nfts INNER JOIN users ON nfts.id_owner=users.id INNER JOIN sellorders ON sellorders.id_nft=nfts.id INNER JOIN buyorders ON sellorders.id=buyorders.id_sellorder WHERE users.id=:userId OR id_buyer=:userId");
+        query.setParameter("userId",user.getId());
+
+        return ((BigInteger)query.getSingleResult()).intValue();
+    }
+
+    @Override
+    public int getBuyOrdersAmountToUser(User user) {
+        final Query query = em.createNativeQuery("SELECT count(*) FROM nfts INNER JOIN users ON nfts.id_owner=users.id INNER JOIN sellorders ON sellorders.id_nft=nfts.id INNER JOIN buyorders ON sellorders.id=buyorders.id_sellorder WHERE users.id=:userId");
+        query.setParameter("userId",user.getId());
+
+        return ((BigInteger)query.getSingleResult()).intValue();
+    }
+
     /**
      * @return true or false depending on if the specific sell order contains or not a pending buy order.
      */

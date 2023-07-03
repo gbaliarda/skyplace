@@ -139,7 +139,9 @@ export default function ConfirmTransactionModal({
               </li>
             </ModalSection>
             <ModalSection title={t("product.transactionValue")}>
-              <li className="list-disc ml-4 marker:text-cyan-600">{price} ETH</li>
+              <li className="list-disc ml-4 marker:text-cyan-600">{price?.toLocaleString("en-US", {
+                            maximumFractionDigits: 20,
+                          })} ETH</li>
             </ModalSection>
             <div>
               <p suppressHydrationWarning className="font-bold text-lg">
