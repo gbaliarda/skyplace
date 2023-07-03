@@ -146,13 +146,14 @@ export default function Create() {
       let errorFields: string = ""
       let auxIdx = 1
       let hasWholeFormError: boolean = false
+      console.log(errs)
       errs.forEach((err: FetchError) => {
         if (err.cause.field !== "/") {
           // Only exception that doesn´t return a field is wrong image exception
           FIELDS_DATA[err.cause.field === undefined ? "image" : err.cause.field].updateFunction(
             err.cause.description,
           )
-          errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].name}`
+          errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "image" : err.cause.field].name}`
 
           if (auxIdx < errs.length) errorFields += ", "
         } else {
