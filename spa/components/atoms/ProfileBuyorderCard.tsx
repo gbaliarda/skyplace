@@ -122,7 +122,7 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
                         </Link>
                         {t("buyorders.forSale", {
                           bidder: bidder?.username,
-                          amount: buyorder.amount,
+                          amount: buyorder.amount.toLocaleString("en-US", { maximumFractionDigits: 20 }),
                         })}
                       </p>
                     ) : (
