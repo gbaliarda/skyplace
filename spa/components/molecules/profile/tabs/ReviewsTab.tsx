@@ -1,6 +1,8 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import { useRouter } from "next/router"
 import Link from "next/link"
 import { useTranslation } from "next-export-i18n"
+import queryString from "query-string"
 import ReviewItem from "../../../atoms/ReviewItem"
 import { ReviewsURL, useReviews } from "../../../../services/reviews"
 import Paginator from "../../Paginator"
@@ -16,22 +18,69 @@ interface Props {
 
 export default function ReviewsTab({ userId, loggedInUser }: Props) {
   const { t } = useTranslation()
+  const router = useRouter()
+  const [page, setPage] = useState<number>()
 
   const defaultURL = {
-    baseUrl: `${api}/users/${userId}/reviews?page=1`,
+    baseUrl: `${api}/users/${userId}/reviews?page=${page}`,
   } as ReviewsURL
   const [reviewsUrl, setReviewsUrl] = useState<ReviewsURL>(defaultURL)
   const { reviewsInfo, links, loading, total, totalPages, errors, refetchData } =
     useReviews(reviewsUrl)
+
+  useEffect(() => {
+    if (!router.isReady) return
+
+    if (router.query.page)
+      setPage(
+        Array.isArray(router.query.page)
+          ? parseInt(router.query.page[0])
+          : parseInt(router.query.page),
+      )
+  }, [router.isReady, router.query.page])
+
+  const updatePage = (pageNumber: string) => {
+    const queryParams = new URLSearchParams(queryString.stringify(router.query))
+
+    setPage(parseInt(pageNumber))
+    queryParams.set("page", pageNumber)
+
+    const newURL = `${router.pathname}?${queryParams.toString()}`
+
+    router.push(newURL)
+  }
+
+  const buildReviewsUrlFromUrl = (_url: string) => {
+    const urlAux = new URL(_url)
+    const params = urlAux.searchParams
+
+    const revUrl: ReviewsURL = {
+      baseUrl: `${urlAux.origin}${urlAux.pathname}?page=${params.get("page")}`,
+    }
+
+    return revUrl
+  }
+
   const updateUrl = useCallback(
     (_url: string) => {
-      setReviewsUrl({
-        ...reviewsUrl,
-        baseUrl: _url,
-      })
+      const params = new URL(_url).searchParams
+      const pageNumber = params.get("page") ?? "1"
+      updatePage(pageNumber)
+
+      const revUrl = buildReviewsUrlFromUrl(_url)
+      setReviewsUrl(revUrl)
     },
     [reviewsUrl],
   )
+
+  useEffect(() => {
+    if (router.isReady && page === undefined && router.query.page === undefined) setPage(1)
+    setReviewsUrl({
+      ...reviewsUrl,
+      baseUrl: `${api}/users/${userId}/reviews?page=${page}`,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
 
   const {
     reviewsInfo: reviewsBetweenUsers,

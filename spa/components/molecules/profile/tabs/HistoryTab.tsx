@@ -1,4 +1,6 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import { useRouter } from "next/router"
+import queryString from "query-string"
 import { useTranslation } from "next-export-i18n"
 import HistoryItem from "../../../atoms/HistoryItem"
 import { PurchasesURL, usePurchases } from "../../../../services/purchases"
@@ -13,20 +15,67 @@ interface Props {
 
 export default function HistoryTab({ userId }: Props) {
   const { t } = useTranslation()
+  const router = useRouter()
+  const [page, setPage] = useState<number>()
   const defaultURL = {
-    baseUrl: `${api}/users/${userId}/purchases?page=1`,
+    baseUrl: `${api}/users/${userId}/purchases?page=${page}`,
   } as PurchasesURL
   const [url, setUrl] = useState<PurchasesURL>(defaultURL)
   const { purchases, links, totalPages, loading, errors, refetchData } = usePurchases(url)
+
+  useEffect(() => {
+    if (!router.isReady) return
+
+    if (router.query.page)
+      setPage(
+        Array.isArray(router.query.page)
+          ? parseInt(router.query.page[0])
+          : parseInt(router.query.page),
+      )
+  }, [router.isReady, router.query.page])
+
+  const updatePage = (pageNumber: string) => {
+    const queryParams = new URLSearchParams(queryString.stringify(router.query))
+
+    setPage(parseInt(pageNumber))
+    queryParams.set("page", pageNumber)
+
+    const newURL = `${router.pathname}?${queryParams.toString()}`
+
+    router.push(newURL)
+  }
+
+  const buildPurchasesUrlFromUrl = (_url: string) => {
+    const urlAux = new URL(_url)
+    const params = urlAux.searchParams
+
+    const purchasesUrl: PurchasesURL = {
+      baseUrl: `${urlAux.origin}${urlAux.pathname}?page=${params.get("page")}`,
+    }
+
+    return purchasesUrl
+  }
+
   const updateUrl = useCallback(
     (_url: string) => {
-      setUrl({
-        ...url,
-        baseUrl: _url,
-      })
+      const params = new URL(_url).searchParams
+      const pageNumber = params.get("page") ?? "1"
+      updatePage(pageNumber)
+
+      const purchasesUrl = buildPurchasesUrlFromUrl(_url)
+      setUrl(purchasesUrl)
     },
     [url],
   )
+
+  useEffect(() => {
+    if (router.isReady && page === undefined && router.query.page === undefined) setPage(1)
+    setUrl({
+      ...url,
+      baseUrl: `${api}/users/${userId}/purchases?page=${page}`,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
 
   if (errors)
     return (

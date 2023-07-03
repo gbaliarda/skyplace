@@ -16,7 +16,7 @@ export default function ProfileDescription({ userId }: Props) {
   const { t } = useTranslation()
   const { user, loading: loadingUser, errors: errorsUser, mutate: mutateUser } = useUser(userId)
   const defaultURL = {
-    baseUrl: `${api}/users/${userId}/reviews?page=1`,
+    baseUrl: `${api}/users/${userId}/reviews`,
   } as ReviewsURL
   const {
     reviewsInfo,

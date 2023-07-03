@@ -19,6 +19,8 @@ export const usePurchases = (url: PurchasesURL) => {
 
   const refetchData = (_url: PurchasesURL) => {
     if (_url.baseUrl === null) return
+    const params = new URL(_url.baseUrl).searchParams
+    if (params.get("page") === "undefined") return
     const purchaserFilter = _url.purchaser ? `&purchaser=${_url.purchaser}` : ""
     fetchData(`${_url.baseUrl}${purchaserFilter}`)
   }

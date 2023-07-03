@@ -20,6 +20,8 @@ export const useReviews = (url: ReviewsURL) => {
   } = usePagination<ReviewsInfo>(false)
 
   const refetchData = (_url: ReviewsURL) => {
+    const params = new URL(_url.baseUrl).searchParams
+    if (params.get("page") === "undefined") return
     const reviewsFilter = _url.reviewer ? `&reviewer=${_url.reviewer}` : ""
     fetchData(`${_url.baseUrl}${reviewsFilter}`)
   }
