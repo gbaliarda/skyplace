@@ -5,7 +5,7 @@ import { FilterType } from "../../types/Filters"
 import { Category } from "../../types/Nft"
 
 interface Props {
-  changeValueFilters: (filterType: FilterType, toAdd: boolean, category: Category) => void,
+  changeValueFilters: (filterType: FilterType, toAdd: boolean, category: Category) => void
   categories: Category[] | undefined
 }
 

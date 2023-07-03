@@ -145,7 +145,11 @@ export default function ConfirmTransactionModal({
               <p suppressHydrationWarning className="font-bold text-lg">
                 {t("product.transactionHash")}
               </p>
-              <input value={txHash} onChange={(e) => setTxHash(e.target.value)} className="input input-bordered input-md w-full" />
+              <input
+                value={txHash}
+                onChange={(e) => setTxHash(e.target.value)}
+                className="input input-bordered input-md w-full"
+              />
             </div>
           </div>
           <div className="modal-action">

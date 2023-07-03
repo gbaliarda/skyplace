@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
+import { useRouter } from "next/router"
 import { useTranslation } from "next-export-i18n"
 import queryString from "query-string"
 import ProfileNftTab from "../ProfileNftTab"
@@ -6,7 +7,6 @@ import ErrorBox from "../../../atoms/ErrorBox"
 import Loader from "../../../atoms/Loader"
 import { FavoritesURL, useFavorites } from "../../../../services/users"
 import { api } from "../../../../services/endpoints"
-import { useRouter } from "next/router"
 
 interface Props {
   userId: number
@@ -28,14 +28,17 @@ export default function FavoritedTab({ userId }: Props) {
     if (!router.isReady) return
 
     if (router.query.page)
-      setPage(Array.isArray(router.query.page) ? parseInt(router.query.page[0]) : parseInt(router.query.page))
-  }, [router.query.page])
+      setPage(
+        Array.isArray(router.query.page)
+          ? parseInt(router.query.page[0])
+          : parseInt(router.query.page),
+      )
+  }, [router.isReady, router.query.page])
 
   useEffect(() => {
     setSort(Array.isArray(router.query.sort) ? router.query.sort[0] : router.query.sort ?? "")
   }, [router.query.sort])
 
-  
   const updatePage = (pageNumber: string) => {
     const queryParams = new URLSearchParams(queryString.stringify(router.query))
 
@@ -52,7 +55,7 @@ export default function FavoritedTab({ userId }: Props) {
     const params = urlAux.searchParams
     const sortParam = params.get("sort")
 
-    const favoritesUrl:FavoritesURL = {
+    const favoritesUrl: FavoritesURL = {
       baseUrl: `${urlAux.origin}${urlAux.pathname}?page=${params.get("page")}`,
       sort: sortParam != null ? sortParam : sort,
     }
@@ -60,26 +63,25 @@ export default function FavoritedTab({ userId }: Props) {
     return favoritesUrl
   }
 
-  const applySort = (sort: string) => {
+  const applySort = (_sort: string) => {
     const queryParams = new URLSearchParams(queryString.stringify(router.query))
 
-    queryParams.set("sort", sort)
-    
-    if (sort === "priceDsc" || sort === "priceAsc")
-      queryParams.set("page", "1")
+    queryParams.set("sort", _sort)
+
+    if (_sort === "priceDsc" || _sort === "priceAsc") queryParams.set("page", "1")
 
     const newURL = `${router.pathname}?${queryParams.toString()}`
-    
+
     router.push(newURL)
-    setSort(sort)
+    setSort(_sort)
   }
 
   const updateUrl = useCallback(
     (_url: string) => {
       const params = new URL(_url).searchParams
-      const pageNumber = params.get('page') ?? "1"
+      const pageNumber = params.get("page") ?? "1"
       updatePage(pageNumber)
-      
+
       const favoritesUrl = buildFavoritesUrlFromUrl(_url)
       setUrl(favoritesUrl)
     },
@@ -87,8 +89,7 @@ export default function FavoritedTab({ userId }: Props) {
   )
 
   useEffect(() => {
-    if (router.isReady && page === undefined && router.query.page === undefined)
-      setPage(1)
+    if (router.isReady && page === undefined && router.query.page === undefined) setPage(1)
     setUrl({
       ...url,
       baseUrl: `${api}/users/${userId}/favorites?page=${page}`,
@@ -108,7 +109,7 @@ export default function FavoritedTab({ userId }: Props) {
     <ProfileNftTab
       updateUrl={updateUrl}
       sort={sort}
-      setSort={applySort} 
+      setSort={applySort}
       nfts={favorites}
       totalPages={totalPages}
       links={links ?? undefined}

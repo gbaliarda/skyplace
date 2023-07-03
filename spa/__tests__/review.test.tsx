@@ -1,14 +1,14 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import "@testing-library/jest-dom"
 import Swal from "sweetalert2"
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router"
 
 import CreateReview from "../pages/review"
 import { useUser } from "../services/users"
 import { sendJson } from "../services/endpoints"
 
 // Override the default mock set in `jest.setup.js`
-jest.mock('next/router', () => ({
+jest.mock("next/router", () => ({
   useRouter: jest.fn(),
 }))
 
@@ -21,12 +21,11 @@ jest.mock("../services/endpoints")
 beforeEach(() => {
   // Custom mock for the `useRouter` hook, to be able to mock
   // both the `query` and `replace` properties for testing
-  (useRouter as jest.Mock).mockImplementation(() => ({
+  ;(useRouter as jest.Mock).mockImplementation(() => ({
     query: { id: "1" },
     replace: jest.fn(),
-  }));
-
-  (useUser as jest.Mock).mockImplementation(() => ({
+  }))
+  ;(useUser as jest.Mock).mockImplementation(() => ({
     user: {
       id: 1,
       username: "test",
@@ -34,7 +33,7 @@ beforeEach(() => {
       email: "test@test.com",
     },
     loading: false,
-  }));
+  }))
 })
 
 test("renders correct page elements", () => {
@@ -51,9 +50,9 @@ test("renders correct page elements", () => {
 })
 
 test("error loading reviewee", () => {
-  (useUser as jest.Mock).mockImplementation(() => ({
-    errors: ["error"]
-  }));
+  ;(useUser as jest.Mock).mockImplementation(() => ({
+    errors: ["error"],
+  }))
 
   render(<CreateReview />)
 
@@ -61,10 +60,10 @@ test("error loading reviewee", () => {
 })
 
 test("no `id` query param", () => {
-  (useRouter as jest.Mock).mockImplementation(() => ({
+  ;(useRouter as jest.Mock).mockImplementation(() => ({
     query: {},
     replace: jest.fn(),
-  }));
+  }))
 
   render(<CreateReview />)
 
@@ -90,9 +89,8 @@ test("invalid title when submitting", async () => {
   const submitButton = screen.getByRole("button", { name: "reviews.create" })
   const stars = screen.getAllByRole("radio")
 
-  fireEvent.click(stars[5]); // 5 stars
-  
-  (sendJson as jest.Mock).mockRejectedValueOnce([{ cause: { field: "" } }])
+  fireEvent.click(stars[5]) // 5 stars
+  ;(sendJson as jest.Mock).mockRejectedValueOnce([{ cause: { field: "" } }])
 
   fireEvent.click(submitButton)
 
@@ -111,9 +109,8 @@ test("submits review correctly", async () => {
   const submitButton = screen.getByRole("button", { name: "reviews.create" })
   const stars = screen.getAllByRole("radio")
 
-  fireEvent.click(stars[5]); // 5 stars
-  
-  (sendJson as jest.Mock).mockResolvedValueOnce({})
+  fireEvent.click(stars[5]) // 5 stars
+  ;(sendJson as jest.Mock).mockResolvedValueOnce({})
 
   fireEvent.click(submitButton)
 

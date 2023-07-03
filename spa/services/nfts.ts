@@ -32,8 +32,8 @@ export const useNfts = (url: NftsURL) => {
     if (_url.filters.chain === undefined) delete _url.filters.chain
     if (_url.filters.status === undefined) delete _url.filters.status
     const params = new URL(_url.baseUrl).searchParams
-    if (params.get('page') === "undefined") return
-    
+    if (params.get("page") === "undefined") return
+
     const filterParams = encodeQueryParam(_url.filters)
     const searchParams = encodeQueryParam(_url.search)
     const sort = _url.sort ? `&sort=${_url.sort}` : ""
@@ -66,7 +66,9 @@ export const useNft = (id: string | number) => {
     isLoading: loading,
     error: errors,
     mutate,
-  } = useSWR<Nft, FetchError[]>(id && !Number.isNaN(id) ? `/nfts/${id}` : null, fetcher, { revalidateIfStale: true })
+  } = useSWR<Nft, FetchError[]>(id && !Number.isNaN(id) ? `/nfts/${id}` : null, fetcher, {
+    revalidateIfStale: true,
+  })
   return { nft, loading, errors, mutate }
 }
 

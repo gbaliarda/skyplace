@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
+import { useRouter } from "next/router"
 import { useTranslation } from "next-export-i18n"
 import queryString from "query-string"
 import parse from "parse-link-header"
@@ -12,7 +13,6 @@ import ErrorBox from "../atoms/ErrorBox"
 import User from "../../types/User"
 import Buyorder from "../../types/Buyorder"
 import { BuyordersURL } from "../../services/users"
-import { useRouter } from "next/router"
 
 interface Props {
   buyOrdersUrl: string | undefined
@@ -26,13 +26,17 @@ const OffersContent = ({ buyOrdersUrl, loadingData, owner }: Props) => {
   const defaultURL = {
     baseUrl: buyOrdersUrl ? `${buyOrdersUrl}?page=${page}` : "",
   } as BuyordersURL
-  
+
   useEffect(() => {
     if (!router.isReady) return
 
     if (router.query.page)
-      setPage(Array.isArray(router.query.page) ? parseInt(router.query.page[0]) : parseInt(router.query.page))
-  }, [router.query.page])
+      setPage(
+        Array.isArray(router.query.page)
+          ? parseInt(router.query.page[0])
+          : parseInt(router.query.page),
+      )
+  }, [router.isReady, router.query.page])
 
   const [url, setUrl] = useState(defaultURL)
   const { buyorders, totalPages, links, loading, error, refetchData } = useBuyOrders(url)
@@ -52,9 +56,9 @@ const OffersContent = ({ buyOrdersUrl, loadingData, owner }: Props) => {
   const buildBuyordersUrlFromUrl = (_url: string) => {
     const urlAux = new URL(_url)
 
-    const buyordersUrl:BuyordersURL = {
+    const buyordersUrl: BuyordersURL = {
       baseUrl: `${urlAux.origin}${urlAux.pathname}?page=${urlAux.searchParams.get("page")}`,
-      status: 'ALL'
+      status: "ALL",
     }
 
     return buyordersUrl
@@ -63,9 +67,9 @@ const OffersContent = ({ buyOrdersUrl, loadingData, owner }: Props) => {
   const updateUrl = useCallback(
     (_url: string) => {
       const params = new URL(_url).searchParams
-      const pageNumber = params.get('page') ?? "1"
+      const pageNumber = params.get("page") ?? "1"
       updatePage(pageNumber)
-      
+
       const buyordersUrl = buildBuyordersUrlFromUrl(_url)
       setUrl(buyordersUrl)
     },
@@ -74,13 +78,12 @@ const OffersContent = ({ buyOrdersUrl, loadingData, owner }: Props) => {
 
   useEffect(() => {
     if (!buyOrdersUrl) return
-    setUrl({...url, baseUrl: `${buyOrdersUrl}?page=${page}`})
+    setUrl({ ...url, baseUrl: `${buyOrdersUrl}?page=${page}` })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buyOrdersUrl])
 
   useEffect(() => {
-    if (router.isReady && page === undefined && router.query.page === undefined)
-      setPage(1)
+    if (router.isReady && page === undefined && router.query.page === undefined) setPage(1)
 
     if (!buyOrdersUrl) return
 

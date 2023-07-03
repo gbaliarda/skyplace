@@ -28,9 +28,9 @@ export const useBuyOrders = (url: BuyordersURL) => {
   } = usePagination<Buyorder[]>()
 
   const refetchData = (_url: BuyordersURL) => {
-    if (_url.baseUrl === '') return
+    if (_url.baseUrl === "") return
     const params = new URL(_url.baseUrl).searchParams
-    if (params.get('page') === "undefined") return
+    if (params.get("page") === "undefined") return
     fetchData(`${_url.baseUrl}`)
   }
 
@@ -51,7 +51,7 @@ export const usePendingBuyOrder = (sellOrderId: number | undefined) => {
   } = useSWR<Buyorder[], FetchError[]>(
     sellOrderId ? `/sellorders/${sellOrderId}/buyorders?status=PENDING` : null,
     fetcher,
-    { revalidateIfStale: true }
+    { revalidateIfStale: true },
   )
   const pendingBuyOrder = data !== undefined && data.length > 0 ? data[0] : undefined
   return { pendingBuyOrder, isLoading, errors, mutate }

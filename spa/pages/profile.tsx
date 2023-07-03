@@ -71,13 +71,13 @@ export default function Profile() {
                 return (
                   <li className={tabClasses} key={value.key} data-testid={`tab.${value.key}`}>
                     <Link
-                        href={{
-                          pathname: "/profile",
-                          query: {
-                            id: router.query.id,
-                            tab: value.key,
-                          },
-                        }}
+                      href={{
+                        pathname: "/profile",
+                        query: {
+                          id: router.query.id,
+                          tab: value.key,
+                        },
+                      }}
                     >
                       <a>
                         <div className="flex flex-row cursor-pointer">

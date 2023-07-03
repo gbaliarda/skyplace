@@ -49,7 +49,7 @@ export const useFavorites = (url: FavoritesURL) => {
 
   const refetchData = (_url: FavoritesURL) => {
     const params = new URL(_url.baseUrl).searchParams
-    if (params.get('page') === "undefined") return
+    if (params.get("page") === "undefined") return
     fetchData(`${_url.baseUrl}&sort=${_url.sort}`)
   }
 
@@ -73,7 +73,7 @@ export const useUserBuyorders = (url: BuyordersURL) => {
 
   const refetchData = (_url: BuyordersURL) => {
     const params = new URL(_url.baseUrl).searchParams
-    if (params.get('page') === "undefined") return
+    if (params.get("page") === "undefined") return
     fetchData(`${_url.baseUrl}&status=${_url.status}`)
   }
 

@@ -16,8 +16,8 @@ const ProductFavNft = ({ isFaved, nftId, mutateFavs, amountFavourites = 0 }: Pro
   const [amountFavs, setAmountFavs] = useState(amountFavourites)
 
   useEffect(() => {
-    setAmountFavs(amountFavourites);
-  }, [amountFavourites]);
+    setAmountFavs(amountFavourites)
+  }, [amountFavourites])
 
   const handleFavNft = (ev: BaseSyntheticEvent) => {
     ev.preventDefault()

@@ -48,7 +48,12 @@ export default function CreateReview() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!accessToken) return Swal.fire({ title: t("errors.notLoggedIn"), icon: "error" })
-    if (!data.score) return Swal.fire({ title: t("errors.createReview"), text: t("errors.incompleteReview"), icon: "error" })
+    if (!data.score)
+      return Swal.fire({
+        title: t("errors.createReview"),
+        text: t("errors.incompleteReview"),
+        icon: "error",
+      })
 
     try {
       await sendJson("POST", `/users/${parsedId}/reviews`, { ...data }, accessToken)
@@ -94,15 +99,21 @@ export default function CreateReview() {
                 {t("reviews.rating")}
               </span>
               <div className="rating rating-lg">
-                <input type="radio" name="rating-9" className="rating-hidden hidden" defaultChecked readOnly />
+                <input
+                  type="radio"
+                  name="rating-9"
+                  className="rating-hidden hidden"
+                  defaultChecked
+                  readOnly
+                />
                 {STARS.map((score, i) => (
-                    <input
-                      key={i}
-                      type="radio"
-                      name="rating-9"
-                      className="mask mask-star-2 bg-amber-400 checked:bg-amber-400 checked:focus:bg-amber-400 rounded-xl checked:bg-none"
-                      onClick={() => updateFields({ score })}
-                    />
+                  <input
+                    key={i}
+                    type="radio"
+                    name="rating-9"
+                    className="mask mask-star-2 bg-amber-400 checked:bg-amber-400 checked:focus:bg-amber-400 rounded-xl checked:bg-none"
+                    onClick={() => updateFields({ score })}
+                  />
                 ))}
               </div>
             </label>

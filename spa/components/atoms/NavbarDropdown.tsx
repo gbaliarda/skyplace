@@ -49,9 +49,7 @@ const NavbarDropdown = () => {
           <>
             <p suppressHydrationWarning className="py-2 px-4 text-center max-w-full">
               {t("navbar.currentUser")}
-              <b className="text-cyan-700 block max-w-full overflow-hidden text-ellipsis">
-                {user}
-              </b>
+              <b className="text-cyan-700 block max-w-full overflow-hidden text-ellipsis">{user}</b>
             </p>
             <li className="w-full">
               <Link href={userProfileUrl} className="py-2 px-4">

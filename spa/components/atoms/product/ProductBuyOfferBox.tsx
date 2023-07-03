@@ -20,8 +20,7 @@ const ProductBuyOfferBox = ({ sellOrder }: { sellOrder: Sellorder }) => {
   const { price: ethPriceUsd } = useCryptoPrice("ethereum")
 
   const handleMakeOffer = async () => {
-    if (!accessToken)
-      return router.push({ pathname: "/login", query: { from: router.asPath } })
+    if (!accessToken) return router.push({ pathname: "/login", query: { from: router.asPath } })
 
     setLoading(true)
     try {

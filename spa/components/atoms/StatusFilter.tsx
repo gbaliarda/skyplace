@@ -4,7 +4,7 @@ import { useTranslation } from "next-export-i18n"
 import { FilterType, SaleStatus } from "../../types/Filters"
 
 interface Props {
-  changeValueFilters: (filterType: FilterType, toAdd: boolean, saleStatus: SaleStatus) => void,
+  changeValueFilters: (filterType: FilterType, toAdd: boolean, saleStatus: SaleStatus) => void
   status: SaleStatus[] | undefined
 }
 

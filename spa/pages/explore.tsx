@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import { useTranslation } from "next-export-i18n"
-import queryString from 'query-string'
+import queryString from "query-string"
 import FilterSideBar from "../components/molecules/FilterSideBar"
 import ExploreContent from "../components/molecules/ExploreContent"
 import Layout from "../components/Layout"
@@ -31,7 +31,7 @@ const Explore = () => {
 
   useEffect(() => {
     setFilters((prevFilters) => {
-      const newFilters = {...prevFilters}
+      const newFilters = { ...prevFilters }
 
       newFilters.status = router.query.status as SaleStatus[]
       newFilters.category = router.query.category as Category[]
@@ -40,12 +40,22 @@ const Explore = () => {
       const queryMinPrice = router.query.minPrice
       const queryMaxPrice = router.query.maxPrice
 
-      newFilters.minPrice = Array.isArray(queryMinPrice) ? parseInt(queryMinPrice[0]) : parseInt(queryMinPrice ?? "0")
-      newFilters.maxPrice = Array.isArray(queryMaxPrice) ? parseInt(queryMaxPrice[0]) : parseInt(queryMaxPrice ?? "0")
-      
+      newFilters.minPrice = Array.isArray(queryMinPrice)
+        ? parseInt(queryMinPrice[0])
+        : parseInt(queryMinPrice ?? "0")
+      newFilters.maxPrice = Array.isArray(queryMaxPrice)
+        ? parseInt(queryMaxPrice[0])
+        : parseInt(queryMaxPrice ?? "0")
+
       return newFilters
     })
-  }, [router.query.status, router.query.category, router.query.chain, router.query.minPrice, router.query.maxPrice])
+  }, [
+    router.query.status,
+    router.query.category,
+    router.query.chain,
+    router.query.minPrice,
+    router.query.maxPrice,
+  ])
 
   useEffect(() => {
     setSort(Array.isArray(router.query.sort) ? router.query.sort[0] : router.query.sort ?? "")
@@ -55,12 +65,16 @@ const Explore = () => {
     if (!router.isReady) return
 
     if (router.query.page)
-      setPage(Array.isArray(router.query.page) ? parseInt(router.query.page[0]) : parseInt(router.query.page))
+      setPage(
+        Array.isArray(router.query.page)
+          ? parseInt(router.query.page[0])
+          : parseInt(router.query.page),
+      )
   }, [router.query.page])
 
   const defaultURL: NftsURL = {
     baseUrl: `${api}/nfts?page=${page}`,
-    filters: filters,
+    filters,
     sort: "",
   }
   const [isFilterClosed, setIsFilterClosed] = useState(false)
@@ -80,22 +94,22 @@ const Explore = () => {
     const searchParam = params.get("search")
     const searchForParam = params.get("searchFor")
 
-    const nftsUrl:NftsURL = {
+    const nftsUrl: NftsURL = {
       baseUrl: `${urlAux.origin}${urlAux.pathname}?page=${params.get("page")}`,
       filters: {
         minPrice: minPrice != null ? parseInt(minPrice) : filters.minPrice,
         maxPrice: maxPrice != null ? parseInt(maxPrice) : filters.maxPrice,
-        status: status != null ? status as SaleStatus[] : filters.status,
-        category: category != null ? category as Category[] : filters.category,
-        chain: chain != null ? chain as Chain[] : filters.chain
+        status: status != null ? (status as SaleStatus[]) : filters.status,
+        category: category != null ? (category as Category[]) : filters.category,
+        chain: chain != null ? (chain as Chain[]) : filters.chain,
       },
       sort: sortParam != null ? sortParam : sort,
     }
 
-    if (search != undefined || (searchParam != null && searchForParam != null)) {
+    if (search !== undefined || (searchParam !== null && searchForParam !== null)) {
       nftsUrl.search = {
-        searchFor: searchForParam != null ? searchForParam as SearchType : search!!.searchFor,
-        search: searchParam != null ? searchParam : search!!.search
+        searchFor: searchForParam != null ? (searchForParam as SearchType) : search!!.searchFor,
+        search: searchParam != null ? searchParam : search!!.search,
       }
     }
 
@@ -105,9 +119,9 @@ const Explore = () => {
   const updateUrl = useCallback(
     (_url: string) => {
       const params = new URL(_url).searchParams
-      const pageNumber = params.get('page') ?? "1"
+      const pageNumber = params.get("page") ?? "1"
       updatePage(pageNumber)
-      
+
       const nftsUrl = buildNftsUrlFromUrl(_url)
       setUrl(nftsUrl)
     },
@@ -115,8 +129,7 @@ const Explore = () => {
   )
 
   useEffect(() => {
-    if (router.isReady && page === undefined)
-      setPage(1)
+    if (router.isReady && page === undefined) setPage(1)
     setUrl({
       ...url,
       baseUrl: `${api}/nfts?page=${page}`,
@@ -138,20 +151,23 @@ const Explore = () => {
     router.push(newURL)
   }
 
-  const applySort = (sort: string) => {
+  const applySort = (_sort: string) => {
     const queryParams = new URLSearchParams(queryString.stringify(router.query))
 
-    queryParams.set("sort", sort)
-    
-    if (!queryParams.getAll("status").includes(SaleStatus.ONSALE) && (sort === "priceDsc" || sort === "priceAsc")) {
+    queryParams.set("sort", _sort)
+
+    if (
+      !queryParams.getAll("status").includes(SaleStatus.ONSALE) &&
+      (_sort === "priceDsc" || _sort === "priceAsc")
+    ) {
       queryParams.append("status", SaleStatus.ONSALE)
       queryParams.set("page", "1")
     }
 
     const newURL = `${router.pathname}?${queryParams.toString()}`
-    
+
     router.push(newURL)
-    setSort(sort)
+    setSort(_sort)
   }
 
   return (

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import "@testing-library/jest-dom"
 import Swal from "sweetalert2"
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router"
 
 import Login from "../pages/login"
 import { loginUser } from "../services/users"
@@ -9,14 +9,14 @@ import { loginUser } from "../services/users"
 jest.mock("../services/users") // to mock the `loginUser` function
 
 // Override the default mock set in `jest.setup.js`
-jest.mock('next/router', () => ({
+jest.mock("next/router", () => ({
   useRouter: jest.fn(),
 }))
 
 beforeEach(() => {
   // Custom mock for the `useRouter` hook, to be able to mock
   // both the `query` and `replace` properties for testing
-  (useRouter as jest.Mock).mockImplementation(() => ({
+  ;(useRouter as jest.Mock).mockImplementation(() => ({
     query: {},
     replace: jest.fn(),
   }))
@@ -32,13 +32,13 @@ const fillForm = () => {
   fireEvent.change(emailInput, { target: { value: "test@test.com" } })
   fireEvent.change(passwordInput, { target: { value: "1234" } })
 }
- 
+
 test("renders correct page elements", () => {
   const heading = screen.getByRole("heading", { name: "login.signIn" })
   const emailInput = screen.getByPlaceholderText("login.email")
   const passwordInput = screen.getByPlaceholderText("login.password")
   const submitButton = screen.getByRole("button", { name: "login.signInButton" })
-  
+
   expect(heading).toBeInTheDocument()
 
   expect(emailInput).toBeInTheDocument()
@@ -68,13 +68,13 @@ test("renders loading spinner when submitting the form", async () => {
 
 test("shows error message when API fails to authenticate", async () => {
   const submitButton = screen.getByRole("button", { name: "login.signInButton" })
-  fillForm();
+  fillForm()
 
   // Mock the API call to fail with a custom error message
-  (loginUser as jest.Mock).mockRejectedValueOnce([
-    { cause: { description: "Invalid credentials" } }
+  ;(loginUser as jest.Mock).mockRejectedValueOnce([
+    { cause: { description: "Invalid credentials" } },
   ])
-  
+
   fireEvent.click(submitButton)
 
   // The API call should have been made, and the error message should be shown
@@ -88,18 +88,18 @@ test("shows error message when API fails to authenticate", async () => {
 })
 
 test("redirects to home page when API call succeeds", async () => {
-  const mockRouterReplace = jest.fn();
+  const mockRouterReplace = jest.fn()
 
-  (useRouter as jest.Mock).mockImplementation(() => ({
+  ;(useRouter as jest.Mock).mockImplementation(() => ({
     query: {},
     replace: mockRouterReplace,
   }))
 
   const submitButton = screen.getByRole("button", { name: "login.signInButton" })
-  fillForm();
+  fillForm()
 
   // Mock the API call to succeed
-  (loginUser as jest.Mock).mockResolvedValueOnce({})
+  ;(loginUser as jest.Mock).mockResolvedValueOnce({})
 
   fireEvent.click(submitButton)
 
@@ -111,17 +111,16 @@ test("redirects to home page when API call succeeds", async () => {
 
 test("redirects to `from` query param when API call succeeds", async () => {
   const fromPage = "/products?id=1"
-  const mockRouterReplace = jest.fn();
+  const mockRouterReplace = jest.fn()
 
-  (useRouter as jest.Mock).mockImplementation(() => ({
+  ;(useRouter as jest.Mock).mockImplementation(() => ({
     query: { from: fromPage },
     replace: mockRouterReplace,
   }))
 
   const submitButton = screen.getByRole("button", { name: "login.signInButton" })
-  fillForm();
-
-  (loginUser as jest.Mock).mockResolvedValueOnce({})
+  fillForm()
+  ;(loginUser as jest.Mock).mockResolvedValueOnce({})
 
   fireEvent.click(submitButton)
 

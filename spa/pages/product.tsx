@@ -98,11 +98,9 @@ const Product = () => {
                 <div className="flex-col w-1/2">
                   {errorsNft ? (
                     <div className="w-[95%] h-1/2 m-auto mb-8">
-                      {(errorsNft && errorsNft[0].cause.statusCode !== 404) ? (
+                      {errorsNft && errorsNft[0].cause.statusCode !== 404 ? (
                         <div className="flex items-center justify-center h-full">
-                          <ErrorBox
-                            errorMessage={t("errors.errorLoadingImage")}
-                          />
+                          <ErrorBox errorMessage={t("errors.errorLoadingImage")} />
                         </div>
                       ) : (
                         <Skeleton className="w-full h-full" />

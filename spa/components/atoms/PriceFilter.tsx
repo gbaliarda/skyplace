@@ -4,15 +4,15 @@ import { useTranslation } from "next-export-i18n"
 
 interface Props {
   applyPriceFilter: (minPrice: number, maxPrice: number) => void
-  minPrice: number | undefined,
-  maxPrice: number | undefined,
+  minPrice: number | undefined
+  maxPrice: number | undefined
 }
 
 const PriceFilter = ({ applyPriceFilter, minPrice, maxPrice }: Props) => {
   const { t } = useTranslation()
   const [isClosed, setIsClosed] = useState(false)
-  const filterMinPriceRef = useRef<HTMLInputElement>(null);
-  const filterMaxPriceRef = useRef<HTMLInputElement>(null);
+  const filterMinPriceRef = useRef<HTMLInputElement>(null)
+  const filterMaxPriceRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className={isClosed ? "text-gray-500" : ""}>
@@ -63,7 +63,12 @@ const PriceFilter = ({ applyPriceFilter, minPrice, maxPrice }: Props) => {
           suppressHydrationWarning
           type="submit"
           className="rounded-lg flex px-4 py-1 mx-auto mt-4 cursor-pointer text-white bg-cyan-600 hover:bg-cyan-700"
-          onClick={() => applyPriceFilter(parseInt(filterMinPriceRef.current?.value ?? "0") , parseInt(filterMaxPriceRef.current?.value ?? "0"))}
+          onClick={() =>
+            applyPriceFilter(
+              parseInt(filterMinPriceRef.current?.value ?? "0"),
+              parseInt(filterMaxPriceRef.current?.value ?? "0"),
+            )
+          }
         >
           {t("explore.apply")}
         </button>

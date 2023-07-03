@@ -1,5 +1,4 @@
 import { useTranslation } from "next-export-i18n"
-import Skeleton from "react-loading-skeleton"
 import Link from "next/link"
 
 import Purchase from "../../types/Purchase"
@@ -97,19 +96,33 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
           <span className="text-jacarta-300 block text-xs">{purchaseDate}</span>
         </div>
 
-        {purchase.status === "SUCCESS" ?
+        {purchase.status === "SUCCESS" ? (
           <Link href={`/profile?id=${sold ? buyer?.id : seller?.id}&tab=reviews`}>
-            <a suppressHydrationWarning className="btn ml-auto normal-case bg-transparent border border-cyan-600 text-cyan-600 hover:bg-cyan-600 hover:text-white hover:border-cyan-600">
+            <a
+              suppressHydrationWarning
+              className="btn ml-auto normal-case bg-transparent border border-cyan-600 text-cyan-600 hover:bg-cyan-600 hover:text-white hover:border-cyan-600"
+            >
               {sold ? t("Review buyer") : t("Review seller")}
             </a>
           </Link>
-          :
+        ) : (
           <div className="border-jacarta-100 ml-auto rounded-full border p-3">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </div>
-        }
+        )}
       </div>
     </Link>
   )
