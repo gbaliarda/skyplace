@@ -83,7 +83,7 @@ const OffersContent = ({ buyOrdersUrl, loadingData, owner }: Props) => {
   }, [buyOrdersUrl])
 
   useEffect(() => {
-    if (router.isReady && page === undefined && router.query.page === undefined) setPage(1)
+    if (router.isReady && page === undefined && router.query.page === undefined) updatePage("1")
 
     if (!buyOrdersUrl) return
 
@@ -91,7 +91,7 @@ const OffersContent = ({ buyOrdersUrl, loadingData, owner }: Props) => {
       ...url,
       baseUrl: `${buyOrdersUrl}?page=${page}`,
     })
-  }, [page])
+  }, [page, router.isReady])
 
   return (
     <div className="border-gray-200 rounded-2xl border pb-4 flex-col justify-between mb-8 bg-slate-50">
