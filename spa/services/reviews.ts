@@ -8,7 +8,7 @@ export type ReviewsURL = {
   reviewer?: number
 }
 
-export const useReviews = (url: ReviewsURL) => {
+export const useReviews = (url: ReviewsURL | null) => {
   const {
     elem: reviewsInfo,
     loading,
@@ -27,7 +27,7 @@ export const useReviews = (url: ReviewsURL) => {
   }
 
   useEffect(() => {
-    refetchData(url)
+    if (url) refetchData(url)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(url)])
 
