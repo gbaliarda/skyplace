@@ -146,7 +146,6 @@ export default function Create() {
       let errorFields: string = ""
       let auxIdx = 1
       let hasWholeFormError: boolean = false
-      console.log(errs)
       errs.forEach((err: FetchError) => {
         if (err.cause.field !== "/") {
           // Only exception that doesn´t return a field is wrong image exception
