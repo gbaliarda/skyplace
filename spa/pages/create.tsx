@@ -152,7 +152,9 @@ export default function Create() {
           FIELDS_DATA[err.cause.field === undefined ? "image" : err.cause.field].updateFunction(
             err.cause.description,
           )
-          errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "image" : err.cause.field].name}`
+          errorFields += `${
+            FIELDS_DATA[err.cause.field === undefined ? "image" : err.cause.field].name
+          }`
 
           if (auxIdx < errs.length) errorFields += ", "
         } else {

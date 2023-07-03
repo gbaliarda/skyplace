@@ -33,12 +33,12 @@ export const useBuyOrders = (url: BuyordersURL) => {
     if (params.get("page") === "undefined") return
     fetchData(`${_url.baseUrl}`)
   }
-  
+
   useEffect(() => {
     refetchData(url)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(url)])
-  
+
   return { buyorders, totalPages, links, loading, error, refetchData }
 }
 

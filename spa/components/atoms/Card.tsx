@@ -76,9 +76,9 @@ const Card = ({ nft, mutateFavs, isFaved }: Props) => {
             <div className="pt-4 px-4 flex items-center justify-between text-base font-medium text-gray-900 border-x border-slate-300 space-x-8">
               <h3 className="max-w-[20ch] truncate text-lg">{`${nft.nftName} #${nft.nftId}`}</h3>
               {sellorder !== undefined ? (
-                <div className="flex items-center">
+                <div className="flex items-center max-w-[17ch]">
                   <img className="h-8" src={getResourceUrl("/product/eth.svg")} alt="Eth icon" />
-                  <span>{sellorder.price}</span>
+                  <span className="truncate">{sellorder.price.toLocaleString("en-US", { maximumFractionDigits: 20 })}</span>
                 </div>
               ) : (
                 <div className="flex h-8 items-center">
