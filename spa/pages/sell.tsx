@@ -92,7 +92,7 @@ export default function Sell() {
       const endpoint = update ? `/sellorders/${update}` : "/sellorders"
       await sendJson(method, endpoint, { ...data, nftId: id }, accessToken)
       mutate() // update sellorder cached data
-      router.push(`/product?id=${id}`)
+      router.replace(`/product?id=${id}`)
     } catch (errs: any) {
       const errorTitle = update ? t("errors.updateSellorder") : t("errors.sellNft")
       let errorFields: string = ""
