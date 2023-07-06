@@ -11,7 +11,7 @@ export const Paginator = ({ links, updateUrl, amountPages }: Props) => {
   const { t } = useTranslation()
 
   return (
-    <div className="flex text-xl items-center">
+    <div className="flex text-xl items-center" data-testid="pagination">
       {links.prev ? (
         <button
           suppressHydrationWarning

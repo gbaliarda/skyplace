@@ -29,6 +29,8 @@ const StatusFilter = ({ changeValueFilters, status }: Props) => {
             <input
               type="checkbox"
               className="w-5 h-5 border-gray-300 rounded mr-2 cursor-pointer"
+              data-testid="onSale"
+              name="onSale"
               value="onSale"
               checked={status !== undefined && status.includes(SaleStatus.ONSALE)}
               onChange={(e) =>
@@ -41,6 +43,7 @@ const StatusFilter = ({ changeValueFilters, status }: Props) => {
             <input
               type="checkbox"
               className="w-5 h-5 border-gray-300 rounded mr-2 cursor-pointer"
+              name="notSale"
               value="notSale"
               checked={status !== undefined && status.includes(SaleStatus.NOTSALE)}
               onChange={(e) =>
