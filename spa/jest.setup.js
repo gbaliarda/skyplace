@@ -15,6 +15,15 @@ jest.mock("next/router", () => ({
     }),
 }))
 
+// Needs mocking, otherwise throws import error
+jest.mock("query-string" , () => ({
+    __esModule: true,
+    default: {
+        parse :jest.fn(),
+        stringify: jest.fn()
+    }
+}))
+
 jest.mock('sweetalert2', () => ({
     fire: jest.fn(),
 }))
