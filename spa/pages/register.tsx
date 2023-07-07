@@ -52,44 +52,6 @@ export default function Register() {
   const [passwordRepeatError, updatePasswordRepeatError] = useState("")
   const { t } = useTranslation()
 
-  const homeRedirect = async () => {
-    try {
-      await loginUser(data.email, data.password)
-      await router.replace(from === undefined ? "/" : from)
-    } catch (errs: any) {
-      Swal.fire({ title: t("login.signInError"), text: errs[0].message, icon: "error" })
-    }
-  }
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    try {
-      await createUser(data)
-      await homeRedirect()
-    } catch (errs: any) {
-      let errorFields: string = ""
-      let auxIdx = 1
-      errs.forEach((err: FetchError) => {
-        FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].updateFunction(
-          err.cause.description,
-        )
-        errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].name}`
-
-        if (auxIdx < errs.length) errorFields += ", "
-
-        auxIdx += 1
-      })
-      Swal.fire({
-        title: t("register.error"),
-        text:
-          errs.length === 1
-            ? t("errors.invalidField", { field: errorFields })
-            : t("errors.invalidFields", { fields: errorFields }),
-        icon: "error",
-      })
-    }
-  }
-
   const FIELDS_DATA: FieldsDataMap = {
     email: {
       name: t("register.email"),
@@ -115,6 +77,64 @@ export default function Register() {
       name: t("register.passwordRepeat"),
       updateFunction: (error: string) => updatePasswordRepeatError(error),
     },
+    "": {
+      name: "",
+      updateFunction: (error: string) => {
+        updatePasswordError(error)
+        updatePasswordRepeatError(error)
+      }
+    }
+  }
+
+  const clearFormErrors = () => {
+    updateEmailError("")
+    updateWalletError("")
+    updateWalletChainError("")
+    updateUsernameError("")
+    updatePasswordError("")
+    updatePasswordRepeatError("")
+  }
+
+  const homeRedirect = async () => {
+    try {
+      await loginUser(data.email, data.password)
+      await router.replace(from === undefined ? "/" : from)
+    } catch (errs: any) {
+      Swal.fire({ title: t("login.signInError"), text: errs[0].message, icon: "error" })
+    }
+  }
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    try {
+      await createUser(data)
+      await homeRedirect()
+    } catch (errs: any) {
+      let errorFields: string = ""
+      let auxIdx = 1
+      clearFormErrors()
+      errs.forEach((err: FetchError) => {
+        let error_field = (err.cause.field === undefined || err.cause.field === "/" ? "" : err.cause.field)
+
+        FIELDS_DATA[error_field].updateFunction(
+          err.cause.description,
+        )
+
+        errorFields += `${FIELDS_DATA[error_field].name}`
+
+        if (auxIdx < errs.length) errorFields += ", "
+
+        auxIdx += 1
+      })
+      Swal.fire({
+        title: t("register.error"),
+        text:
+          errs.length === 1
+            ? t("errors.invalidField", { field: errorFields })
+            : t("errors.invalidFields", { fields: errorFields }),
+        icon: "error",
+      })
+    }
   }
 
   return (
