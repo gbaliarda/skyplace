@@ -1,95 +1,93 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import React from "react"
+import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import "@testing-library/jest-dom"
-import Home from '../pages';
+import Home from "../pages"
 
 import { useTranslation } from "next-export-i18n"
 import { useRouter } from "next/router"
 import { RouterContext } from "next/dist/shared/lib/router-context"
 
-jest.mock('next-export-i18n', () => ({
-    useTranslation: () => ({
-        t: (key: string) => {
-            const translations: Record<string, string> = {
-                'index.discover': 'Discover',
-                'index.create': 'Create',
-                'index.explore': 'Explore',
-            };
+jest.mock("next-export-i18n", () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        "index.discover": "Discover",
+        "index.create": "Create",
+        "index.explore": "Explore",
+      }
 
-            return translations[key] || '';
-        },
-    }),
-}));
+      return translations[key] || ""
+    },
+  }),
+}))
 
-jest.mock('next/router', () => ({
-    useRouter: jest.fn(),
-}));
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(),
+}))
 
 beforeEach(() => {
-    ;(useRouter as jest.Mock).mockImplementation(() => ({
-        push: jest.fn(),
-        query: {},
-      }))
+  ;(useRouter as jest.Mock).mockImplementation(() => ({
+    push: jest.fn(),
+    query: {},
+  }))
 })
 
+test("renders the discover message", () => {
+  const { getByText } = render(<Home />)
+  const discoverMessage = getByText("Discover")
+  expect(discoverMessage).toBeInTheDocument()
+})
 
+test("renders the create button", () => {
+  render(<Home />)
+  const createButton = screen.getByRole("button", { name: "Create" })
+  expect(createButton).toBeInTheDocument()
+})
 
-test('renders the discover message', () => {
-    const { getByText } = render(<Home />);
-    const discoverMessage = getByText('Discover');
-    expect(discoverMessage).toBeInTheDocument();
-});
+test("renders the explore button", () => {
+  render(<Home />)
+  const exploreButton = screen.getByRole("button", { name: "Explore" })
+  expect(exploreButton).toBeInTheDocument()
+})
 
-test('renders the create button', () => {
-    render(<Home />);
-    const createButton = screen.getByRole('button', { name: 'Create' });
-    expect(createButton).toBeInTheDocument();
-});
+test("redirects to the create page when the create button is clicked", () => {
+  let router = useRouter()
+  render(
+    <RouterContext.Provider value={router}>
+      <Home />
+    </RouterContext.Provider>,
+  )
 
-test('renders the explore button', () => {
-    render(<Home />);
-    const exploreButton = screen.getByRole('button', { name: 'Explore' });
-    expect(exploreButton).toBeInTheDocument();
-});
+  const createButton = screen.getByRole("button", { name: "Create" })
 
-test('redirects to the create page when the create button is clicked', () => {
-    let router = useRouter()
-    render(
-        <RouterContext.Provider value={router}>
-            <Home />
-        </RouterContext.Provider>
-    )
+  fireEvent.click(createButton)
 
-    const createButton = screen.getByRole('button', { name: 'Create' });
+  const finalUrl = "/create"
 
-    fireEvent.click(createButton);
+  expect(router.push).toHaveBeenCalledWith(finalUrl, finalUrl, {
+    locale: undefined,
+    scroll: undefined,
+    shallow: undefined,
+  })
+})
 
-    const finalUrl = '/create'
+test("redirects to the explore page when the explore button is clicked", () => {
+  let router = useRouter()
+  render(
+    <RouterContext.Provider value={router}>
+      <Home />
+    </RouterContext.Provider>,
+  )
 
-    expect(router.push).toHaveBeenCalledWith(finalUrl, finalUrl, {
-        locale: undefined,
-        scroll: undefined,
-        shallow: undefined,
-        });
-});
+  const exploreButton = screen.getByRole("button", { name: "Explore" })
 
-test('redirects to the explore page when the explore button is clicked', () => {
-    let router = useRouter()
-    render(
-        <RouterContext.Provider value={router}>
-            <Home />
-        </RouterContext.Provider>
-    )
+  fireEvent.click(exploreButton)
 
-    const exploreButton = screen.getByRole('button', { name: 'Explore' });
+  const finalUrl = "/explore"
 
-    fireEvent.click(exploreButton);
-
-    const finalUrl = '/explore'
-
-    expect(router.push).toHaveBeenCalledWith(finalUrl, finalUrl, {
-        locale: undefined,
-        scroll: undefined,
-        shallow: undefined,
-        });
-});
+  expect(router.push).toHaveBeenCalledWith(finalUrl, finalUrl, {
+    locale: undefined,
+    scroll: undefined,
+    shallow: undefined,
+  })
+})

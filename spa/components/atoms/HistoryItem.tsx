@@ -17,11 +17,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
 
   const sold = userId === seller?.id
 
-  const {
-    reviewsInfo: reviewsBetweenUsers,
-    loading: loadingReviewsBetweenUsers,
-    refetchData: refetchDataBetweenUsers,
-  } = useReviews(
+  const { reviewsInfo: reviewsBetweenUsers } = useReviews(
     purchase.status === "SUCCESS" && buyer && seller
       ? {
           baseUrl: `${api}/users/${sold ? buyer?.id : seller?.id}/reviews?page=1`,
@@ -112,6 +108,7 @@ export default function HistoryItem({ purchase, userId }: { purchase: Purchase; 
         </div>
 
         {purchase.status === "SUCCESS" ? (
+          // eslint-disable-next-line react/jsx-no-useless-fragment
           <>
             {reviewsBetweenUsers?.reviews.length === 0 ? (
               // Show only if there are no reviews between the users

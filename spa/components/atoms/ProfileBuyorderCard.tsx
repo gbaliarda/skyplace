@@ -128,9 +128,11 @@ export default function ProfileBuyorderCard({ buyorder, updateBuyorders }: Props
                         })}
                       </p>
                     ) : (
-                      t("buyorders.bidded", { amount: buyorder.amount.toLocaleString("en-US", {
-                        maximumFractionDigits: 20,
-                      })})
+                      t("buyorders.bidded", {
+                        amount: buyorder.amount.toLocaleString("en-US", {
+                          maximumFractionDigits: 20,
+                        }),
+                      })
                     )}
                   </div>
                 )}
