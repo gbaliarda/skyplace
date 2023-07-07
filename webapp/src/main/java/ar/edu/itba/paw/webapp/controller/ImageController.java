@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.io.File;
 import java.util.Optional;
 
@@ -40,8 +37,13 @@ public class ImageController {
         Tika tika = new Tika();
         String mimeType = tika.detect(maybeImage.get().getImage());
 
+        CacheControl cacheControl = new CacheControl();
+        cacheControl.setPrivate(false);
+        cacheControl.setMaxAge(60 * 60 * 24);
+
         return Response.ok(maybeImage.get().getImage())
-                .type(mimeType) // Set the type of the response to image/jpeg
+                .cacheControl(cacheControl)
+                .type(mimeType)
                 .build();
     }
 
