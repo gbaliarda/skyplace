@@ -31,7 +31,6 @@ const FilterSideBar = ({ isClosed = false, setIsClosed, filters, totalResults }:
     queryParams.append(name, value)
 
     const newURL = `${router.pathname}?${queryParams.toString()}`
-
     router.push(newURL)
   }
 
@@ -89,18 +88,18 @@ const FilterSideBar = ({ isClosed = false, setIsClosed, filters, totalResults }:
     <div className="flex">
       {!isClosed ? (
         <div className="flex flex-col w-72 min-w-[250px] items-center">
-          <span suppressHydrationWarning className="text-4xl">
+          <span suppressHydrationWarning className="text-4xl" data-testid="category">
             {filters.category === undefined || filters.category.length === 0
               ? t("explore.all")
               : filters.category.length === 1
               ? filters.category[0]
               : t("explore.various")}
           </span>
-          <span suppressHydrationWarning>
+          <span suppressHydrationWarning data-testid="amountNfts">
             {t("explore.results", { amount: totalResults !== undefined ? totalResults : 0 })}
           </span>
           <div className="grow w-full overflow-y-scroll mt-2">
-            <div className="py-4 flex flex-col w-full">
+            <div className="py-4 flex flex-col w-full" data-testid="filters">
               <div className="flex items-center justify-between pb-4 px-4">
                 <div className="flex items-center">
                   <FunnelIcon className="w-6 h-6 mr-2" />
