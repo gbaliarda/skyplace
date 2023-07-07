@@ -92,6 +92,7 @@ export default function ConfirmTransactionModal({
                     className="ml-2 tooltip tooltip-top"
                     suppressHydrationWarning
                     data-tip={t("profile.copy")}
+                    data-testid="copy-to-clipboard"
                     onClick={(e) => changeTooltipText(e, true)}
                   >
                     <ClipboardIcon className="h-5 w-5 text-cyan-700" />
@@ -117,6 +118,7 @@ export default function ConfirmTransactionModal({
                     className="ml-2 tooltip tooltip-top"
                     suppressHydrationWarning
                     data-tip={t("profile.copy")}
+                    data-testid="copy-to-clipboard"
                     onClick={changeTooltipText}
                   >
                     <ClipboardIcon className="h-5 w-5 text-cyan-700" />
