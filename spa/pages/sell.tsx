@@ -115,7 +115,7 @@ export default function Sell() {
           auxIdx += 1
         })
       } else {
-        errorCode = errs[0].cause.statusCode
+        errorCode = errs[0].cause.errorCode
       }
       Swal.fire({
         title: errorTitle,
