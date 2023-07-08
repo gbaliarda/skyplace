@@ -10,6 +10,7 @@ export default function FormSelect({ options, name, value, onChange, error, tran
     <FormInput name={name} error={error}>
       <select
         required
+        name={name}
         value={value}
         onChange={onChange}
         className={`pl-3 sm:text-sm rounded-lg focus:ring-cyan-800 focus:border-cyan-800 text-cyan-700 placeholder:text-slate-400 shadow-sm

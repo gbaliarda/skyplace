@@ -18,6 +18,7 @@ export default function FormType({
   return (
     <FormInput name={name} error={error}>
       <input
+        name={name}
         type={type}
         value={value}
         onChange={onChange}
