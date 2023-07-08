@@ -65,6 +65,10 @@ export default function Sell() {
       name: t("sell.price"),
       updateFunction: (error: string) => updatePriceError(error),
     },
+    "": {
+      name: "",
+      updateFunction: (error: string) => {}
+    }
   }
 
   useEffect(() => {
@@ -96,23 +100,32 @@ export default function Sell() {
     } catch (errs: any) {
       const errorTitle = update ? t("errors.updateSellorder") : t("errors.sellNft")
       let errorFields: string = ""
+      let errorCode: number | undefined = undefined
       let auxIdx = 1
-      errs.forEach((err: FetchError) => {
-        FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].updateFunction(
-          err.cause.description,
-        )
-        errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].name}`
+      let hasInvalidFieldErrors = errs[0].cause.field !== undefined
+      if (hasInvalidFieldErrors) {
+        errs.forEach((err: FetchError) => {
+          FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].updateFunction(
+            err.cause.description,
+          )
+          errorFields += `${FIELDS_DATA[err.cause.field === undefined ? "" : err.cause.field].name}`   // Field name
 
-        if (auxIdx < errs.length) errorFields += ", "
+          if (auxIdx < errs.length) errorFields += ", "    // Separator between fields
 
-        auxIdx += 1
-      })
+          auxIdx += 1
+        })
+      } else {
+        errorCode = errs[0].cause.statusCode
+      }
       Swal.fire({
         title: errorTitle,
         text:
-          errs.length === 1
-            ? t("errors.invalidField", { field: errorFields })
-            : t("errors.invalidFields", { fields: errorFields }),
+          errorCode !== undefined ?
+            t(`errorCodes.${errorCode}`)
+            :
+            errs.length === 1
+              ? t("errors.invalidField", { field: errorFields })
+              : t("errors.invalidFields", { fields: errorFields }),
         icon: "error",
       })
     }
