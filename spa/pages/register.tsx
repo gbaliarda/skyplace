@@ -82,8 +82,8 @@ export default function Register() {
       updateFunction: (error: string) => {
         updatePasswordError(error)
         updatePasswordRepeatError(error)
-      }
-    }
+      },
+    },
   }
 
   const clearFormErrors = () => {
@@ -114,13 +114,12 @@ export default function Register() {
       let auxIdx = 1
       clearFormErrors()
       errs.forEach((err: FetchError) => {
-        let error_field = (err.cause.field === undefined || err.cause.field === "/" ? "" : err.cause.field)
+        const errorField =
+          err.cause.field === undefined || err.cause.field === "/" ? "" : err.cause.field
 
-        FIELDS_DATA[error_field].updateFunction(
-          err.cause.description,
-        )
+        FIELDS_DATA[errorField].updateFunction(err.cause.description)
 
-        errorFields += `${FIELDS_DATA[error_field].name}`
+        errorFields += `${FIELDS_DATA[errorField].name}`
 
         if (auxIdx < errs.length) errorFields += ", "
 

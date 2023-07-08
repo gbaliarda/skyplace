@@ -194,7 +194,11 @@ export default function Create() {
           {t("create.create")}
         </h1>
 
-        <form className="grid grid-cols-2 gap-8 pt-8" onSubmit={handleSubmit} data-testid="create-form">
+        <form
+          className="grid grid-cols-2 gap-8 pt-8"
+          onSubmit={handleSubmit}
+          data-testid="create-form"
+        >
           <FormType
             name={t("create.name")}
             placeholder="Space Ape"
@@ -234,7 +238,12 @@ export default function Create() {
             onChange={(e) => updateFields({ collection: e.target.value })}
           />
 
-          <FormFile name={t("create.image")} ref={fileInputRef} error={imageError} dataTestId="create-image-input"  />
+          <FormFile
+            name={t("create.image")}
+            ref={fileInputRef}
+            error={imageError}
+            dataTestId="create-image-input"
+          />
 
           <FormTextArea
             name={t("create.description")}
